@@ -1,10 +1,25 @@
 generator client {
-  provider        = "prisma-client-js"
-  // Allows prisma to use multiple schema files
+  provider = "prisma-client-js"
   previewFeatures = ["prismaSchemaFolder"]
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
+}
+
+model User {
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  username String 
+  password String
+  email String @unique
+  created_at DateTime @default(now())
+}
+
+
+model Admin{
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  username String @unique
+  password String
+  created_at DateTime @default(now())
 }
