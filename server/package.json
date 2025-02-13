@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "cross-env ENVIROMENT=DEV nodemon",
+    "start": "cross-env ENVIROMENT=DEV nodemon",
     "prod": "cross-env ENVIROMENT=PROD nodemon",
     "build": "tsup ./src/index.ts",
     "seed": "tsx ./src/.scripts/runSeeder.ts",
