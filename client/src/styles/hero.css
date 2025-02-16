@@ -1,0 +1,354 @@
+.hero {
+  height: 600px;
+  background: linear-gradient(
+      to right,
+      rgb(79, 112, 156),
+      rgba(79, 112, 156, 0.9),
+      rgba(79, 112, 156, 0.7),
+      rgba(79, 112, 156, 0.6),
+      rgba(79, 112, 156, 0.4),
+      rgba(79, 112, 156, 0)
+    ),
+    url("/images/hero.jpeg");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+  position: relative;
+  margin: 0 1rem;
+  border-radius: 40px;
+  top: 80px;
+  box-shadow: 0 2px 8px 2px rgba(178, 178, 178, 0.334);
+  margin-bottom: 4rem !important;
+}
+.hero .sec-container .hero-text {
+  text-align: center;
+  margin-bottom: 30px;
+}
+.hero .sec-container .hero-text .title {
+  color: white;
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 2.5rem;
+  text-transform: capitalize;
+  letter-spacing: 2px;
+  text-shadow: 1px 1px 1px rgba(178, 178, 178, 0.334);
+}
+.hero .sec-container .hero-text .sub-title {
+  color: white;
+  opacity: 0.9;
+  font-size: 15px;
+  font-weight: 300;
+  padding: 1rem 0;
+  max-width: 70%;
+  text-align: center;
+  margin: auto;
+  letter-spacing: 1px;
+  text-shadow: 1px 1px 1px rgba(178, 178, 178, 0.334);
+}
+.hero .sec-container .hero-card {
+  width: 80%;
+  border-radius: 1rem;
+  padding: 2rem;
+  background: white;
+  position: absolute;
+  gap: 1rem;
+  justify-content: center;
+  bottom: -20%;
+  transform: translate(-50%);
+  left: 50%;
+  box-shadow: 0 2px 8px 4px rgba(178, 178, 178, 0.2);
+}
+.hero .sec-container .hero-card .benefits {
+  display: flex;
+  flex-direction: row;
+}
+.hero .sec-container .hero-card .benefits .benefit {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  cursor: default;
+}
+.hero .sec-container .hero-card .benefits .benefit .icon {
+  justify-content: center;
+  border: 1px solid #c1c1c1;
+  font-size: 60px;
+  border-radius: 14px;
+  padding: 10px;
+  margin: 0 5px;
+  cursor: default;
+}
+.hero .sec-container .hero-card .benefits .benefit p {
+  font-size: 13px;
+}
+.hero .sec-container .hero-card .benefits .benefit .breakfast {
+  color: #f7bb61;
+}
+.hero .sec-container .hero-card .benefits .benefit .wifi {
+  color: #dd4732;
+}
+.hero .sec-container .hero-card .benefits .benefit .ac {
+  color: #537be2;
+}
+.hero .sec-container .hero-card .benefits .benefit .minibar {
+  color: #52cb7b;
+}
+.hero .sec-container .hero-card .benefits .benefit p {
+  padding-top: 10px;
+  text-align: center;
+}
+.hero .sec-container .hero-card .check-in-out {
+  display: flex;
+  flex-direction: row;
+  padding-top: 20px;
+
+  h3 {
+    font-weight: 700;
+  }
+}
+.hero .sec-container .hero-card .check-in-out .check-in,
+.hero .sec-container .hero-card .check-in-out .check-out {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: start;
+}
+.hero .sec-container .hero-card .check-in-out .check-in h3,
+.hero .sec-container .hero-card .check-in-out .check-out h3 {
+  font-size: 20px;
+  margin-bottom: 8px;
+  color: rgb(33, 53, 85);
+}
+.hero .sec-container .hero-card .check-in-out .check-in p,
+.hero .sec-container .hero-card .check-in-out .check-out p {
+  color: rgb(115, 115, 115);
+}
+.hero .sec-container .hero-card .check-in-out .check-in {
+  padding-left: 10px;
+}
+
+@media screen and (min-width: 480px) {
+  .hero {
+    margin: 0 2rem;
+  }
+  .hero .sec-container .hero-card {
+    bottom: -15%;
+    width: 90%;
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
+@media screen and (min-width: 556px) {
+  .hero {
+    margin: 0 3rem;
+  }
+  .hero .sec-container .hero-text .title {
+    font-size: 2.5rem;
+  }
+  .hero .sec-container .hero-text .sub-title {
+    font-size: 18px;
+  }
+  .hero .sec-container .hero-card {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
+@media screen and (min-width: 720px) {
+  .hero .sec-container .hero-card {
+    background: white;
+    bottom: -15%;
+    grid-template-columns: repeat(2, 1fr);
+    padding: 1rem 2rem;
+  }
+  .hero .sec-container .hero-card .benefits .benefit .icon {
+    font-size: 70px;
+  }
+  .hero .sec-container .hero-card .benefits .benefit p {
+    font-size: 15px;
+  }
+  .hero .sec-container .hero-card .check-in-out {
+    letter-spacing: 1px;
+    display: flex;
+    margin-bottom: 20px;
+  }
+  .hero .sec-container .hero-card .check-in-out .check-in {
+    padding-left: 40px;
+  }
+  .hero .sec-container .hero-card .check-in-out h3 {
+    font-size: 24px;
+  }
+}
+@media screen and (min-width: 720px) {
+  .hero {
+    margin: 0 3rem;
+  }
+  .hero .sec-container .hero-text {
+    padding: 1rem 10rem;
+  }
+  .hero .sec-container .hero-text .title {
+    margin: auto;
+    font-size: 46px;
+    line-height: 4rem;
+  }
+  .hero .sec-container .hero-text .sub-title {
+    width: 70%;
+    font-size: 16px;
+  }
+}
+@media screen and (min-width: 1024px) {
+  .hero {
+    margin: 0 4rem;
+  }
+  .hero .sec-container .hero-text .title {
+    font-size: 56px;
+    line-height: 5rem;
+    text-shadow: 1px 1px 1px rgba(178, 178, 178, 0.334);
+  }
+  .hero .sec-container .hero-text .sub-title {
+    font-size: 20px;
+    text-shadow: 1px 1px 1px rgba(178, 178, 178, 0.334);
+  }
+  .hero .sec-container .hero-card {
+    width: 70%;
+    bottom: -13%;
+  }
+} /*# sourceMappingURL=hero.css.map */
+
+/* Default Styling */
+a {
+  text-decoration: none;
+  color: var(--CloudBurst);
+}
+
+li {
+  list-style: none;
+}
+
+.section {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+.container {
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+.icon {
+  font-size: 2rem;
+  cursor: pointer;
+}
+
+.flex {
+  display: flex;
+  align-items: center;
+}
+
+.grid {
+  display: grid;
+  align-items: center;
+}
+
+.btn {
+  padding: 0.4rem 1.5rem;
+  background-color: var(--KashmirBlue);
+  color: var(--WhiteLilac);
+  border: none;
+  outline: none;
+  border-radius: 3rem;
+  cursor: pointer;
+}
+
+.btn a {
+  color: var(--WhiteLilac);
+  font-weight: 500;
+}
+
+.btn:hover {
+  background-color: var(--CloudBurst);
+}
+
+.btn:hover a {
+  color: var(--LightGray);
+}
+
+.sec-intro {
+  max-width: 70%;
+  text-align: center;
+  margin: 0 auto 2rem;
+}
+
+.sec-intro .sec-title {
+  color: var(--CloudBurst);
+  /* line-height: 1.5rem; */
+  padding-bottom: 0.5rem;
+}
+
+.sec-intro p {
+  font-size: 13px;
+  color: var(--DarkGray);
+  font-weight: 500;
+}
+
+.sec-title {
+  font-size: 2rem;
+}
+
+img,
+video {
+  width: 100%;
+  height: auto;
+}
+
+input {
+  font-size: 100%;
+}
+
+/* MEDIA QUERIES */
+@media screen and (min-width: 556px) {
+  .main-content,
+  .single-post {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media screen and (min-width: 884px) {
+  .main-content {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media screen and (min-width: 1240px) {
+  .container {
+    width: 75%;
+    margin: auto !important;
+  }
+
+  .section {
+    padding: 2rem 0 3rem;
+  }
+
+  .sec-intro {
+    margin: 0 auto 3rem;
+  }
+
+  .sec-intro .sec-title {
+    line-height: 2rem;
+    padding-bottom: 1rem;
+    font-size: 2.2rem;
+  }
+
+  .sec-intro p {
+    font-size: 15px;
+  }
+}
+
+@media screen and (min-width: 2560px) {
+  body {
+    zoom: 1.7;
+  }
+}

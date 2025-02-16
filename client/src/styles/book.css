@@ -1,0 +1,77 @@
+.book .sec-container {
+  background: linear-gradient(
+      to bottom right,
+      rgba(33, 53, 85, 0.9),
+      rgba(66, 98, 150, 0.9)
+    ),
+    url("/images/bookImg.jpeg");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 470px;
+  border-radius: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 2px 8px 2px rgba(178, 178, 178, 0.334);
+}
+.book .sec-container .text-div {
+  color: rgb(248, 248, 248);
+  text-align: center;
+  margin: 0 2rem;
+}
+.book .sec-container .text-div h2 {
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  margin-bottom: 1rem;
+}
+.book .sec-container .text-div p {
+  font-size: 16px;
+  letter-spacing: 0.5px;
+}
+.book .sec-container .btn {
+  background-color: rgb(255, 194, 111);
+  color: rgb(33, 53, 85);
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  padding: 0.8rem 2.2rem;
+  margin-top: 3rem;
+}
+.book .sec-container .btn:hover {
+  background-color: rgb(221, 163, 83);
+  transform: translateY(-5px);
+}
+
+@media screen and (min-width: 720px) {
+  .book .sec-container .text-div {
+    margin: 0 7rem;
+  }
+  .book .sec-container .text-div h2 {
+    font-size: 48px;
+    margin-bottom: 1.5rem;
+    letter-spacing: 1px;
+  }
+  .book .sec-container .text-div p {
+    font-size: 20px;
+    letter-spacing: 1px;
+  }
+  .book .sec-container .btn {
+    font-size: 20px;
+    letter-spacing: 1px;
+    padding: 1rem 3rem;
+    margin-top: 5rem;
+  }
+}
+@media screen and (min-width: 1024px) {
+  .book .sec-container .text-div {
+    margin: 0 10rem;
+  }
+}
+@media screen and (min-width: 1560px) {
+  .book .sec-container .text-div {
+    margin: 0 15rem;
+  }
+}

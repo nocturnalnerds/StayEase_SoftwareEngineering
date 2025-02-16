@@ -1,1 +1,27 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
 @import "tailwindcss";
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif !important;
+  transition: 0.3s ease;
+}
+
+/* Colors */
+:root {
+  --KashmirBlue: rgba(79, 112, 156, 1);
+  --CloudBurst: rgba(33, 53, 85, 1);
+  --SafronMango: rgba(255, 194, 111, 1);
+  --WhiteLilac: rgba(248, 248, 248, 1);
+  --LightGray: rgba(232, 232, 232, 1);
+  --DarkGray: rgba(54, 54, 54, 1);
+  --SmokeyGray: rgba(115, 115, 115, 1);
+}
+
+/* Page Design */
+::selection {
+  background: var(--CloudBurst);
+  color: var(--WhiteLilac);
+}
