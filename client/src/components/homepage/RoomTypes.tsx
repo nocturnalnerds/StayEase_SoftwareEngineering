@@ -65,7 +65,11 @@ export default function RoomTypes() {
           <h2 className="sec-title font-bold" data-aos="fade-up">
             Hotel Room Types
           </h2>
-          <p data-aos="fade-up" data-aos-duration="2000">
+          <p
+            className="leading-7.5"
+            data-aos="fade-up"
+            data-aos-duration="1000"
+          >
             Explore a range of meticulously curated hotel room types, each
             designed to elevate your stay with a perfect blend of comfort,
             style, and personalized hospitality
@@ -79,7 +83,7 @@ export default function RoomTypes() {
                 key={id}
                 className="single-offer"
                 data-aos="fade-up"
-                data-aos-duration="3000"
+                data-aos-duration="1250"
               >
                 <div className="dest-image">
                   <img src={imgSrc} alt="Image Name" />
@@ -117,7 +121,7 @@ export default function RoomTypes() {
           <button
             className="btn flex"
             data-aos="fade-up"
-            data-aos-duration="3500"
+            data-aos-duration="3000"
             onClick={() => {
               navigate("/offers");
             }}

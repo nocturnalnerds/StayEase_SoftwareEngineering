@@ -39,6 +39,7 @@
   letter-spacing: 0.5px;
   padding: 0.8rem 2.2rem;
   margin-top: 3rem;
+  transition: all 0.3s;
 }
 .book .sec-container .btn:hover {
   background-color: rgb(221, 163, 83);

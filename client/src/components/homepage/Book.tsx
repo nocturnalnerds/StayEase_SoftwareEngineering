@@ -20,20 +20,20 @@ export default function Book() {
     <section className="book container section" data-aos="fade-up">
       <div className="sec-container">
         <div className="text-div">
-          <h2 className="title" data-aos="fade-up" data-aos-duration="2000">
+          <h2 className="title" data-aos="fade-up" data-aos-duration="1000">
             Reserve Your Stay Instantly!
           </h2>
-          <p data-aos="fade-up" data-aos-duration="2500">
+          <p data-aos="fade-up" data-aos-duration="1250">
             Seize the opportunity to secure your dream getaway instantly with
             our hassle-free reservation process
           </p>
         </div>
         <button
-          className="btn"
+          className="btn transition duration-200"
           data-aos="fade-up"
-          data-aos-duration="3000"
+          data-aos-duration="1500"
           onClick={() => {
-            navigate("/reservation");
+            navigate("/booking");
           }}
         >
           Book Now
