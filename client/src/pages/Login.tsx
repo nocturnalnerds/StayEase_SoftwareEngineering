@@ -22,6 +22,7 @@ export default function Login() {
     handleSubmit,
     formState: { errors },
     setError,
+    reset,
   } = useForm<LoginFields>();
   const [showPassword, setShowPassword] = useState(false);
 
@@ -37,6 +38,7 @@ export default function Login() {
       };
       await API.post("/login", loginData);
       toast.success("Login successful!");
+      reset();
     } catch (err) {
       console.error("Form submission error", err);
       toast.error("Login failed!");

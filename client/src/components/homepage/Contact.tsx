@@ -64,6 +64,7 @@ function Contact() {
     handleSubmit,
     formState: { errors },
     setError,
+    reset,
   } = useForm<ContactFields>();
 
   const onSubmit: SubmitHandler<ContactFields> = async (data) => {
@@ -75,9 +76,9 @@ function Contact() {
         subject: data.subject,
         message: data.message,
       };
-      console.log(contactData);
       await API.post("/contact", contactData);
       toast.success("Message sent successfully!");
+      reset();
     } catch (err) {
       console.error("Form submission error", err);
       toast.error("Message failed to send!");

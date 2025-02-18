@@ -9,10 +9,11 @@ import googleIcon from "/icons/google.svg";
 import "../styles/loginSignup.css";
 
 type SignupFields = {
-  name: string;
+  username: string;
   email: string;
+  phone: string;
   password: string;
-  confirmPassword: string;
+  confirmPassword?: string;
 };
 
 const inputStyle =
@@ -24,6 +25,7 @@ export default function Signup() {
     handleSubmit,
     formState: { errors },
     setError,
+    reset,
   } = useForm<SignupFields>();
   const [showPassword, setShowPassword] = useState(false);
 
@@ -40,17 +42,18 @@ export default function Signup() {
       }
 
       const signupData: SignupFields = {
-        name: data.name,
+        username: data.username,
         email: data.email,
+        phone: data.phone,
         password: data.password,
-        confirmPassword: data.confirmPassword,
       };
-      await API.post("/signup", signupData);
+      await API.post("/register", signupData);
       toast.success("Signup successful!");
+      reset();
     } catch (err) {
       console.error("Form submission error", err);
       toast.error("Signup failed!");
-      setError("name", { message: "An error occurred" });
+      setError("username", { message: "An error occurred" });
     }
   };
 
@@ -90,13 +93,13 @@ export default function Signup() {
 
           <form onSubmit={handleSubmit(onSubmit)}>
             <Input
-              {...register("name", { required: "Name is required" })}
+              {...register("username", { required: "Name is required" })}
               label="Full Name"
               type="text"
               placeholder="John Doe"
               className="mb-4"
               inputClassName={inputStyle}
-              errorMessage={errors.name?.message}
+              errorMessage={errors.username?.message}
             />
             <Input
               {...register("email", { required: "Email is required" })}
@@ -106,6 +109,15 @@ export default function Signup() {
               className="mb-4"
               inputClassName={inputStyle}
               errorMessage={errors.email?.message}
+            />
+            <Input
+              {...register("phone", { required: "Phone is required" })}
+              label="Phone"
+              type="text"
+              placeholder="123-567-789"
+              className="mb-4"
+              inputClassName={inputStyle}
+              errorMessage={errors.phone?.message}
             />
             <div className="relative mb-4">
               <Input
