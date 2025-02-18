@@ -9,11 +9,11 @@ export default function Footer() {
 
   return (
     <div className="footer">
-      <div className="sec-container container grid">
+      <div className="sec-container container grid transition-all! duration-300!">
         <div className="logo-div">
           <div className="footer-logo">
             <a href="/" className="logo flex">
-              <h1 className="flex" style={{ color: "#213555" }}>
+              <h1 className="flex font-bold text-3xl text-[#213555]">
                 StayEase
               </h1>
             </a>
@@ -78,7 +78,7 @@ export default function Footer() {
               }}
               style={{ cursor: "pointer" }}
             >
-              Why HM?
+              Why StayEase?
             </a>
           </li>
           <li>

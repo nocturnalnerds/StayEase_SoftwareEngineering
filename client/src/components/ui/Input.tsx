@@ -49,6 +49,9 @@ const Input = forwardRef<
           {...props}
           ref={ref}
           placeholder={placeholder}
+          onBlur={onBlur}
+          disabled={disabled}
+          type={type}
           className={cn(
             "border-[1px] border-border bg-primary text-blacky rounded-sm w-full px-4 py-4 disabled:text-slate-500 focus:border-primary outline-none transition placeholder:text-gray",
             errorMessage && "border-red-400 ",

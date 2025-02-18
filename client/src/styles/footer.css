@@ -44,6 +44,7 @@
         border-radius: 50%;
         padding: 8px;
         color: var(--WhiteLilac);
+        transition: all 0.3s ease;
 
         &:hover {
           background: var(--DarkGray);
@@ -62,6 +63,7 @@
       }
 
       li {
+        transition: all 0.3s ease;
         &:hover {
           transform: translateX(10px);
 
