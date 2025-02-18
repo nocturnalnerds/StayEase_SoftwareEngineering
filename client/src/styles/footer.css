@@ -1,0 +1,110 @@
+:root {
+  --KashmirBlue: rgba(79, 112, 156, 1);
+  --CloudBurst: rgba(33, 53, 85, 1);
+  --WhiteLilac: rgba(248, 248, 248, 1);
+  --LightGray: rgba(238, 238, 238, 1);
+  --DarkGray: rgba(54, 54, 54, 1);
+}
+
+.footer {
+  background: var(--LightGray);
+  padding: 2rem 0;
+
+  .sec-container {
+    gap: 1.5rem;
+    text-align: center;
+
+    .footer-logo {
+      padding-bottom: 0.5rem;
+      .logo {
+        color: var(--DarkGray);
+        font-weight: 500;
+        cursor: pointer;
+        text-align: center;
+        align-items: center;
+        justify-content: center;
+        padding-bottom: 0.5rem;
+
+        .icon {
+          font-size: 25px;
+          color: (--CloudBurst);
+          margin-right: 0.5rem;
+        }
+      }
+    }
+
+    .socials {
+      gap: 0.5rem;
+      margin: auto;
+      justify-content: center;
+
+      .icon {
+        font-size: 30px;
+        background: var(--KashmirBlue);
+        border-radius: 50%;
+        padding: 8px;
+        color: var(--WhiteLilac);
+        transition: all 0.3s ease;
+
+        &:hover {
+          background: var(--DarkGray);
+        }
+      }
+    }
+
+    .footer-links {
+      display: grid;
+      row-gap: 0.2rem;
+
+      .link-title {
+        padding-bottom: 0.5rem;
+        color: var(--DarkGray);
+        font-weight: 700;
+      }
+
+      li {
+        transition: all 0.3s ease;
+        &:hover {
+          transform: translateX(10px);
+
+          a {
+            color: var(--KashmirBlue);
+          }
+        }
+      }
+
+      a,
+      .phone,
+      .email {
+        color: var(--DarkGray);
+        font-size: 13px;
+        font-weight: 500;
+      }
+    }
+  }
+}
+
+/* MEDIA QUERIES */
+@media screen and (min-width: 448px) {
+  .sec-container {
+    grid-template-columns: repeat(2, 1fr);
+    text-align: start !important;
+    align-items: flex-start;
+
+    .footer-links {
+      justify-content: center;
+    }
+  }
+}
+
+@media screen and (min-width: 640px) {
+  .sec-container {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media screen and (min-width: 900px) {
+  .sec-container {
+    padding: 2rem;
+  }
+}

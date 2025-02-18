@@ -1,0 +1,120 @@
+.review {
+  padding-top: 2rem;
+  padding-bottom: 4rem;
+}
+.review .sec-container .testimonial-box-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  width: 100%;
+}
+.review .sec-container .testimonial-box-container .testimonial-box {
+  width: 500px;
+  box-shadow: 0 2px 8px 2px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  padding: 20px;
+  margin: 15px;
+  cursor: pointer;
+}
+.review
+  .sec-container
+  .testimonial-box-container
+  .testimonial-box
+  .profile-img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-right: 10px;
+}
+.review
+  .sec-container
+  .testimonial-box-container
+  .testimonial-box
+  .profile-img
+  img {
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover;
+  object-fit: cover;
+  -o-object-position: center;
+  object-position: center;
+}
+.review .sec-container .testimonial-box-container .testimonial-box .profile {
+  display: flex;
+  align-items: center;
+}
+.review
+  .sec-container
+  .testimonial-box-container
+  .testimonial-box
+  .profile
+  .name-user {
+  display: flex;
+  flex-direction: column;
+}
+.review
+  .sec-container
+  .testimonial-box-container
+  .testimonial-box
+  .profile
+  .name-user
+  strong {
+  color: rgb(54, 54, 54);
+  font-size: 1.1rem;
+  letter-spacing: 0.5px;
+}
+.review
+  .sec-container
+  .testimonial-box-container
+  .testimonial-box
+  .profile
+  .name-user
+  span {
+  color: #959595;
+  font-size: 0.8rem;
+}
+.review .sec-container .testimonial-box-container .testimonial-box .box-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.review
+  .sec-container
+  .testimonial-box-container
+  .testimonial-box
+  .box-top
+  .stars
+  .star {
+  color: #f9d71c;
+}
+.review .sec-container .testimonial-box-container .testimonial-box .comment {
+  font-size: 0.9rem;
+  color: #4e4e4e;
+}
+.review .sec-container .testimonial-box-container .testimonial-box:hover {
+  transform: translateY(-10px);
+}
+
+@media (max-width: 1060px) {
+  .testimonial-box {
+    width: 45%;
+    padding: 10px;
+  }
+}
+@media (max-width: 790px) {
+  .testimonial-box {
+    width: 100%;
+  }
+}
+@media (max-width: 340px) {
+  .box-top {
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+  }
+  .stars {
+    margin-top: 10px;
+  }
+}

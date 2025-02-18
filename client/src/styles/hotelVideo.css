@@ -1,0 +1,70 @@
+.video-section {
+  background: rgba(62, 105, 162, 0.45);
+  padding: 0;
+}
+.video-section .sec-container .video-card {
+  margin-top: 2rem;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+.video-section .sec-container .video-card .card-content {
+  gap: 2rem;
+  padding: 1rem 1rem;
+}
+.video-section .sec-container .video-card .card-content .card-text h2 {
+  color: rgb(33, 53, 85);
+  font-weight: 600;
+  padding-bottom: 1rem;
+}
+.video-section .sec-container .video-card .card-content .card-text p {
+  color: rgb(54, 54, 54);
+  opacity: 0.7;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 1px;
+}
+.video-section .sec-container .video-card .card-video {
+  border: 2px solid whitesmoke;
+  height: 200px;
+  width: 100%;
+  border-radius: 10px;
+  overflow: hidden;
+}
+.video-section .sec-container .video-card .card-video video {
+  height: 100%;
+  width: 100%;
+  -o-object-fit: cover;
+  object-fit: cover;
+}
+
+/* MEDIA QUERIES */
+@media screen and (min-width: 720px) {
+  .video-section {
+    margin-bottom: 5rem;
+  }
+  .video-section .sec-container .video-card .card-content {
+    gap: 4rem;
+    padding: 2rem 1rem;
+  }
+  .video-section .sec-container .video-card .card-content .card-text h2 {
+    font-size: 2rem;
+  }
+  .video-section .sec-container .video-card .card-content .card-text p {
+    opacity: 0.7;
+    font-size: 15px;
+  }
+  .video-section .sec-container .video-card .card-content {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+@media screen and (min-width: 1024px) {
+  .video-section .sec-container .main-content {
+    padding: 2.5rem 0;
+  }
+}
+@media screen and (min-width: 1240px) {
+  .video-section {
+    width: 100% !important;
+  }
+}
