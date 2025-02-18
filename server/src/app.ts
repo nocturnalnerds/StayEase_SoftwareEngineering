@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 
-import {authRouter} from "./routes";
+import {authRouter, contactRouter} from "./routes";
 import { AppError } from "./utils/http/AppError";
 import { STATUS } from "./utils/http/statusCodes";
 import { ErrorController } from "./controllers";
@@ -25,6 +25,7 @@ app.use(express.json());
  * This includes all the endpoints defined in the router
  */
 app.use(authRouter);
+app.use(contactRouter);
 
 /**
  * Handle requests to undefined routes
