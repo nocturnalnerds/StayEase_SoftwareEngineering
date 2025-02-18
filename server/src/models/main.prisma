@@ -30,5 +30,5 @@ model ContactUsInfo{
   email String
   phone String
   subject String
-  message String
+  message String?
 }
