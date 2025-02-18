@@ -5,7 +5,7 @@ import Footer from "./Footer";
 export default function AppLayout() {
   return (
     <div>
-      <Navbar />
+      <Navbar isFixed />
       <main>
         <Outlet />
       </main>

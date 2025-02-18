@@ -47,6 +47,7 @@
               font-size: 0.9rem;
               font-weight: 600;
               cursor: pointer !important;
+              transition: all 0.3s ease !important;
 
               &:hover {
                 color: var(--CloudBurst);
@@ -59,6 +60,7 @@
 
             .btn {
               margin-top: 1rem;
+              transition: all 0.3s ease;
 
               &:hover {
                 color: var(--WhiteLilac);
@@ -72,6 +74,7 @@
           top: 1rem;
           right: 1.5rem;
           color: var(--KashmirBlue);
+          transition: all 0.3s ease !important;
 
           &:hover .icon {
             color: var(--CloudBurst);
@@ -88,6 +91,8 @@
       .icon {
         font-size: 25px;
         color: var(--KashmirBlue);
+        transition: all 0.3s ease !important;
+
         &:hover {
           color: var(--CloudBurst);
         }
@@ -131,6 +136,7 @@
             cursor: pointer !important;
             font-size: 0.9rem;
             font-weight: 600;
+            transition: all 0.3s ease;
 
             &:hover {
               color: var(--KashmirBlue);

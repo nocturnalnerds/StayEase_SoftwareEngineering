@@ -55,7 +55,7 @@ const socialMediaData = [
 ];
 
 const inputStyle =
-  "border-[#dbdee3] text-blacky bg-[#f4f5f5] placeholder-[#afb6c3] focus:border-primary rounded-xs";
+  "border-[#dbdee3] px-4 py-4 text-blacky bg-[#f4f5f5] placeholder-[#afb6c3] focus:border-primary rounded-xs";
 
 function Contact() {
   const {
