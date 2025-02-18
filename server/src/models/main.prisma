@@ -14,7 +14,7 @@ model User {
   username    String
   password    String
   phone       String
-  dateOfBirth DateTime
+  dateOfBirth DateTime?
   created_at  DateTime @default(now())
 }
 
@@ -23,4 +23,12 @@ model Admin {
   email      String   @unique
   password   String
   created_at DateTime @default(now())
+}
+model ContactUsInfo{
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  name String
+  email String
+  phone String
+  subject String
+  message String?
 }

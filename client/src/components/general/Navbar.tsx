@@ -51,7 +51,7 @@ export default function Navbar() {
         <div
           className="logo-div"
           onClick={() => {
-            navigate("/home");
+            navigate("/");
           }}
         >
           <h1 className="logo" style={{ color: "#213555", cursor: "pointer" }}>
@@ -66,7 +66,7 @@ export default function Navbar() {
               );
             })}
             <button
-              className="btn book-now"
+              className="btn book-now transition-colors duration-300"
               onClick={() => {
                 navigate("/login");
               }}
@@ -100,7 +100,7 @@ function NavItem({ route, name }: { route: string; name: string }) {
       style={{ cursor: "pointer" }}
     >
       <div
-        className="nav-link"
+        className="nav-link transition-colors duration-300"
         style={{
           color: currentPath === `/${route}` ? "rgba(33, 53, 85, 1)" : "",
         }}

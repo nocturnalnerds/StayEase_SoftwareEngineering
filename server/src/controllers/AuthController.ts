@@ -64,7 +64,6 @@ const createUserSchema = z.object({
   email: z.string().regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Invalid email format"),
   password: z.string(),
   phone: z.string(),
-  dateOfBirth: z.string(),
 });
 
 export const register:RequestHandler = async(req,res,next) => {
@@ -78,7 +77,7 @@ export const register:RequestHandler = async(req,res,next) => {
       });
       return;
     }
-    const { email, username, password, phone, dateOfBirth } = reqBody.data;
+    const { email, username, password, phone } = reqBody.data;
     
     const userExist = await prisma.user.findUnique({
       where: { email: email }
@@ -94,7 +93,6 @@ export const register:RequestHandler = async(req,res,next) => {
         "password" : hashPass,
         "username" : username,
         "phone" : phone,
-        "dateOfBirth" : new Date(dateOfBirth)
       },
     });
     const tokenPayload = {

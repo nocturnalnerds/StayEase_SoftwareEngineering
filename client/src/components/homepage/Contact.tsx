@@ -1,6 +1,7 @@
 import { SubmitHandler, useForm } from "react-hook-form";
 import Input from "../ui/Input";
 import { API } from "../../lib/API";
+import { toast } from "react-toastify";
 import TextArea from "../ui/TextArea";
 import {
   MdLocationPin,
@@ -55,7 +56,7 @@ const socialMediaData = [
 ];
 
 const inputStyle =
-  "border-[#dbdee3] text-blacky bg-[#f4f5f5] placeholder-[#afb6c3] focus:border-primary rounded-xs";
+  "border-[#dbdee3] px-4 py-4 text-blacky bg-[#f4f5f5] placeholder-[#afb6c3] focus:border-primary rounded-xs";
 
 function Contact() {
   const {
@@ -63,6 +64,7 @@ function Contact() {
     handleSubmit,
     formState: { errors },
     setError,
+    reset,
   } = useForm<ContactFields>();
 
   const onSubmit: SubmitHandler<ContactFields> = async (data) => {
@@ -74,11 +76,12 @@ function Contact() {
         subject: data.subject,
         message: data.message,
       };
-      console.log(contactData);
       await API.post("/contact", contactData);
-      console.log("Form submitted successfully");
+      toast.success("Message sent successfully!");
+      reset();
     } catch (err) {
       console.error("Form submission error", err);
+      toast.error("Message failed to send!");
       setError("name", { message: "An error occurred" });
     }
   };
