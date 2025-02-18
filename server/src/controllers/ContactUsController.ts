@@ -9,8 +9,8 @@ const contactUsSchema = z.object({
   name: z.string(),
   email: z.string().regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Invalid email format"),
   phone: z.string(),
-  subject : z.string(),
-  message: z.string()
+  subject: z.string(),
+  message: z.string().nullable()
 });
 
 export const createContactUs: RequestHandler = async(req,res,next) => {
@@ -24,14 +24,14 @@ export const createContactUs: RequestHandler = async(req,res,next) => {
       });
       return;
     }
-    const {_name,_email,_phone,_subject,_message} = req.body;
+    const { name, email, phone, subject, message } = req.body;
     const newContactUs = await prisma.contactUsInfo.create({
       data: {
-        "name" : _name,
-        "email" : _email,
-        "phone" : _phone,
-        "subject" : _subject,
-        "message" : _message
+        name: name,
+        email: email,
+        phone: phone,
+        subject: subject,
+        message: message
       }
     });
     res.status(STATUS.OK).json({
