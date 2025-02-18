@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["prismaSchemaFolder"]
 }
 
@@ -9,23 +9,21 @@ datasource db {
 }
 
 model User {
-  id    String @id @default(auto()) @map("_id") @db.ObjectId
-  email String @unique
-  username String 
-  password String
-  phone String
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  email       String   @unique
+  username    String
+  password    String
+  phone       String
   dateOfBirth DateTime
-  created_at DateTime @default(now())
+  created_at  DateTime @default(now())
 }
 
-
-model Admin{
-  id String @id @default(auto()) @map("_id") @db.ObjectId
-  email String @unique
-  password String
+model Admin {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  email      String   @unique
+  password   String
   created_at DateTime @default(now())
 }
-
 model ContactUsInfo{
   id String @id @default(auto()) @map("_id") @db.ObjectId
   name String
