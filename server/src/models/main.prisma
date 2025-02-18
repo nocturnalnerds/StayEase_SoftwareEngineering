@@ -14,7 +14,7 @@ model User {
   username    String
   password    String
   phone       String
-  dateOfBirth DateTime
+  dateOfBirth DateTime?
   created_at  DateTime @default(now())
 }
 
