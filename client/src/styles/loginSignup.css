@@ -27,7 +27,7 @@
   height: 100vh;
   padding-bottom: 25%;
   transform-origin: 100% 0;
-  transform: skewX(10deg) translatez(1px);
+  transform: skewX(8deg) translatez(1px);
   overflow: hidden;
 }
 .signup-skewed:before {
@@ -39,5 +39,5 @@
   background-size: cover;
   background-position: center;
   transform-origin: inherit;
-  transform: skewX(-10deg);
+  transform: skewX(-8deg);
 }

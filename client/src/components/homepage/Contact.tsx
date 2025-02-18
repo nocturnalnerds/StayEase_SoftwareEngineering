@@ -1,6 +1,7 @@
 import { SubmitHandler, useForm } from "react-hook-form";
 import Input from "../ui/Input";
 import { API } from "../../lib/API";
+import { toast } from "react-toastify";
 import TextArea from "../ui/TextArea";
 import {
   MdLocationPin,
@@ -76,9 +77,10 @@ function Contact() {
       };
       console.log(contactData);
       await API.post("/contact", contactData);
-      console.log("Form submitted successfully");
+      toast.success("Message sent successfully!");
     } catch (err) {
       console.error("Form submission error", err);
+      toast.error("Message failed to send!");
       setError("name", { message: "An error occurred" });
     }
   };

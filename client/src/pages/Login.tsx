@@ -1,6 +1,7 @@
 import { SubmitHandler, useForm } from "react-hook-form";
 import Input from "../components/ui/Input";
 import { API } from "../lib/API";
+import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { Link } from "react-router-dom";
@@ -35,9 +36,10 @@ export default function Login() {
         password: data.password,
       };
       await API.post("/login", loginData);
-      console.log("Form submitted successfully");
+      toast.success("Login successful!");
     } catch (err) {
       console.error("Form submission error", err);
+      toast.error("Login failed!");
       setError("email", { message: "An error occurred" });
     }
   };
