@@ -1,7 +1,5 @@
 import { SubmitHandler, useForm } from "react-hook-form";
 import Input from "../ui/Input";
-import { API } from "../../lib/API";
-import { toast } from "react-toastify";
 import TextArea from "../ui/TextArea";
 import {
   MdLocationPin,
@@ -10,14 +8,8 @@ import {
 } from "react-icons/md";
 import { FaFacebook, FaTwitter } from "react-icons/fa";
 import { RiInstagramFill } from "react-icons/ri";
-
-type ContactFields = {
-  name: string;
-  email: string;
-  phone: string;
-  subject: string;
-  message: string;
-};
+import { ContactProps } from "../../lib/types";
+import useContactMutation from "../../hooks/mutations/useContactMutation";
 
 const contactsData = [
   {
@@ -65,25 +57,13 @@ function Contact() {
     formState: { errors },
     setError,
     reset,
-  } = useForm<ContactFields>();
+  } = useForm<ContactProps>();
+  const { contactMutation } = useContactMutation(setError);
 
-  const onSubmit: SubmitHandler<ContactFields> = async (data) => {
-    try {
-      const contactData: ContactFields = {
-        name: data.name,
-        email: data.email,
-        phone: data.phone,
-        subject: data.subject,
-        message: data.message,
-      };
-      await API.post("/contact", contactData);
-      toast.success("Message sent successfully!");
-      reset();
-    } catch (err) {
-      console.error("Form submission error", err);
-      toast.error("Message failed to send!");
-      setError("name", { message: "An error occurred" });
-    }
+  const onSubmit: SubmitHandler<ContactProps> = (data) => {
+    contactMutation.mutate(data, {
+      onSuccess: () => reset(),
+    });
   };
 
   return (
