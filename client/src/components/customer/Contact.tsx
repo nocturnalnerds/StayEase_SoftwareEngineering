@@ -1,6 +1,6 @@
 import { SubmitHandler, useForm } from "react-hook-form";
-import Input from "../ui/Input";
-import TextArea from "../ui/TextArea";
+import Input from "../ui/InputOld";
+import TextArea from "../ui/TextAreaContact";
 import {
   MdLocationPin,
   MdOutlineEmail,

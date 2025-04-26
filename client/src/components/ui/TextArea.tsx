@@ -1,71 +1,18 @@
-import { HTMLAttributes, forwardRef } from "react";
-import Skeleton from "react-loading-skeleton";
-import { cn } from "../../lib/utils";
+import * as React from "react"
 
-type TextAreaProps = {
-  label?: string;
-  placeholder: string;
-  className?: string;
-  inputClassName?: string;
-  disabled?: boolean;
-  required?: boolean;
-  value?: string;
-  isLoading?: boolean;
-  errorMessage?: string;
-};
+import { cn } from "@/lib/utils"
 
-const TextArea = forwardRef<
-  HTMLTextAreaElement,
-  TextAreaProps & HTMLAttributes<HTMLTextAreaElement>
->(function (
-  {
-    label,
-    disabled,
-    required = true,
-    isLoading,
-    placeholder,
-    className,
-    errorMessage,
-    inputClassName,
-    onBlur,
-    ...props
-  },
-  ref
-) {
+function Textarea({ className, ...props }: React.ComponentProps<"textarea">) {
   return (
-    <div className={className}>
-      <div className="flex justify-between">
-        {label && (
-          <label className="pb-1 text-blacky font-medium">
-            {label}
-            {required && <span className="text-red-500">*</span>}
-          </label>
-        )}
-      </div>
-      {!isLoading ? (
-        <textarea
-          {...props}
-          ref={ref}
-          placeholder={placeholder}
-          onBlur={onBlur}
-          disabled={disabled}
-          className={cn(
-            "border-[1px] border-border bg-primary text-blacky rounded-sm w-full px-4 py-4 disabled:text-slate-500 focus:border-primary outline-none transition placeholder:text-gray",
-            errorMessage && "border-red-400 ",
-            inputClassName
-          )}
-        />
-      ) : (
-        <Skeleton height={"2.75rem"} className="mt-2" />
+    <textarea
+      data-slot="textarea"
+      className={cn(
+        "border-input placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 flex field-sizing-content min-h-16 w-full rounded-md border bg-transparent px-3 py-2 text-base shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+        className
       )}
-      {errorMessage && (
-        <div className="mt-1 ml-0 text-red-500 text-[14px]">
-          <i className="bx bx-error text-red-500 pb-5 mr-1 "></i>
-          {errorMessage}
-        </div>
-      )}
-    </div>
-  );
-});
+      {...props}
+    />
+  )
+}
 
-export default TextArea;
+export { Textarea }

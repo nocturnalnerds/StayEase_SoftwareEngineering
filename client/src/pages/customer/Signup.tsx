@@ -1,13 +1,13 @@
 import { SubmitHandler, useForm } from "react-hook-form";
-import Input from "../components/ui/Input";
+import Input from "@/components/ui/InputOld";
 import { useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import googleIcon from "/icons/google.svg";
-import "../styles/loginSignup.css";
 import useAuthMutation, {
   RegisterPayload,
-} from "../hooks/mutations/useAuthMutation";
+} from "@/hooks/mutations/useAuthMutation";
+import "@/styles/loginSignup.css";
 
 const inputStyle =
   "border-[#dbdee3] px-3.5 py-3 text-blacky bg-[#f7fbff] placeholder-[#8897ad] focus:border-primary rounded-xs";

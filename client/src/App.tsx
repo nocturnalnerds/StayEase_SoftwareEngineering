@@ -1,6 +1,6 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import AppLayout from "./components/general/AppLayout";
-import { Home, Login, Offers, Signup } from "./pages";
+import { BookingPage, Home, Login, OffersPage, Signup } from "./pages";
 import { Toaster } from "react-hot-toast";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import ScrollToTop from "./components/general/ScrollToTop";
@@ -18,7 +18,8 @@ const router = createBrowserRouter([
       { path: "/", element: <Home /> },
       { path: "/login", element: <Login /> },
       { path: "/signup", element: <Signup /> },
-      { path: "/offers", element: <Offers /> },
+      { path: "/offers", element: <OffersPage /> },
+      { path: "/booking/:roomTypeId", element: <BookingPage /> },
     ],
   },
 ]);

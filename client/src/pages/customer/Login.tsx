@@ -1,10 +1,10 @@
 import { SubmitHandler, useForm } from "react-hook-form";
-import Input from "../components/ui/Input";
+import Input from "@/components/ui/InputOld";
 import { useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { Link } from "react-router-dom";
-import "../styles/loginSignup.css";
-import useAuthMutation from "../hooks/mutations/useAuthMutation";
+import useAuthMutation from "@/hooks/mutations/useAuthMutation";
+import "@/styles/loginSignup.css";
 
 type LoginFields = {
   email: string;
@@ -80,9 +80,9 @@ export default function Login() {
           </form>
 
           <div className="flex items-center my-2">
-            <hr className="w-full border-border border-[#CFDFE2]" />
+            <hr className="w-full border-[#CFDFE2]" />
             <p className="text-light p-[1rem] text-[#294957]">or</p>
-            <hr className="w-full border-border border-[#CFDFE2]" />
+            <hr className="w-full border-[#CFDFE2]" />
           </div>
 
           <button className="flex items-center w-full justify-center gap-2 rounded-lg bg-slate-100 hover:bg-slate-200 py-3 duration-300 cursor-pointer">
