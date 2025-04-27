@@ -13,12 +13,100 @@
   --color-blacky: #303d3b;
 }
 
+:root {
+  --primary: 33 53 85; /* #213555 */
+  --primary-foreground: 248 248 248; /* #F8F8F8 */
+
+  --secondary: 79 112 156; /* #4F709C */
+  --secondary-foreground: 248 248 248; /* #F8F8F8 */
+
+  --tertiary: 255 194 111; /* #FFC26F */
+  --tertiary-foreground: 48 61 59; /* #303D3B */
+
+  --background: 248 248 248; /* #F8F8F8 */
+  --foreground: 48 61 59; /* #303D3B */
+
+  --card: 255 255 255;
+  --card-foreground: 48 61 59; /* #303D3B */
+
+  --popover: 255 255 255;
+  --popover-foreground: 48 61 59; /* #303D3B */
+
+  --muted: 240 240 240;
+  --muted-foreground: 115 115 115;
+
+  --accent: 240 240 240;
+  --accent-foreground: 48 61 59; /* #303D3B */
+
+  --destructive: 239 68 68;
+  --destructive-foreground: 248 248 248; /* #F8F8F8 */
+
+  --border: 226 226 226;
+  --input: 226 226 226;
+  --ring: 79 112 156; /* #4F709C */
+
+  --radius: 0.5rem;
+}
+
+html,
 body {
-  padding: 0;
+  height: 100%;
+  width: 100%;
   margin: 0;
-  box-sizing: border-box;
-  font-family: "Poppins", sans-serif !important;
-  transition: 0.3s ease;
+  padding: 0;
+  background-color: #f8f8f8;
+  color: #303d3b;
+  /* font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif; */
+  font-family: "Poppins", sans-serif;
+}
+
+#root {
+  height: 100%;
+  width: 100%;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(79, 112, 156, 0.3);
+  border-radius: 20px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(79, 112, 156, 0.5);
+}
+
+/* Fix for shrunken elements */
+.recharts-wrapper {
+  width: 100% !important;
+}
+
+.recharts-responsive-container {
+  width: 100% !important;
+  min-height: 300px;
+}
+
+/* Fix for card content padding */
+.card-content-fix {
+  padding: 1.5rem !important;
+}
+
+/* Fix for table overflow */
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+/* Fix for dropdown menu positioning */
+.dropdown-menu-fix {
+  position: relative;
 }
 
 /* Colors */
@@ -62,41 +150,6 @@ body {
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
-}
-
-:root {
-  --primary: 213 555 33;
-  --primary-foreground: 248 248 248;
-
-  --secondary: 79 112 156;
-  --secondary-foreground: 248 248 248;
-
-  --tertiary: 255 194 111;
-  --tertiary-foreground: 48 61 59;
-
-  --background: 248 248 248;
-  --foreground: 48 61 59;
-
-  --card: 255 255 255;
-  --card-foreground: 48 61 59;
-
-  --popover: 255 255 255;
-  --popover-foreground: 48 61 59;
-
-  --muted: 240 240 240;
-  --muted-foreground: 115 115 115;
-
-  --accent: 240 240 240;
-  --accent-foreground: 48 61 59;
-
-  --destructive: 239 68 68;
-  --destructive-foreground: 248 248 248;
-
-  --border: 226 226 226;
-  --input: 226 226 226;
-  --ring: 79 112 156;
-
-  --radius: 0.5rem;
 }
 
 /* Page Design */
