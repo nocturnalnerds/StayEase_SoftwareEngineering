@@ -1,4 +1,8 @@
+"use client";
+
+import type React from "react";
 import { useState } from "react";
+import { motion } from "framer-motion";
 import type { RoomType } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,7 +14,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { motion } from "framer-motion";
+import { Star } from "lucide-react";
 
 interface RoomCardProps {
   roomType: RoomType;
@@ -46,9 +50,10 @@ const RoomCard: React.FC<RoomCardProps> = ({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
+      className="h-full"
     >
       <Card
-        className="overflow-hidden border-none shadow-lg hover:shadow-xl transition-all duration-300"
+        className="overflow-hidden border-none shadow-lg hover:shadow-xl transition-all duration-300 h-full flex flex-col"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
@@ -77,6 +82,10 @@ const RoomCard: React.FC<RoomCardProps> = ({
               </motion.div>
             </div>
           )}
+          <div className="absolute top-2 left-2 flex items-center bg-blacky/70 rounded-full px-2 py-1">
+            <Star className="h-3.5 w-3.5 text-tertiary mr-1" fill="#FFC26F" />
+            <span className="text-xs font-medium text-whitey">4.8</span>
+          </div>
         </div>
         <CardHeader className="pb-2 bg-white">
           <div className="flex justify-between items-start">
@@ -100,7 +109,7 @@ const RoomCard: React.FC<RoomCardProps> = ({
             people
           </CardDescription>
         </CardHeader>
-        <CardContent className="pb-2 bg-white">
+        <CardContent className="pb-2 bg-white flex-grow">
           <p className="text-sm text-gray-700 mb-3 line-clamp-2">
             {description}
           </p>
@@ -124,7 +133,7 @@ const RoomCard: React.FC<RoomCardProps> = ({
             )}
           </div>
         </CardContent>
-        <CardFooter className="pt-3 pb-4 bg-white">
+        <CardFooter className="pt-3 pb-4 bg-white mt-auto">
           <Button
             onClick={() => onSelect(id)}
             className={`w-full transition-all duration-300 ${

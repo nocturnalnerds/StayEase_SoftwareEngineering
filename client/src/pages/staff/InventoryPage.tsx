@@ -234,7 +234,7 @@ const InventoryPage: React.FC = () => {
           <SkeletonStats count={3} className="mb-6" />
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <SkeletonTable rowCount={5} columnCount={4} />
+            <SkeletonTable rows={5} columns={4} />
             <SkeletonChart height={300} />
           </div>
         </div>

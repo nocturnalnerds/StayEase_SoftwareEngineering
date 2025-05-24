@@ -1,24 +1,19 @@
 import type React from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
 
 interface SkeletonCardProps {
-  hasImage?: boolean;
   className?: string;
 }
 
-const SkeletonCard: React.FC<SkeletonCardProps> = ({ hasImage, className }) => {
+const SkeletonCard: React.FC<SkeletonCardProps> = ({ className = "" }) => {
   return (
-    <Card className={`w-full ${className}`}>
-      <CardContent className="flex flex-col gap-4 p-4">
-        {hasImage && <Skeleton className="h-32 w-full rounded-md" />}
-        <div className="flex flex-col gap-2">
-          <Skeleton className="h-6 w-1/2" />
-          <Skeleton className="h-4 w-full" />
-          <Skeleton className="h-4 w-3/4" />
-        </div>
-      </CardContent>
-    </Card>
+    <div
+      className={`bg-white rounded-lg shadow-sm p-4 animate-pulse ${className}`}
+    >
+      <div className="h-4 bg-gray-200 rounded w-3/4 mb-4"></div>
+      <div className="h-8 bg-gray-200 rounded w-1/2 mb-4"></div>
+      <div className="h-4 bg-gray-200 rounded w-full mb-2"></div>
+      <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+    </div>
   );
 };
 

@@ -1,5 +1,11 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import AppLayout from "./components/general/AppLayout";
+import StaffLayout from "./components/staff/Layout";
+import { Toaster } from "react-hot-toast";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import ScrollToTop from "./components/general/ScrollToTop";
+
+// Import all pages
 import {
   BookingPage,
   DashboardPage,
@@ -19,9 +25,6 @@ import {
   Signup,
   UserManagementPage,
 } from "./pages";
-import { Toaster } from "react-hot-toast";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import ScrollToTop from "./components/general/ScrollToTop";
 
 const router = createBrowserRouter([
   {
@@ -42,6 +45,12 @@ const router = createBrowserRouter([
   },
   {
     path: "/staff",
+    element: (
+      <>
+        <ScrollToTop />
+        <StaffLayout />
+      </>
+    ),
     children: [
       { path: "dashboard", element: <DashboardPage /> },
       { path: "front-office", element: <FrontOfficePage /> },

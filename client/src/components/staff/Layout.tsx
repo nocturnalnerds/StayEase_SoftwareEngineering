@@ -1,29 +1,29 @@
 "use client";
 
 import type React from "react";
-import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+
+import { useState, useEffect } from "react";
+import { Outlet, useLocation, useNavigate, Link } from "react-router-dom";
 import {
-  LayoutDashboard,
-  Settings,
-  Users,
-  BookOpen,
-  Brush,
-  UtensilsCrossed,
-  Package,
   BarChart3,
+  Building2,
+  Calendar,
+  ChevronDown,
+  ChevronRight,
   CreditCard,
+  FileText,
+  Home,
+  Hotel,
+  Package,
+  Settings,
+  UtensilsCrossed,
+  Users,
+  LogOut,
   Menu,
   X,
-  ChevronDown,
-  LogOut,
-  Bell,
-  User,
 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
-import { cn } from "@/lib/utils";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -32,333 +32,266 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Badge } from "@/components/ui/badge";
+import { PageLoader } from "@/components/ui/loader";
 
-interface LayoutProps {
-  children: React.ReactNode;
+interface StaffLayoutProps {
+  children?: React.ReactNode;
 }
 
-interface NavItem {
-  title: string;
-  path: string;
-  icon: React.ReactNode;
-  subItems?: { title: string; path: string }[];
+interface NavigationItem {
+  name: string;
+  href: string;
+  icon: React.ComponentType<{ className?: string }>;
+  children?: NavigationItem[];
 }
 
-const Layout: React.FC<LayoutProps> = ({ children }) => {
+const navigation: NavigationItem[] = [
+  { name: "Dashboard", href: "/staff/dashboard", icon: Home },
+  { name: "Front Office", href: "/staff/front-office", icon: Building2 },
+  { name: "User Management", href: "/staff/user-management", icon: Users },
+  { name: "Housekeeping", href: "/staff/house-keeping", icon: Calendar },
+  { name: "Restaurant", href: "/staff/restaurant", icon: UtensilsCrossed },
+  { name: "Inventory", href: "/staff/inventory", icon: Package },
+  { name: "Reports", href: "/staff/reports", icon: BarChart3 },
+  { name: "Payment", href: "/staff/payment", icon: CreditCard },
+  {
+    name: "Settings",
+    href: "/staff/settings",
+    icon: Settings,
+    children: [
+      { name: "General", href: "/staff/settings", icon: Settings },
+      { name: "Rooms", href: "/staff/settings/rooms", icon: Hotel },
+      {
+        name: "Food & Beverage",
+        href: "/staff/settings/food-beverage",
+        icon: UtensilsCrossed,
+      },
+      {
+        name: "Discount Rates",
+        href: "/staff/settings/discount-rates",
+        icon: FileText,
+      },
+    ],
+  },
+];
+
+export default function StaffLayout({ children }: StaffLayoutProps) {
   const location = useLocation();
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const navigate = useNavigate();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
+  // Handle route changes with loading
+  useEffect(() => {
+    setLoading(true);
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 300); // Short loading time for smooth transitions
 
-  const toggleExpand = (title: string) => {
+    return () => clearTimeout(timer);
+  }, [location.pathname]);
+
+  // Auto-expand settings if we're on a settings page
+  useEffect(() => {
+    if (location.pathname.startsWith("/staff/settings")) {
+      setExpandedItems((prev) =>
+        prev.includes("Settings") ? prev : [...prev, "Settings"]
+      );
+    }
+  }, [location.pathname]);
+
+  const toggleExpanded = (itemName: string) => {
     setExpandedItems((prev) =>
-      prev.includes(title)
-        ? prev.filter((item) => item !== title)
-        : [...prev, title]
+      prev.includes(itemName)
+        ? prev.filter((item) => item !== itemName)
+        : [...prev, itemName]
     );
   };
 
-  const navItems: NavItem[] = [
-    {
-      title: "Dashboard",
-      path: "/staff/dashboard",
-      icon: <LayoutDashboard className="h-5 w-5" />,
-    },
-    {
-      title: "Settings",
-      path: "/staff/settings",
-      icon: <Settings className="h-5 w-5" />,
-      subItems: [
-        { title: "Room Settings", path: "/staff/settings/rooms" },
-        { title: "Food & Beverage", path: "/staff/settings/food-beverage" },
-        { title: "Banquet Settings", path: "/staff/settings/banquet" },
-        { title: "Inventory Settings", path: "/staff/settings/inventory" },
-        { title: "Payment Settings", path: "/staff/settings/payment" },
-        { title: "Discount Rates", path: "/staff/settings/discount-rates" },
-      ],
-    },
-    {
-      title: "User Management",
-      path: "/staff/user-management",
-      icon: <Users className="h-5 w-5" />,
-      subItems: [
-        { title: "Staff", path: "/user-management/staff" },
-        { title: "Customers", path: "/user-management/customers" },
-        { title: "Roles", path: "/user-management/roles" },
-      ],
-    },
-    {
-      title: "Front Office",
-      path: "/staff/front-office",
-      icon: <BookOpen className="h-5 w-5" />,
-      subItems: [
-        { title: "Reservations", path: "/front-office/reservations" },
-        { title: "Check-in", path: "/front-office/check-in" },
-        { title: "Check-out", path: "/front-office/check-out" },
-      ],
-    },
-    {
-      title: "House Keeping",
-      path: "/staff/house-keeping",
-      icon: <Brush className="h-5 w-5" />,
-      subItems: [
-        { title: "Room Status", path: "/house-keeping/room-status" },
-        {
-          title: "Cleaning Schedule",
-          path: "/house-keeping/cleaning-schedule",
-        },
-      ],
-    },
-    {
-      title: "Restaurant",
-      path: "/staff/restaurant",
-      icon: <UtensilsCrossed className="h-5 w-5" />,
-      subItems: [
-        { title: "Orders", path: "/restaurant/orders" },
-        { title: "Order History", path: "/restaurant/history" },
-      ],
-    },
-    {
-      title: "Inventory",
-      path: "/staff/inventory",
-      icon: <Package className="h-5 w-5" />,
-      subItems: [
-        { title: "Material Use", path: "/inventory/material-use" },
-        { title: "Stock Management", path: "/inventory/stock" },
-      ],
-    },
-    {
-      title: "Reports",
-      path: "/staff/reports",
-      icon: <BarChart3 className="h-5 w-5" />,
-      subItems: [
-        { title: "Analytics", path: "/reports/analytics" },
-        { title: "Export Reports", path: "/reports/export" },
-      ],
-    },
-    {
-      title: "Payment",
-      path: "/staff/payment",
-      icon: <CreditCard className="h-5 w-5" />,
-      subItems: [
-        { title: "Transactions", path: "/payment/transactions" },
-        { title: "Invoices", path: "/payment/invoices" },
-      ],
-    },
-  ];
+  const isActive = (href: string) => {
+    if (href === "/staff/settings") {
+      return location.pathname === "/staff/settings";
+    }
+    return location.pathname === href;
+  };
 
-  const isActive = (path: string) => {
-    return (
-      location.pathname === path || location.pathname.startsWith(`${path}/`)
-    );
+  const isParentActive = (item: NavigationItem) => {
+    if (item.children) {
+      return item.children.some((child) => isActive(child.href));
+    }
+    return isActive(item.href);
   };
 
   return (
-    <div className="flex h-screen bg-whitey">
-      {/* Mobile sidebar toggle */}
-      <div className="fixed top-4 left-4 z-50 md:hidden">
-        <Button
-          variant="outline"
-          size="icon"
-          className="bg-white shadow-md border-secondary/20"
-          onClick={toggleSidebar}
-        >
-          {isSidebarOpen ? (
-            <X className="h-5 w-5" />
-          ) : (
-            <Menu className="h-5 w-5" />
-          )}
-        </Button>
-      </div>
+    <div className="min-h-screen bg-gray-50 flex">
+      {/* Mobile sidebar overlay */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black bg-opacity-50 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
 
       {/* Sidebar */}
-      <AnimatePresence>
-        {isSidebarOpen && (
-          <motion.aside
-            initial={{ x: -300 }}
-            animate={{ x: 0 }}
-            exit={{ x: -300 }}
-            transition={{ duration: 0.2 }}
-            className={cn(
-              "fixed inset-y-0 left-0 z-40 w-64 bg-white border-r border-secondary/10 shadow-sm md:relative",
-              "flex flex-col"
-            )}
-          >
-            <div className="p-4 border-b border-secondary/10 flex items-center justify-center">
-              <h1 className="text-xl font-bold text-primary">
-                Grand Hotel Admin
-              </h1>
+      <div
+        className={`
+        fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0
+        ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
+      `}
+      >
+        <div className="flex flex-col h-full">
+          {/* Logo */}
+          <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200">
+            <div className="flex items-center">
+              <Hotel className="h-8 w-8 text-primary" />
+              <span className="ml-2 text-xl font-bold text-gray-900">
+                Hotel MS
+              </span>
             </div>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="lg:hidden"
+              onClick={() => setSidebarOpen(false)}
+            >
+              <X className="h-5 w-5" />
+            </Button>
+          </div>
 
-            <nav className="flex-1 overflow-y-auto p-2">
-              <ul className="space-y-1">
-                {navItems.map((item) => (
-                  <li key={item.title}>
-                    {item.subItems ? (
-                      <div>
-                        <button
-                          onClick={() => toggleExpand(item.title)}
-                          className={cn(
-                            "flex items-center justify-between w-full px-3 py-2 rounded-md text-sm",
-                            isActive(item.path)
-                              ? "bg-primary text-whitey"
-                              : "text-blacky hover:bg-secondary/10 transition-colors"
-                          )}
-                        >
-                          <div className="flex items-center">
-                            <span className="mr-3">{item.icon}</span>
-                            <span>{item.title}</span>
-                          </div>
-                          <ChevronDown
-                            className={cn(
-                              "h-4 w-4 transition-transform",
-                              expandedItems.includes(item.title) &&
-                                "transform rotate-180"
-                            )}
-                          />
-                        </button>
-                        <AnimatePresence>
-                          {expandedItems.includes(item.title) && (
-                            <motion.ul
-                              initial={{ height: 0, opacity: 0 }}
-                              animate={{ height: "auto", opacity: 1 }}
-                              exit={{ height: 0, opacity: 0 }}
-                              transition={{ duration: 0.2 }}
-                              className="pl-10 mt-1 space-y-1 overflow-hidden"
-                            >
-                              {item.subItems.map((subItem) => (
-                                <li key={subItem.path}>
-                                  <Link
-                                    to={subItem.path}
-                                    className={cn(
-                                      "block px-3 py-2 rounded-md text-sm",
-                                      isActive(subItem.path)
-                                        ? "bg-secondary/20 text-primary font-medium"
-                                        : "text-blacky hover:bg-secondary/10 transition-colors"
-                                    )}
-                                  >
-                                    {subItem.title}
-                                  </Link>
-                                </li>
-                              ))}
-                            </motion.ul>
-                          )}
-                        </AnimatePresence>
+          {/* Navigation */}
+          <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+            {navigation.map((item) => (
+              <div key={item.name}>
+                {item.children ? (
+                  <div>
+                    <button
+                      onClick={() => toggleExpanded(item.name)}
+                      className={`
+                        w-full flex items-center justify-between px-3 py-2 text-sm font-medium rounded-md transition-colors
+                        ${
+                          isParentActive(item)
+                            ? "bg-primary text-white"
+                            : "text-gray-700 hover:bg-gray-100"
+                        }
+                      `}
+                    >
+                      <div className="flex items-center">
+                        <item.icon className="mr-3 h-5 w-5" />
+                        {item.name}
                       </div>
-                    ) : (
-                      <Link
-                        to={item.path}
-                        className={cn(
-                          "flex items-center px-3 py-2 rounded-md text-sm",
-                          isActive(item.path)
-                            ? "bg-primary text-whitey"
-                            : "text-blacky hover:bg-secondary/10 transition-colors"
-                        )}
-                      >
-                        <span className="mr-3">{item.icon}</span>
-                        <span>{item.title}</span>
-                      </Link>
+                      {expandedItems.includes(item.name) ? (
+                        <ChevronDown className="h-4 w-4" />
+                      ) : (
+                        <ChevronRight className="h-4 w-4" />
+                      )}
+                    </button>
+                    {expandedItems.includes(item.name) && (
+                      <div className="mt-1 ml-6 space-y-1">
+                        {item.children.map((child) => (
+                          <Link
+                            key={child.name}
+                            to={child.href}
+                            className={`
+                              block px-3 py-2 text-sm rounded-md transition-colors
+                              ${
+                                isActive(child.href)
+                                  ? "bg-primary/10 text-primary font-medium"
+                                  : "text-gray-600 hover:bg-gray-100"
+                              }
+                            `}
+                            onClick={() => setSidebarOpen(false)}
+                          >
+                            {child.name}
+                          </Link>
+                        ))}
+                      </div>
                     )}
-                  </li>
-                ))}
-              </ul>
-            </nav>
-
-            <div className="p-4 border-t border-secondary/10">
-              <div className="flex items-center">
-                <Avatar className="h-8 w-8">
-                  <AvatarImage src="https://randomuser.me/api/portraits/men/1.jpg" />
-                  <AvatarFallback>JS</AvatarFallback>
-                </Avatar>
-                <div className="ml-3">
-                  <p className="text-sm font-medium text-blacky">John Smith</p>
-                  <p className="text-xs text-gray-500">Admin</p>
-                </div>
+                  </div>
+                ) : (
+                  <Link
+                    to={item.href}
+                    className={`
+                      flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors
+                      ${
+                        isActive(item.href)
+                          ? "bg-primary text-white"
+                          : "text-gray-700 hover:bg-gray-100"
+                      }
+                    `}
+                    onClick={() => setSidebarOpen(false)}
+                  >
+                    <item.icon className="mr-3 h-5 w-5" />
+                    {item.name}
+                  </Link>
+                )}
               </div>
-            </div>
-          </motion.aside>
-        )}
-      </AnimatePresence>
+            ))}
+          </nav>
+
+          {/* User menu */}
+          <div className="p-4 border-t border-gray-200">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="w-full justify-start p-2">
+                  <Avatar className="h-8 w-8 mr-3">
+                    <AvatarImage src="/placeholder.svg" alt="User" />
+                    <AvatarFallback>JD</AvatarFallback>
+                  </Avatar>
+                  <div className="flex-1 text-left">
+                    <p className="text-sm font-medium">John Doe</p>
+                    <p className="text-xs text-gray-500">Administrator</p>
+                  </div>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>Profile</DropdownMenuItem>
+                <DropdownMenuItem>Settings</DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => navigate("/")}>
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Logout
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        </div>
+      </div>
 
       {/* Main content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Header */}
-        <header className="bg-white border-b border-secondary/10 shadow-sm">
-          <div className="flex items-center justify-between px-4 py-3">
-            <div className="flex items-center">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="mr-2 md:hidden"
-                onClick={toggleSidebar}
-              >
-                <Menu className="h-5 w-5" />
-              </Button>
-              <h2 className="text-lg font-semibold text-primary">
-                {navItems.find((item) => isActive(item.path))?.title ||
-                  "Dashboard"}
-              </h2>
-            </div>
-
-            <div className="flex items-center space-x-3">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="relative">
-                    <Bell className="h-5 w-5" />
-                    <Badge className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center bg-tertiary text-blacky">
-                      3
-                    </Badge>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-80">
-                  <DropdownMenuLabel>Notifications</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <div className="max-h-80 overflow-y-auto">
-                    {[1, 2, 3].map((i) => (
-                      <DropdownMenuItem key={i} className="py-2 cursor-pointer">
-                        <div>
-                          <p className="text-sm font-medium">
-                            New reservation #{i}
-                          </p>
-                          <p className="text-xs text-gray-500">5 minutes ago</p>
-                        </div>
-                      </DropdownMenuItem>
-                    ))}
-                  </div>
-                </DropdownMenuContent>
-              </DropdownMenu>
-
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon">
-                    <User className="h-5 w-5" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem>Profile</DropdownMenuItem>
-                  <DropdownMenuItem>Settings</DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem className="text-red-500">
-                    <LogOut className="h-4 w-4 mr-2" />
-                    <span>Logout</span>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+      <div className="flex-1 flex flex-col lg:ml-0">
+        {/* Top bar */}
+        <header className="bg-white shadow-sm border-b border-gray-200">
+          <div className="flex items-center justify-between h-16 px-6">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="lg:hidden"
+              onClick={() => setSidebarOpen(true)}
+            >
+              <Menu className="h-5 w-5" />
+            </Button>
+            <div className="flex-1" />
+            <div className="flex items-center space-x-4">
+              <span className="text-sm text-gray-500">
+                {new Date().toLocaleDateString("en-US", {
+                  weekday: "long",
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </span>
             </div>
           </div>
         </header>
 
-        {/* Main content area */}
-        <main className="flex-1 overflow-y-auto p-4 md:p-6">{children}</main>
+        {/* Page content */}
+        <main className="flex-1 overflow-auto">
+          {loading ? <PageLoader /> : <>{children || <Outlet />}</>}
+        </main>
       </div>
     </div>
   );
-};
-
-export default Layout;
+}
