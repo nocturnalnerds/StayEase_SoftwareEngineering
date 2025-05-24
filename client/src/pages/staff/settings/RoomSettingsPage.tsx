@@ -322,7 +322,7 @@ const RoomSettingsPage: React.FC = () => {
               initial="hidden"
               animate="visible"
             >
-              {filteredRoomTypes.map((roomType) => (
+              {filteredRoomTypes.map((roomType, index) => (
                 <motion.div key={roomType.id} variants={itemVariants}>
                   <Card className="overflow-hidden border-secondary/10 hover:shadow-md transition-shadow duration-300">
                     <div className="h-48 overflow-hidden">

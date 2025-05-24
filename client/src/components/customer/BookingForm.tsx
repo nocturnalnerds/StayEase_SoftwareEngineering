@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import type React from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import type { DateRange } from "react-day-picker";
 import type { BookingFormData, RoomType } from "@/lib/types";
@@ -26,7 +27,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import DateRangePicker from "./DateRangePicker";
+import DateRangePicker from "@/components/customer/DateRangePicker";
 
 interface BookingFormProps {
   selectedRoomType: RoomType;

@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import type React from "react";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import {
   Hotel,
   UtensilsCrossed,
@@ -31,6 +31,7 @@ interface SettingCardProps {
 }
 
 const SettingsPage: React.FC = () => {
+  const location = useLocation();
   const [isLoading, setIsLoading] = useState(true);
 
   // Simulate loading

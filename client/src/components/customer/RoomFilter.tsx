@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import type React from "react";
+import { useState } from "react";
 import type { DateRange } from "react-day-picker";
 import type { RoomFilter } from "@/lib/types";
 import { motion } from "framer-motion";
@@ -18,7 +19,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import DateRangePicker from "./DateRangePicker";
+import DateRangePicker from "@/components/customer/DateRangePicker";
 import { Input } from "@/components/ui/input";
 
 interface RoomFilterProps {

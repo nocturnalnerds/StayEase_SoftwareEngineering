@@ -50,10 +50,6 @@ import {
   Coffee,
   UtensilsCrossed,
 } from "lucide-react";
-import StatusBadge from "@/components/staff/StatusBadge";
-import SkeletonTable from "@/components/staff/SkeletonTable";
-import SkeletonCard from "@/components/staff/SkeletonCard";
-import SkeletonStats from "@/components/staff/SkeletonStats";
 
 interface Order {
   id: string;
@@ -265,438 +261,432 @@ const RestaurantPage: React.FC = () => {
     }
   };
 
-  if (loading) {
-    return (
-      <Layout>
+  return (
+    <Layout loading={loading}>
+      {!loading && (
         <div className="p-6">
           <div className="mb-6">
-            <div className="h-8 bg-gray-200 rounded w-1/4 animate-pulse mb-2"></div>
-            <div className="h-4 bg-gray-200 rounded w-1/2 animate-pulse"></div>
+            <h1 className="text-3xl font-bold">Restaurant Management</h1>
+            <p className="text-muted-foreground">
+              Manage orders and menu items
+            </p>
           </div>
 
-          <div className="h-10 bg-gray-200 rounded w-1/3 animate-pulse mb-6"></div>
-
-          <SkeletonStats count={3} className="mb-6" />
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <SkeletonTable rows={4} columns={4} />
-            <SkeletonCard className="h-[500px]" />
-          </div>
-        </div>
-      </Layout>
-    );
-  }
-
-  return (
-    <Layout>
-      <div className="p-6">
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold">Restaurant Management</h1>
-          <p className="text-muted-foreground">Manage orders and menu items</p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Pending Orders
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center">
-                <Clock className="h-6 w-6 text-orange-500 mr-2" />
-                <div className="text-3xl font-bold">
-                  {
-                    activeOrders.filter((order) => order.status === "pending")
-                      .length
-                  }
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Active Tables
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center">
-                <User className="h-6 w-6 text-blue-500 mr-2" />
-                <div className="text-3xl font-bold">
-                  {new Set(activeOrders.map((order) => order.tableNumber)).size}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Menu Items
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center">
-                <Coffee className="h-6 w-6 text-green-500 mr-2" />
-                <div className="text-3xl font-bold">{menuItems.length}</div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        <Tabs defaultValue="orders" className="w-full">
-          <TabsList className="mb-6">
-            <TabsTrigger value="orders">Active Orders</TabsTrigger>
-            <TabsTrigger value="menu">Menu Management</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="orders">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
             <Card>
-              <CardHeader>
-                <CardTitle>Active Orders</CardTitle>
-                <CardDescription>
-                  Manage current restaurant orders
-                </CardDescription>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground">
+                  Pending Orders
+                </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="table-container">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Order ID</TableHead>
-                        <TableHead>Table</TableHead>
-                        <TableHead>Customer</TableHead>
-                        <TableHead>Time</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Total</TableHead>
-                        <TableHead>Actions</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {activeOrders.map((order) => (
-                        <TableRow key={order.id}>
-                          <TableCell className="font-medium">
-                            {order.id}
-                          </TableCell>
-                          <TableCell>Table {order.tableNumber}</TableCell>
-                          <TableCell>{order.customerName}</TableCell>
-                          <TableCell>{order.time}</TableCell>
-                          <TableCell>
-                            <StatusBadge status={getStatusColor(order.status)}>
-                              {order.status.charAt(0).toUpperCase() +
-                                order.status.slice(1)}
-                            </StatusBadge>
-                          </TableCell>
-                          <TableCell>${order.total.toFixed(2)}</TableCell>
-                          <TableCell>
-                            <Dialog>
-                              <DialogTrigger asChild>
-                                <Button variant="outline" size="sm">
-                                  View Details
-                                </Button>
-                              </DialogTrigger>
-                              <DialogContent className="max-w-md">
-                                <DialogHeader>
-                                  <DialogTitle>Order {order.id}</DialogTitle>
-                                  <DialogDescription>
-                                    Table {order.tableNumber} •{" "}
-                                    {order.customerName} • {order.time}
-                                  </DialogDescription>
-                                </DialogHeader>
-                                <div className="space-y-4">
-                                  <div>
-                                    <h4 className="text-sm font-medium mb-2">
-                                      Order Items
-                                    </h4>
-                                    <div className="space-y-2">
-                                      {order.items.map((item) => (
-                                        <div
-                                          key={item.id}
-                                          className="flex justify-between items-start"
-                                        >
-                                          <div>
-                                            <p className="font-medium">
-                                              {item.quantity}x {item.name}
-                                            </p>
-                                            {item.notes && (
-                                              <p className="text-sm text-muted-foreground">
-                                                {item.notes}
-                                              </p>
-                                            )}
-                                          </div>
-                                          <p>
-                                            $
-                                            {(
-                                              item.price * item.quantity
-                                            ).toFixed(2)}
-                                          </p>
-                                        </div>
-                                      ))}
-                                    </div>
-                                  </div>
-                                  <div className="flex justify-between font-bold">
-                                    <p>Total</p>
-                                    <p>${order.total.toFixed(2)}</p>
-                                  </div>
-                                  <div>
-                                    <h4 className="text-sm font-medium mb-2">
-                                      Update Status
-                                    </h4>
-                                    <div className="flex flex-wrap gap-2">
-                                      <Button
-                                        size="sm"
-                                        variant={
-                                          order.status === "pending"
-                                            ? "default"
-                                            : "outline"
-                                        }
-                                        onClick={() =>
-                                          updateOrderStatus(order.id, "pending")
-                                        }
-                                      >
-                                        Pending
-                                      </Button>
-                                      <Button
-                                        size="sm"
-                                        variant={
-                                          order.status === "preparing"
-                                            ? "default"
-                                            : "outline"
-                                        }
-                                        onClick={() =>
-                                          updateOrderStatus(
-                                            order.id,
-                                            "preparing"
-                                          )
-                                        }
-                                      >
-                                        Preparing
-                                      </Button>
-                                      <Button
-                                        size="sm"
-                                        variant={
-                                          order.status === "ready"
-                                            ? "default"
-                                            : "outline"
-                                        }
-                                        onClick={() =>
-                                          updateOrderStatus(order.id, "ready")
-                                        }
-                                      >
-                                        Ready
-                                      </Button>
-                                      <Button
-                                        size="sm"
-                                        variant={
-                                          order.status === "served"
-                                            ? "default"
-                                            : "outline"
-                                        }
-                                        onClick={() =>
-                                          updateOrderStatus(order.id, "served")
-                                        }
-                                      >
-                                        Served
-                                      </Button>
-                                      <Button
-                                        size="sm"
-                                        variant={
-                                          order.status === "cancelled"
-                                            ? "destructive"
-                                            : "outline"
-                                        }
-                                        onClick={() =>
-                                          updateOrderStatus(
-                                            order.id,
-                                            "cancelled"
-                                          )
-                                        }
-                                      >
-                                        Cancel
-                                      </Button>
-                                    </div>
-                                  </div>
-                                </div>
-                              </DialogContent>
-                            </Dialog>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
+                <div className="flex items-center">
+                  <Clock className="h-6 w-6 text-orange-500 mr-2" />
+                  <div className="text-3xl font-bold">
+                    {
+                      activeOrders.filter((order) => order.status === "pending")
+                        .length
+                    }
+                  </div>
                 </div>
               </CardContent>
             </Card>
-          </TabsContent>
 
-          <TabsContent value="menu">
             <Card>
-              <CardHeader>
-                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                  <div>
-                    <CardTitle>Menu Management</CardTitle>
-                    <CardDescription>
-                      Manage your restaurant menu items
-                    </CardDescription>
-                  </div>
-                  <div className="flex flex-col sm:flex-row gap-2">
-                    <div className="relative">
-                      <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                      <Input
-                        placeholder="Search menu items..."
-                        className="pl-8 w-full sm:w-[200px]"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                      />
-                    </div>
-                    <Select
-                      value={selectedCategory}
-                      onValueChange={setSelectedCategory}
-                    >
-                      <SelectTrigger className="w-full sm:w-[150px]">
-                        <SelectValue placeholder="Category" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {categories.map((category) => (
-                          <SelectItem key={category} value={category}>
-                            {category === "all" ? "All Categories" : category}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <Dialog>
-                      <DialogTrigger asChild>
-                        <Button>
-                          <Plus className="mr-2 h-4 w-4" />
-                          Add Item
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent>
-                        <DialogHeader>
-                          <DialogTitle>Add Menu Item</DialogTitle>
-                          <DialogDescription>
-                            Add a new item to your restaurant menu
-                          </DialogDescription>
-                        </DialogHeader>
-                        <div className="space-y-4 py-4">
-                          <div className="space-y-2">
-                            <Label htmlFor="name">Item Name</Label>
-                            <Input id="name" placeholder="Enter item name" />
-                          </div>
-                          <div className="space-y-2">
-                            <Label htmlFor="category">Category</Label>
-                            <Select>
-                              <SelectTrigger id="category">
-                                <SelectValue placeholder="Select category" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {categories
-                                  .filter((c) => c !== "all")
-                                  .map((category) => (
-                                    <SelectItem key={category} value={category}>
-                                      {category}
-                                    </SelectItem>
-                                  ))}
-                                <SelectItem value="new">
-                                  + Add New Category
-                                </SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </div>
-                          <div className="space-y-2">
-                            <Label htmlFor="price">Price ($)</Label>
-                            <Input
-                              id="price"
-                              type="number"
-                              step="0.01"
-                              placeholder="0.00"
-                            />
-                          </div>
-                          <div className="space-y-2">
-                            <Label htmlFor="description">Description</Label>
-                            <Textarea
-                              id="description"
-                              placeholder="Enter item description"
-                            />
-                          </div>
-                        </div>
-                        <DialogFooter>
-                          <Button type="submit">Save Item</Button>
-                        </DialogFooter>
-                      </DialogContent>
-                    </Dialog>
-                  </div>
-                </div>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground">
+                  Active Tables
+                </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="table-container">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Name</TableHead>
-                        <TableHead>Category</TableHead>
-                        <TableHead>Price</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Actions</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {filteredMenuItems.length === 0 ? (
+                <div className="flex items-center">
+                  <User className="h-6 w-6 text-blue-500 mr-2" />
+                  <div className="text-3xl font-bold">
+                    {
+                      new Set(activeOrders.map((order) => order.tableNumber))
+                        .size
+                    }
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground">
+                  Menu Items
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center">
+                  <Coffee className="h-6 w-6 text-green-500 mr-2" />
+                  <div className="text-3xl font-bold">{menuItems.length}</div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          <Tabs defaultValue="orders" className="w-full">
+            <TabsList className="mb-6">
+              <TabsTrigger value="orders">Active Orders</TabsTrigger>
+              <TabsTrigger value="menu">Menu Management</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="orders">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Active Orders</CardTitle>
+                  <CardDescription>
+                    Manage current restaurant orders
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="table-container">
+                    <Table>
+                      <TableHeader>
                         <TableRow>
-                          <TableCell colSpan={5} className="text-center py-8">
-                            <UtensilsCrossed className="mx-auto h-8 w-8 text-muted-foreground mb-2" />
-                            <p className="text-muted-foreground">
-                              No menu items found
-                            </p>
-                          </TableCell>
+                          <TableHead>Order ID</TableHead>
+                          <TableHead>Table</TableHead>
+                          <TableHead>Customer</TableHead>
+                          <TableHead>Time</TableHead>
+                          <TableHead>Status</TableHead>
+                          <TableHead>Total</TableHead>
+                          <TableHead>Actions</TableHead>
                         </TableRow>
-                      ) : (
-                        filteredMenuItems.map((item) => (
-                          <TableRow key={item.id}>
-                            <TableCell>
-                              <div>
-                                <p className="font-medium">{item.name}</p>
-                                <p className="text-sm text-muted-foreground line-clamp-1">
-                                  {item.description}
-                                </p>
-                              </div>
+                      </TableHeader>
+                      <TableBody>
+                        {activeOrders.map((order) => (
+                          <TableRow key={order.id}>
+                            <TableCell className="font-medium">
+                              {order.id}
                             </TableCell>
+                            <TableCell>Table {order.tableNumber}</TableCell>
+                            <TableCell>{order.customerName}</TableCell>
+                            <TableCell>{order.time}</TableCell>
                             <TableCell>
-                              <Badge variant="outline">{item.category}</Badge>
-                            </TableCell>
-                            <TableCell>${item.price.toFixed(2)}</TableCell>
-                            <TableCell>
-                              <Badge
-                                variant={
-                                  item.available ? "success" : "destructive"
-                                }
-                              >
-                                {item.available ? "Available" : "Unavailable"}
+                              <Badge variant={getStatusColor(order.status)}>
+                                {order.status.charAt(0).toUpperCase() +
+                                  order.status.slice(1)}
                               </Badge>
                             </TableCell>
+                            <TableCell>${order.total.toFixed(2)}</TableCell>
                             <TableCell>
-                              <div className="flex space-x-2">
-                                <Button variant="outline" size="icon">
-                                  <Edit2 className="h-4 w-4" />
-                                </Button>
-                                <Button variant="outline" size="icon">
-                                  <Trash2 className="h-4 w-4" />
-                                </Button>
-                              </div>
+                              <Dialog>
+                                <DialogTrigger asChild>
+                                  <Button variant="outline" size="sm">
+                                    View Details
+                                  </Button>
+                                </DialogTrigger>
+                                <DialogContent className="max-w-md">
+                                  <DialogHeader>
+                                    <DialogTitle>Order {order.id}</DialogTitle>
+                                    <DialogDescription>
+                                      Table {order.tableNumber} •{" "}
+                                      {order.customerName} • {order.time}
+                                    </DialogDescription>
+                                  </DialogHeader>
+                                  <div className="space-y-4">
+                                    <div>
+                                      <h4 className="text-sm font-medium mb-2">
+                                        Order Items
+                                      </h4>
+                                      <div className="space-y-2">
+                                        {order.items.map((item) => (
+                                          <div
+                                            key={item.id}
+                                            className="flex justify-between items-start"
+                                          >
+                                            <div>
+                                              <p className="font-medium">
+                                                {item.quantity}x {item.name}
+                                              </p>
+                                              {item.notes && (
+                                                <p className="text-sm text-muted-foreground">
+                                                  {item.notes}
+                                                </p>
+                                              )}
+                                            </div>
+                                            <p>
+                                              $
+                                              {(
+                                                item.price * item.quantity
+                                              ).toFixed(2)}
+                                            </p>
+                                          </div>
+                                        ))}
+                                      </div>
+                                    </div>
+                                    <div className="flex justify-between font-bold">
+                                      <p>Total</p>
+                                      <p>${order.total.toFixed(2)}</p>
+                                    </div>
+                                    <div>
+                                      <h4 className="text-sm font-medium mb-2">
+                                        Update Status
+                                      </h4>
+                                      <div className="flex flex-wrap gap-2">
+                                        <Button
+                                          size="sm"
+                                          variant={
+                                            order.status === "pending"
+                                              ? "default"
+                                              : "outline"
+                                          }
+                                          onClick={() =>
+                                            updateOrderStatus(
+                                              order.id,
+                                              "pending"
+                                            )
+                                          }
+                                        >
+                                          Pending
+                                        </Button>
+                                        <Button
+                                          size="sm"
+                                          variant={
+                                            order.status === "preparing"
+                                              ? "default"
+                                              : "outline"
+                                          }
+                                          onClick={() =>
+                                            updateOrderStatus(
+                                              order.id,
+                                              "preparing"
+                                            )
+                                          }
+                                        >
+                                          Preparing
+                                        </Button>
+                                        <Button
+                                          size="sm"
+                                          variant={
+                                            order.status === "ready"
+                                              ? "default"
+                                              : "outline"
+                                          }
+                                          onClick={() =>
+                                            updateOrderStatus(order.id, "ready")
+                                          }
+                                        >
+                                          Ready
+                                        </Button>
+                                        <Button
+                                          size="sm"
+                                          variant={
+                                            order.status === "served"
+                                              ? "default"
+                                              : "outline"
+                                          }
+                                          onClick={() =>
+                                            updateOrderStatus(
+                                              order.id,
+                                              "served"
+                                            )
+                                          }
+                                        >
+                                          Served
+                                        </Button>
+                                        <Button
+                                          size="sm"
+                                          variant={
+                                            order.status === "cancelled"
+                                              ? "destructive"
+                                              : "outline"
+                                          }
+                                          onClick={() =>
+                                            updateOrderStatus(
+                                              order.id,
+                                              "cancelled"
+                                            )
+                                          }
+                                        >
+                                          Cancel
+                                        </Button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </DialogContent>
+                              </Dialog>
                             </TableCell>
                           </TableRow>
-                        ))
-                      )}
-                    </TableBody>
-                  </Table>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
-      </div>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="menu">
+              <Card>
+                <CardHeader>
+                  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                    <div>
+                      <CardTitle>Menu Management</CardTitle>
+                      <CardDescription>
+                        Manage your restaurant menu items
+                      </CardDescription>
+                    </div>
+                    <div className="flex flex-col sm:flex-row gap-2">
+                      <div className="relative">
+                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                        <Input
+                          placeholder="Search menu items..."
+                          className="pl-8 w-full sm:w-[200px]"
+                          value={searchTerm}
+                          onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                      </div>
+                      <Select
+                        value={selectedCategory}
+                        onValueChange={setSelectedCategory}
+                      >
+                        <SelectTrigger className="w-full sm:w-[150px]">
+                          <SelectValue placeholder="Category" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {categories.map((category) => (
+                            <SelectItem key={category} value={category}>
+                              {category === "all" ? "All Categories" : category}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button>
+                            <Plus className="mr-2 h-4 w-4" />
+                            Add Item
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                          <DialogHeader>
+                            <DialogTitle>Add Menu Item</DialogTitle>
+                            <DialogDescription>
+                              Add a new item to your restaurant menu
+                            </DialogDescription>
+                          </DialogHeader>
+                          <div className="space-y-4 py-4">
+                            <div className="space-y-2">
+                              <Label htmlFor="name">Item Name</Label>
+                              <Input id="name" placeholder="Enter item name" />
+                            </div>
+                            <div className="space-y-2">
+                              <Label htmlFor="category">Category</Label>
+                              <Select>
+                                <SelectTrigger id="category">
+                                  <SelectValue placeholder="Select category" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {categories
+                                    .filter((c) => c !== "all")
+                                    .map((category) => (
+                                      <SelectItem
+                                        key={category}
+                                        value={category}
+                                      >
+                                        {category}
+                                      </SelectItem>
+                                    ))}
+                                  <SelectItem value="new">
+                                    + Add New Category
+                                  </SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            <div className="space-y-2">
+                              <Label htmlFor="price">Price ($)</Label>
+                              <Input
+                                id="price"
+                                type="number"
+                                step="0.01"
+                                placeholder="0.00"
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <Label htmlFor="description">Description</Label>
+                              <Textarea
+                                id="description"
+                                placeholder="Enter item description"
+                              />
+                            </div>
+                          </div>
+                          <DialogFooter>
+                            <Button type="submit">Save Item</Button>
+                          </DialogFooter>
+                        </DialogContent>
+                      </Dialog>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="table-container">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Name</TableHead>
+                          <TableHead>Category</TableHead>
+                          <TableHead>Price</TableHead>
+                          <TableHead>Status</TableHead>
+                          <TableHead>Actions</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {filteredMenuItems.length === 0 ? (
+                          <TableRow>
+                            <TableCell colSpan={5} className="text-center py-8">
+                              <UtensilsCrossed className="mx-auto h-8 w-8 text-muted-foreground mb-2" />
+                              <p className="text-muted-foreground">
+                                No menu items found
+                              </p>
+                            </TableCell>
+                          </TableRow>
+                        ) : (
+                          filteredMenuItems.map((item) => (
+                            <TableRow key={item.id}>
+                              <TableCell>
+                                <div>
+                                  <p className="font-medium">{item.name}</p>
+                                  <p className="text-sm text-muted-foreground line-clamp-1">
+                                    {item.description}
+                                  </p>
+                                </div>
+                              </TableCell>
+                              <TableCell>
+                                <Badge variant="outline">{item.category}</Badge>
+                              </TableCell>
+                              <TableCell>${item.price.toFixed(2)}</TableCell>
+                              <TableCell>
+                                <Badge
+                                  variant={
+                                    item.available ? "success" : "destructive"
+                                  }
+                                >
+                                  {item.available ? "Available" : "Unavailable"}
+                                </Badge>
+                              </TableCell>
+                              <TableCell>
+                                <div className="flex space-x-2">
+                                  <Button variant="outline" size="icon">
+                                    <Edit2 className="h-4 w-4" />
+                                  </Button>
+                                  <Button variant="outline" size="icon">
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          ))
+                        )}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
+        </div>
+      )}
     </Layout>
   );
 };
