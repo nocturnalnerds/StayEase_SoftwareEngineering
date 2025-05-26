@@ -398,3 +398,12 @@ export type RoomFilter = {
   priceRange?: [number, number];
   amenities?: string[];
 };
+
+export type Booking = {
+  bookingId: string;
+  guestName: string;
+  roomNumber: number;
+  checkInDate: string; // ISO date string
+  checkOutDate: string; // ISO date string
+  status: "checked-in" | "checked-out" | "confirmed" | "cancelled";
+};

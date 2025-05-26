@@ -44,15 +44,10 @@ const router = createBrowserRouter([
     ],
   },
   {
-    path: "/staff",
-    element: (
-      <>
-        <ScrollToTop />
-        <StaffLayout />
-      </>
-    ),
+    path: "staff",
+    element: <StaffLayout />,
     children: [
-      { path: "dashboard", element: <DashboardPage /> },
+      { path: "", element: <DashboardPage /> },
       { path: "front-office", element: <FrontOfficePage /> },
       { path: "user-management", element: <UserManagementPage /> },
       { path: "house-keeping", element: <HouseKeepingPage /> },
