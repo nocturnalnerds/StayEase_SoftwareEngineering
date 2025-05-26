@@ -10,7 +10,7 @@ import { Search, Hotel, Filter } from "lucide-react";
 
 import RoomCard from "@/components/customer/RoomCard";
 import RoomFilterComponent from "@/components/customer/RoomFilter";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
@@ -152,9 +152,9 @@ const OffersPage: React.FC = () => {
           <div
             className={`lg:col-span-1 ${
               showFilters ? "block" : "hidden"
-            } md:block`}
+            } md:block w-full h-full`}
           >
-            <div className="sticky top-4">
+            <div className="w-full h-full">
               <RoomFilterComponent
                 onFilterChange={handleFilterChange}
                 amenities={allAmenities}

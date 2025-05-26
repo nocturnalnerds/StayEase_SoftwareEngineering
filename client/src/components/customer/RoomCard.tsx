@@ -82,43 +82,52 @@ const RoomCard: React.FC<RoomCardProps> = ({
               </motion.div>
             </div>
           )}
-          <div className="absolute top-2 left-2 flex items-center bg-blacky/70 rounded-full px-2 py-1">
-            <Star className="h-3.5 w-3.5 text-tertiary mr-1" fill="#FFC26F" />
+          <div className="absolute top-2 left-2 flex items-center gap-1 bg-blacky/70 rounded-full px-2 py-1">
+            <Star className="h-3.5 w-3.5 text-tertiary" fill="#FFC26F" />
             <span className="text-xs font-medium text-whitey">4.8</span>
           </div>
         </div>
-        <CardHeader className="pb-2 bg-white">
-          <div className="flex justify-between items-start">
-            <CardTitle className="text-primary text-xl font-bold">
+        
+        <CardHeader className="pb-3 bg-white">
+          <div className="flex justify-between items-start gap-4">
+            <CardTitle className="text-primary text-xl font-bold flex-1">
               {name}
             </CardTitle>
-            <div className="text-right">
+            <div className="flex flex-row items-end gap-1 shrink-0">
               {discountPercentage && (
-                <span className="text-sm line-through text-gray-500 mr-2">
-                  ${basePrice}
-                </span>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm line-through text-gray-500">
+                    ${basePrice}
+                  </span>
+                </div>
               )}
-              <span className="text-lg font-bold text-secondary">
-                ${displayPrice}
-              </span>
-              <span className="text-xs text-gray-500">/night</span>
+              <div className="flex items-baseline gap-1">
+                <span className="text-2xl font-bold text-secondary">
+                  ${Math.round(displayPrice)}
+                </span>
+                <span className="text-sm text-gray-500">/night</span>
+              </div>
             </div>
           </div>
-          <CardDescription className="text-sm text-gray-600">
-            {capacity} {capacity > 1 ? "guests" : "guest"} · Max {maxOccupancy}{" "}
-            people
+          <CardDescription className="text-sm text-gray-600 mt-2">
+            <div className="flex items-center gap-2">
+              <span>{capacity} {capacity > 1 ? "guests" : "guest"}</span>
+              <span className="text-gray-400">•</span>
+              <span>Max {maxOccupancy} people</span>
+            </div>
           </CardDescription>
         </CardHeader>
-        <CardContent className="pb-2 bg-white flex-grow">
-          <p className="text-sm text-gray-700 mb-3 line-clamp-2">
+        
+        <CardContent className="pb-4 bg-white flex-grow">
+          <p className="text-sm text-gray-700 mb-4 line-clamp-2 leading-relaxed">
             {description}
           </p>
-          <div className="flex flex-wrap gap-1.5">
+          <div className="flex flex-wrap gap-2">
             {amenities.slice(0, 4).map((amenity, index) => (
               <Badge
                 key={index}
                 variant="outline"
-                className="bg-whitey text-blacky text-xs border-secondary/20"
+                className="bg-whitey text-blacky text-xs border-secondary/20 px-2 py-1"
               >
                 {amenity}
               </Badge>
@@ -126,21 +135,22 @@ const RoomCard: React.FC<RoomCardProps> = ({
             {amenities.length > 4 && (
               <Badge
                 variant="outline"
-                className="bg-whitey text-blacky text-xs"
+                className="bg-whitey text-blacky text-xs px-2 py-1 border-secondary/30"
               >
                 +{amenities.length - 4} more
               </Badge>
             )}
           </div>
         </CardContent>
-        <CardFooter className="pt-3 pb-4 bg-white mt-auto">
+        
+        <CardFooter className="pt-4 pb-4 bg-white mt-auto">
           <Button
             onClick={() => onSelect(id)}
-            className={`w-full transition-all duration-300 ${
+            className={`w-full transition-all duration-300 font-medium py-2.5 ${
               isHovered
                 ? "bg-primary hover:bg-primary/90"
                 : "bg-secondary hover:bg-secondary/90"
-            } text-whitey font-medium`}
+            } text-whitey`}
             disabled={!isAvailable}
           >
             {isAvailable ? "Select Room" : "Not Available"}

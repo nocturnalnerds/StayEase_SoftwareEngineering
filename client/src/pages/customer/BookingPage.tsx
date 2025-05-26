@@ -194,7 +194,7 @@ const BookingPage: React.FC = () => {
 
   return (
     <div className="bg-whitey min-h-screen py-8">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-4 max-w-7xl h-full">
         <Button
           variant="ghost"
           onClick={() => navigate("/offers")}
@@ -212,21 +212,24 @@ const BookingPage: React.FC = () => {
           Complete Your Booking
         </motion.h1>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 min-h-[800px]">
           <motion.div
+            className="h-full"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <div className="rounded-lg overflow-hidden mb-6 shadow-lg">
-              <img
-                src={selectedRoomType.images[0] || "/placeholder.svg"}
-                alt={selectedRoomType.name}
-                className="w-full h-64 object-cover"
-              />
-            </div>
+           
+              <div className="rounded-lg overflow-hidden mb-6 shadow-lg flex-shrink-0">
+                <img
+                  src={selectedRoomType.images[0] || "/placeholder.svg"}
+                  alt={selectedRoomType.name}
+                  className="w-full h-60 md:h-72 object-cover rounded-md"
+                />
+              </div>
+        
 
-            <div className="bg-white rounded-lg p-6 shadow-md space-y-6">
+            <div className="bg-white rounded-lg p-6 shadow-md space-y-6 flex-grow">
               <div className="flex justify-between items-start">
                 <div>
                   <h2 className="text-2xl font-bold text-primary">
@@ -250,7 +253,7 @@ const BookingPage: React.FC = () => {
                     </span>
                   </div>
                 </div>
-                <Badge className="bg-secondary text-whitey">
+                <Badge className="bg-secondary text-whitey text-sm px-3 py-1.5 rounded-md">
                   ${selectedRoomType.basePrice}/night
                 </Badge>
               </div>
@@ -300,15 +303,18 @@ const BookingPage: React.FC = () => {
           </motion.div>
 
           <motion.div
+          className="h-full"
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            <BookingForm
-              selectedRoomType={selectedRoomType}
-              initialDates={initialDates}
-              onSubmit={handleBookingSubmit}
-            />
+            <div className="w-full h-full">
+              <BookingForm
+                selectedRoomType={selectedRoomType}
+                initialDates={initialDates}
+                onSubmit={handleBookingSubmit}
+              />
+            </div>
           </motion.div>
         </div>
       </div>

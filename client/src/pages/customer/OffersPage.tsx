@@ -10,7 +10,7 @@ import { Search, Hotel, Filter } from "lucide-react";
 
 import RoomCard from "@/components/customer/RoomCard";
 import RoomFilterComponent from "@/components/customer/RoomFilter";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
@@ -38,12 +38,8 @@ const OffersPage: React.FC = () => {
     // Simulate API call
     setTimeout(() => {
       let filteredRooms = getAvailableRoomTypes(
-        filters.checkInDate instanceof Date
-          ? filters.checkInDate.getTime()
-          : undefined,
-        filters.checkOutDate instanceof Date
-          ? filters.checkOutDate.getTime()
-          : undefined
+        filters.checkInDate instanceof Date ? filters.checkInDate : undefined,
+        filters.checkOutDate instanceof Date ? filters.checkOutDate : undefined
       );
 
       // Filter by search query
@@ -116,28 +112,28 @@ const OffersPage: React.FC = () => {
     <div className="bg-whitey min-h-screen">
       <div className="container mx-auto px-4 py-8">
         <motion.div
-          className="flex flex-col md:flex-row justify-between items-center mb-8"
+          className="flex flex-col space-y-4 md:space-y-0 md:flex-row md:justify-between md:items-center mb-8 pt-4 md:pt-0"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <div className="flex items-center mb-4 md:mb-0">
+          <div className="flex items-center justify-center md:justify-start">
             <Hotel className="h-8 w-8 text-primary mr-3" />
             <h1 className="text-3xl font-bold text-primary">Available Rooms</h1>
           </div>
 
-          <div className="w-full md:w-auto flex gap-2">
-            <div className="relative flex-grow md:w-64">
+          <div className="w-full md:w-auto flex flex-col sm:flex-row gap-2">
+            <div className="relative flex-grow md:flex-grow-0 md:w-64">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
               <Input
                 placeholder="Search rooms..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-9 border-secondary/20 focus-visible:ring-secondary"
+                className="pl-9 border-secondary/20 focus-visible:ring-secondary w-full"
               />
             </div>
             <Button
-              className="bg-secondary text-whitey md:hidden"
+              className="bg-secondary text-whitey md:hidden w-full sm:w-auto"
               onClick={() => setShowFilters(!showFilters)}
             >
               <Filter className="h-4 w-4" />
@@ -154,9 +150,9 @@ const OffersPage: React.FC = () => {
           <div
             className={`lg:col-span-1 ${
               showFilters ? "block" : "hidden"
-            } md:block`}
+            } md:block w-full h-full`}
           >
-            <div className="sticky top-4">
+            <div className="w-full h-full">
               <RoomFilterComponent
                 onFilterChange={handleFilterChange}
                 amenities={allAmenities}

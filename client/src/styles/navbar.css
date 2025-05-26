@@ -10,14 +10,16 @@
 
 .navbar-section {
   .header {
-    position: fixed;
+    position: sticky;
+    top: 0;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: transparent;
+    background: var(--WhiteLilac);
     width: 100%;
     padding: 1rem;
     z-index: 1000;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
     @media screen and (max-width: 768px) {
       .navbar {
@@ -83,7 +85,7 @@
       }
 
       .active-navbar {
-        top: 0;
+        top: 100%;
       }
     }
 

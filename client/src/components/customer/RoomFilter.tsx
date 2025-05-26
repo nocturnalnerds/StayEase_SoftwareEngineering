@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import DateRangePicker from "@/components/customer/DateRangePicker";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/components/ui/Input";
 
 interface RoomFilterProps {
   onFilterChange: (filters: RoomFilter) => void;
@@ -80,17 +80,18 @@ const RoomFilterComponent: React.FC<RoomFilterProps> = ({
 
   return (
     <motion.div
-      initial={{ opacity: 0, x: -20 }}
-      animate={{ opacity: 1, x: 0 }}
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
     >
       <Card className="border-none shadow-lg overflow-hidden">
-        <CardHeader className="bg-primary text-whitey rounded-t-lg py-4">
-          <CardTitle className="text-lg font-bold flex items-center">
+        <CardHeader className="bg-primary text-whitey rounded-t-lg py-4 sticky top-0 z-10">
+          <CardTitle className="text-lg font-bold flex items-center justify-center">
             <SlidersHorizontal className="h-5 w-5 mr-2" />
             Filter Rooms
           </CardTitle>
         </CardHeader>
+
         <CardContent className="space-y-5 pt-5">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
