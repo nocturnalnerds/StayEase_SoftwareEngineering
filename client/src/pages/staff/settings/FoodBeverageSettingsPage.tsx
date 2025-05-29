@@ -43,10 +43,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
-import Layout from "@/components/staff/Layout";
 import { foodItemData } from "@/lib/data";
 import { formatCurrency } from "@/lib/utils";
-import SkeletonCard from "@/components/staff/SkeletonCard";
 
 const FoodBeverageSettingsPage: React.FC = () => {
   const navigate = useNavigate();
@@ -102,52 +100,87 @@ const FoodBeverageSettingsPage: React.FC = () => {
     return acc;
   }, {} as Record<string, typeof foodItemData>);
 
+  if (isLoading) {
+    return (
+      <div className="flex-1 flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-[#4F709C] border-t-[#213555] rounded-full animate-spin mx-auto"></div>
+          <p className="mt-6 text-[#213555] font-medium animate-pulse">
+            Loading Food & Beverage Settings...
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <Layout>
-      <div className="space-y-6">
-        <div className="flex items-center justify-between">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 p-6">
+      <div className="max-w-7xl mx-auto space-y-8">
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
           <div className="flex items-center">
             <Button
               variant="ghost"
               size="icon"
               className="mr-2"
-              onClick={() => navigate("/settings")}
+              onClick={() => navigate("/staff/settings")}
             >
               <ArrowLeft className="h-5 w-5" />
             </Button>
-            <h1 className="text-2xl font-bold text-primary">
-              Food & Beverage Settings
-            </h1>
+            <div>
+              <h1 className="text-4xl font-bold text-[#213555]">
+                Food & Beverage Settings
+              </h1>
+              <p className="text-gray-600 mt-2">
+                Manage menu items, categories, and restaurant settings
+              </p>
+            </div>
           </div>
 
           <Dialog open={isAddItemOpen} onOpenChange={setIsAddItemOpen}>
             <DialogTrigger asChild>
-              <Button className="bg-primary hover:bg-primary/90">
+              <Button className="bg-[#213555] hover:bg-[#4F709C] text-white shadow-lg hover:shadow-xl transition-all duration-300">
                 <Plus className="h-4 w-4 mr-2" />
                 Add Menu Item
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[550px]">
+            <DialogContent className="sm:max-w-[550px] bg-white border-0 shadow-2xl">
               <DialogHeader>
-                <DialogTitle>Add New Menu Item</DialogTitle>
-                <DialogDescription>
+                <DialogTitle className="text-[#213555] text-xl font-bold">
+                  Add New Menu Item
+                </DialogTitle>
+                <DialogDescription className="text-gray-600">
                   Create a new food or beverage item for the menu.
                 </DialogDescription>
               </DialogHeader>
               <div className="grid gap-4 py-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="name">Item Name</Label>
-                    <Input id="name" placeholder="e.g. Caesar Salad" />
+                    <Label
+                      htmlFor="name"
+                      className="text-[#213555] font-medium"
+                    >
+                      Item Name
+                    </Label>
+                    <Input
+                      id="name"
+                      placeholder="e.g. Caesar Salad"
+                      className="border-gray-200 focus:border-[#4F709C]"
+                    />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="price">Price</Label>
+                    <Label
+                      htmlFor="price"
+                      className="text-[#213555] font-medium"
+                    >
+                      Price
+                    </Label>
                     <div className="relative">
                       <DollarSign className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
                       <Input
                         id="price"
                         type="number"
-                        className="pl-8"
+                        className="pl-8 border-gray-200 focus:border-[#4F709C]"
                         placeholder="12.99"
                       />
                     </div>
@@ -155,10 +188,15 @@ const FoodBeverageSettingsPage: React.FC = () => {
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="category">Category</Label>
+                    <Label
+                      htmlFor="category"
+                      className="text-[#213555] font-medium"
+                    >
+                      Category
+                    </Label>
                     <select
                       id="category"
-                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 border-secondary/20"
+                      className="flex h-10 w-full rounded-md border border-gray-200 bg-background px-3 py-2 text-sm focus:border-[#4F709C] focus:outline-none"
                     >
                       <option value="Breakfast">Breakfast</option>
                       <option value="Lunch">Lunch</option>
@@ -169,40 +207,66 @@ const FoodBeverageSettingsPage: React.FC = () => {
                     </select>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="prepTime">Preparation Time (min)</Label>
+                    <Label
+                      htmlFor="prepTime"
+                      className="text-[#213555] font-medium"
+                    >
+                      Preparation Time (min)
+                    </Label>
                     <div className="relative">
                       <Clock className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
                       <Input
                         id="prepTime"
                         type="number"
-                        className="pl-8"
+                        className="pl-8 border-gray-200 focus:border-[#4F709C]"
                         placeholder="15"
                       />
                     </div>
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="description">Description</Label>
+                  <Label
+                    htmlFor="description"
+                    className="text-[#213555] font-medium"
+                  >
+                    Description
+                  </Label>
                   <Textarea
                     id="description"
                     placeholder="Describe the menu item..."
+                    className="border-gray-200 focus:border-[#4F709C]"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="ingredients">
+                  <Label
+                    htmlFor="ingredients"
+                    className="text-[#213555] font-medium"
+                  >
                     Ingredients (comma separated)
                   </Label>
                   <Input
                     id="ingredients"
                     placeholder="Romaine Lettuce, Caesar Dressing, Croutons, Parmesan"
+                    className="border-gray-200 focus:border-[#4F709C]"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="allergens">Allergens (comma separated)</Label>
-                  <Input id="allergens" placeholder="Gluten, Dairy, Eggs" />
+                  <Label
+                    htmlFor="allergens"
+                    className="text-[#213555] font-medium"
+                  >
+                    Allergens (comma separated)
+                  </Label>
+                  <Input
+                    id="allergens"
+                    placeholder="Gluten, Dairy, Eggs"
+                    className="border-gray-200 focus:border-[#4F709C]"
+                  />
                 </div>
                 <div className="space-y-2">
-                  <Label>Availability</Label>
+                  <Label className="text-[#213555] font-medium">
+                    Availability
+                  </Label>
                   <div className="flex items-center space-x-2">
                     <Checkbox id="isAvailable" defaultChecked />
                     <label
@@ -214,7 +278,9 @@ const FoodBeverageSettingsPage: React.FC = () => {
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="image">Image</Label>
+                  <Label htmlFor="image" className="text-[#213555] font-medium">
+                    Image
+                  </Label>
                   <div className="border border-dashed border-secondary/20 rounded-md p-4 text-center cursor-pointer hover:bg-secondary/5 transition-colors">
                     <ImageIcon className="h-6 w-6 mx-auto text-gray-400" />
                     <p className="text-sm text-gray-500 mt-2">
@@ -233,7 +299,7 @@ const FoodBeverageSettingsPage: React.FC = () => {
                 >
                   Cancel
                 </Button>
-                <Button className="bg-primary hover:bg-primary/90">
+                <Button className="bg-[#213555] hover:bg-[#4F709C] text-white shadow-lg hover:shadow-xl transition-all duration-300">
                   Save Menu Item
                 </Button>
               </DialogFooter>
@@ -241,52 +307,123 @@ const FoodBeverageSettingsPage: React.FC = () => {
           </Dialog>
         </div>
 
-        <div className="flex items-center space-x-4">
-          <div className="relative flex-1 max-w-sm">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
+        {/* Search and Filter */}
+        <div className="flex items-center gap-3">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
             <Input
               placeholder="Search menu items..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-8 border-secondary/20"
+              className="pl-10 w-[250px] border-gray-200 focus:border-[#4F709C] focus:ring-[#4F709C] transition-all duration-200"
             />
           </div>
-          <Button variant="outline" size="icon" className="border-secondary/20">
+          <Button
+            variant="outline"
+            size="icon"
+            className="hover:bg-blue-50 hover:border-blue-300 transition-all duration-200"
+          >
             <Filter className="h-4 w-4" />
           </Button>
         </div>
 
+        {/* Stats Cards */}
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+          <Card className="bg-gradient-to-br from-blue-500 to-blue-600 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium opacity-90">
+                Total Items
+              </CardTitle>
+              <UtensilsCrossed className="h-5 w-5 opacity-80" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold">{foodItemData.length}</div>
+              <p className="text-xs opacity-80 mt-1">Menu items</p>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gradient-to-br from-green-500 to-green-600 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium opacity-90">
+                Available
+              </CardTitle>
+              <UtensilsCrossed className="h-5 w-5 opacity-80" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold">
+                {foodItemData.filter((item) => item.isAvailable).length}
+              </div>
+              <p className="text-xs opacity-80 mt-1">Currently available</p>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gradient-to-br from-orange-500 to-orange-600 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium opacity-90">
+                Categories
+              </CardTitle>
+              <Tag className="h-5 w-5 opacity-80" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold">
+                {Object.keys(foodItemsByCategory).length}
+              </div>
+              <p className="text-xs opacity-80 mt-1">Menu categories</p>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gradient-to-br from-purple-500 to-purple-600 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium opacity-90">
+                Avg Price
+              </CardTitle>
+              <DollarSign className="h-5 w-5 opacity-80" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold">
+                $
+                {Math.round(
+                  foodItemData.reduce((acc, item) => acc + item.price, 0) /
+                    foodItemData.length
+                )}
+              </div>
+              <p className="text-xs opacity-80 mt-1">Average price</p>
+            </CardContent>
+          </Card>
+        </div>
+
         <Tabs defaultValue="menu-items" onValueChange={setActiveTab}>
-          <TabsList>
-            <TabsTrigger value="menu-items">Menu Items</TabsTrigger>
-            <TabsTrigger value="categories">Categories</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-2 bg-white shadow-sm border">
+            <TabsTrigger
+              value="menu-items"
+              className="data-[state=active]:bg-[#213555] data-[state=active]:text-white"
+            >
+              Menu Items
+            </TabsTrigger>
+            <TabsTrigger
+              value="categories"
+              className="data-[state=active]:bg-orange-500 data-[state=active]:text-white"
+            >
+              Categories
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="menu-items" className="space-y-6 mt-6">
-            {isLoading ? (
-              <div className="space-y-6">
-                <div className="flex items-center">
-                  <div className="h-6 w-32 bg-gray-200 rounded animate-pulse"></div>
-                  <div className="ml-2 h-5 w-16 bg-gray-200 rounded animate-pulse"></div>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {[...Array(6)].map((_, index) => (
-                    <SkeletonCard key={index} hasImage={true} />
-                  ))}
-                </div>
-              </div>
-            ) : (
-              Object.entries(foodItemsByCategory).map(([category, items]) => (
-                <div key={category} className="space-y-4">
-                  <div className="flex items-center">
-                    <h2 className="text-xl font-semibold text-primary">
-                      {category}
-                    </h2>
-                    <Badge className="ml-2 bg-secondary/10 text-secondary border-none">
+            {Object.entries(foodItemsByCategory).map(([category, items]) => (
+              <Card
+                key={category}
+                className="shadow-lg border-0 bg-white/80 backdrop-blur-sm"
+              >
+                <CardHeader className="bg-gradient-to-r from-[#213555] to-[#4F709C] text-white rounded-t-lg">
+                  <CardTitle className="flex items-center gap-2">
+                    <UtensilsCrossed className="h-5 w-5" />
+                    {category}
+                    <Badge className="ml-2 bg-white/20 text-white border-none">
                       {items.length} items
                     </Badge>
-                  </div>
-
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-6">
                   <motion.div
                     className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
                     variants={containerVariants}
@@ -404,11 +541,11 @@ const FoodBeverageSettingsPage: React.FC = () => {
                       </motion.div>
                     ))}
                   </motion.div>
-                </div>
-              ))
-            )}
+                </CardContent>
+              </Card>
+            ))}
 
-            {!isLoading && Object.keys(foodItemsByCategory).length === 0 && (
+            {Object.keys(foodItemsByCategory).length === 0 && (
               <div className="text-center py-12">
                 <UtensilsCrossed className="h-12 w-12 mx-auto text-gray-300" />
                 <h3 className="mt-4 text-lg font-medium text-gray-900">
@@ -422,83 +559,75 @@ const FoodBeverageSettingsPage: React.FC = () => {
           </TabsContent>
 
           <TabsContent value="categories" className="mt-6">
-            <Card>
+            <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+              <CardHeader className="bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-t-lg">
+                <CardTitle className="flex items-center gap-2">
+                  <Tag className="h-5 w-5" />
+                  Menu Categories
+                </CardTitle>
+              </CardHeader>
               <CardContent className="p-6">
-                {isLoading ? (
-                  <div className="space-y-6">
-                    <div className="flex justify-between items-center">
-                      <div className="h-6 w-32 bg-gray-200 rounded animate-pulse"></div>
-                      <div className="h-9 w-32 bg-gray-200 rounded animate-pulse"></div>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {[...Array(6)].map((_, index) => (
-                        <div
-                          key={index}
-                          className="h-16 bg-gray-200 rounded animate-pulse"
-                        ></div>
-                      ))}
-                    </div>
+                <div className="space-y-6">
+                  <div className="flex justify-between items-center">
+                    <h2 className="text-lg font-semibold text-[#213555]">
+                      Menu Categories
+                    </h2>
+                    <Button className="bg-[#213555] hover:bg-[#4F709C] text-white shadow-lg hover:shadow-xl transition-all duration-300">
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add Category
+                    </Button>
                   </div>
-                ) : (
-                  <div className="space-y-6">
-                    <div className="flex justify-between items-center">
-                      <h2 className="text-lg font-semibold text-primary">
-                        Menu Categories
-                      </h2>
-                      <Button className="bg-primary hover:bg-primary/90">
-                        <Plus className="h-4 w-4 mr-2" />
-                        Add Category
-                      </Button>
-                    </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {[
-                        "Breakfast",
-                        "Lunch",
-                        "Dinner",
-                        "Dessert",
-                        "Beverage",
-                        "Snack",
-                      ].map((category) => (
-                        <Card key={category} className="border-secondary/10">
-                          <CardContent className="p-4 flex justify-between items-center">
-                            <div className="flex items-center">
-                              <div className="h-8 w-8 rounded-full bg-secondary/10 flex items-center justify-center text-secondary mr-3">
-                                <Tag className="h-4 w-4" />
-                              </div>
-                              <span className="font-medium">{category}</span>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {[
+                      "Breakfast",
+                      "Lunch",
+                      "Dinner",
+                      "Dessert",
+                      "Beverage",
+                      "Snack",
+                    ].map((category) => (
+                      <Card
+                        key={category}
+                        className="border-secondary/10 hover:shadow-md transition-shadow duration-300"
+                      >
+                        <CardContent className="p-4 flex justify-between items-center">
+                          <div className="flex items-center">
+                            <div className="h-8 w-8 rounded-full bg-secondary/10 flex items-center justify-center text-secondary mr-3">
+                              <Tag className="h-4 w-4" />
                             </div>
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" size="icon">
-                                  <MoreHorizontal className="h-4 w-4" />
-                                </Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end">
-                                <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem>
-                                  <Pencil className="h-4 w-4 mr-2" />
-                                  Edit
-                                </DropdownMenuItem>
-                                <DropdownMenuItem className="text-red-600">
-                                  <Trash2 className="h-4 w-4 mr-2" />
-                                  Delete
-                                </DropdownMenuItem>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
-                          </CardContent>
-                        </Card>
-                      ))}
-                    </div>
+                            <span className="font-medium">{category}</span>
+                          </div>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" size="icon">
+                                <MoreHorizontal className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem>
+                                <Pencil className="h-4 w-4 mr-2" />
+                                Edit
+                              </DropdownMenuItem>
+                              <DropdownMenuItem className="text-red-600">
+                                <Trash2 className="h-4 w-4 mr-2" />
+                                Delete
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </CardContent>
+                      </Card>
+                    ))}
                   </div>
-                )}
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
         </Tabs>
       </div>
-    </Layout>
+    </div>
   );
 };
 
