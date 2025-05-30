@@ -10,10 +10,6 @@ const navItems = [
     name: "Home",
   },
   {
-    route: "offers",
-    name: "Offers",
-  },
-  {
     route: "booking",
     name: "Booking",
   },

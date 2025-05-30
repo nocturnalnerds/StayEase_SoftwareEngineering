@@ -37,7 +37,7 @@ const BookingPage: React.FC = () => {
 
   useEffect(() => {
     if (!roomTypeId) {
-      navigate("/offers");
+      navigate("/booking");
       return;
     }
 
@@ -51,7 +51,7 @@ const BookingPage: React.FC = () => {
       if (roomType) {
         setSelectedRoomType(roomType);
       } else {
-        navigate("/offers");
+        navigate("/booking");
       }
 
       setLoading(false);
@@ -175,7 +175,7 @@ const BookingPage: React.FC = () => {
                 </Button>
                 <Button
                   variant="outline"
-                  onClick={() => navigate("/offers")}
+                  onClick={() => navigate("/booking")}
                   className="border-secondary/20 hover:bg-secondary/5 text-secondary"
                 >
                   Browse More Rooms
@@ -197,7 +197,7 @@ const BookingPage: React.FC = () => {
       <div className="container mx-auto px-4 max-w-7xl h-full">
         <Button
           variant="ghost"
-          onClick={() => navigate("/offers")}
+          onClick={() => navigate("/booking")}
           className="mb-6 text-secondary hover:text-primary hover:bg-secondary/5"
         >
           <ArrowLeft className="mr-2 h-4 w-4" /> Back to Rooms

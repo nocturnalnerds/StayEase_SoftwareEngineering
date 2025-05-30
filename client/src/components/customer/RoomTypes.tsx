@@ -123,7 +123,7 @@ export default function RoomTypes() {
             data-aos="fade-up"
             data-aos-duration="3000"
             onClick={() => {
-              navigate("/offers");
+              navigate("/booking");
             }}
           >
             See More <BsArrowRightShort className="icon" />

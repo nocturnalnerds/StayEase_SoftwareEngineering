@@ -49,7 +49,6 @@ const BookingForm: React.FC<BookingFormProps> = ({
   const [adults, setAdults] = useState<number>(1);
   const [children, setChildren] = useState<number>(0);
   const [specialRequests, setSpecialRequests] = useState<string>("");
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [formStep, setFormStep] = useState<number>(0);
 
   const totalPrice =
@@ -73,9 +72,12 @@ const BookingForm: React.FC<BookingFormProps> = ({
       return;
     }
 
-    setIsSubmitting(true);
+    if (totalPrice <= 0) {
+      alert("Invalid booking price. Please check your selection");
+      return;
+    }
 
-    const formData: BookingFormData = {
+    const bookingData: BookingFormData = {
       checkInDate: dateRange.from,
       checkOutDate: dateRange.to,
       adults,
@@ -84,11 +86,8 @@ const BookingForm: React.FC<BookingFormProps> = ({
       specialRequests: specialRequests || undefined,
     };
 
-    // Simulate API call
-    setTimeout(() => {
-      onSubmit(formData);
-      setIsSubmitting(false);
-    }, 1000);
+    onSubmit(bookingData);
+    nextStep();
   };
 
   const nextStep = () => {
@@ -230,12 +229,13 @@ const BookingForm: React.FC<BookingFormProps> = ({
                                 <SelectValue placeholder="Select adults" />
                               </div>
                             </SelectTrigger>
-                            <SelectContent className="rounded-xl border-2 shadow-xl">
+
+                            <SelectContent className="rounded-xl border border-gray-200 shadow-xl bg-white z-50">
                               {[1, 2, 3, 4, 5, 6].map((num) => (
                                 <SelectItem
                                   key={num}
                                   value={num.toString()}
-                                  className="hover:bg-blue-50 focus:bg-blue-50 py-3"
+                                  className="hover:bg-blue-50 focus:bg-blue-50 py-3 px-4 rounded-md transition-colors"
                                 >
                                   <div className="flex items-center gap-3">
                                     <Users className="h-4 w-4 text-blue-600" />
@@ -264,18 +264,19 @@ const BookingForm: React.FC<BookingFormProps> = ({
                           >
                             <SelectTrigger
                               id="children"
-                              className="w-full h-14 border-2 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 rounded-xl transition-all duration-300 hover:border-gray-300 bg-white shadow-sm"
+                              className="w-full h-14 border-2 border-gray-200 focus:border-green-500 focus:ring-4 focus:ring-green-100 rounded-xl transition-all duration-300 hover:border-gray-300 bg-white shadow-sm"
                             >
                               <div className="flex items-center gap-3">
                                 <SelectValue placeholder="Select children" />
                               </div>
                             </SelectTrigger>
-                            <SelectContent className="rounded-xl border-2 shadow-xl">
+
+                            <SelectContent className="rounded-xl border border-gray-200 shadow-xl bg-white z-50">
                               {[0, 1, 2, 3, 4].map((num) => (
                                 <SelectItem
                                   key={num}
                                   value={num.toString()}
-                                  className="hover:bg-green-50 focus:bg-green-50 py-3"
+                                  className="hover:bg-green-50 focus:bg-green-50 py-3 px-4 rounded-md transition-colors"
                                 >
                                   <div className="flex items-center gap-3">
                                     <Users className="h-4 w-4 text-green-600" />
@@ -392,7 +393,13 @@ const BookingForm: React.FC<BookingFormProps> = ({
                     type="button"
                     className="w-full sm:w-auto h-12 px-8 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105"
                     onClick={nextStep}
-                    disabled={!dateRange?.from || !dateRange?.to}
+                    disabled={
+                      !dateRange?.from ||
+                      !dateRange?.to ||
+                      !selectedRoomType?.basePrice ||
+                      selectedRoomType.basePrice < 0 ||
+                      totalPrice <= 0
+                    }
                   >
                     Continue to Summary
                   </Button>
@@ -408,37 +415,11 @@ const BookingForm: React.FC<BookingFormProps> = ({
                     Back to Dates
                   </Button>
                   <Button
-                    type="submit"
-                    className="w-full sm:w-auto h-12 px-8 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105"
-                    disabled={isSubmitting}
+                    type="button"
+                    className="w-full sm:w-auto h-12 px-8 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold transition-all duration-300 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105"
+                    onClick={handleSubmit}
                   >
-                    {isSubmitting ? (
-                      <span className="flex items-center justify-center">
-                        <svg
-                          className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                        >
-                          <circle
-                            className="opacity-25"
-                            cx="12"
-                            cy="12"
-                            r="10"
-                            stroke="currentColor"
-                            strokeWidth="4"
-                          ></circle>
-                          <path
-                            className="opacity-75"
-                            fill="currentColor"
-                            d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 100 16 8 8 0 01-8-8z"
-                          ></path>
-                        </svg>
-                        Processing...
-                      </span>
-                    ) : (
-                      "Confirm Booking"
-                    )}
+                    Confirm Booking
                   </Button>
                 </>
               )}

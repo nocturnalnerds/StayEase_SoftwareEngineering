@@ -30,7 +30,7 @@ export default function Footer() {
           <li>
             <a
               onClick={() => {
-                navigate("/home");
+                navigate("/");
               }}
               style={{ cursor: "pointer" }}
             >
@@ -40,7 +40,7 @@ export default function Footer() {
           <li>
             <a
               onClick={() => {
-                navigate("/offers");
+                navigate("/");
               }}
               style={{ cursor: "pointer" }}
             >
@@ -50,7 +50,7 @@ export default function Footer() {
           <li>
             <a
               onClick={() => {
-                navigate("/reservation");
+                navigate("/booking");
               }}
               style={{ cursor: "pointer" }}
             >
@@ -60,7 +60,7 @@ export default function Footer() {
           <li>
             <a
               onClick={() => {
-                navigate("/about");
+                navigate("/");
               }}
               style={{ cursor: "pointer" }}
             >
@@ -74,7 +74,7 @@ export default function Footer() {
           <li>
             <a
               onClick={() => {
-                navigate("/reviews");
+                navigate("/");
               }}
               style={{ cursor: "pointer" }}
             >
@@ -91,8 +91,8 @@ export default function Footer() {
 
         <div className="footer-links">
           <span className="link-title">Contact Us</span>
-          <span className="phone">+62 823 1151 1720</span>
-          <span className="email">stayease@gmail.com</span>
+          <a href="tel:+6282311511720" className="phone">+62 823 1151 1720</a>
+          <a href="mailto:stayease@gmail.com" className="email">stayease@gmail.com</a>
         </div>
       </div>
     </div>
