@@ -74,7 +74,7 @@ const navigation: NavigationItem[] = [
   },
 ];
 
-export default function Layout({ loading = false }: LayoutProps) {
+export default function Layout({ children, loading = false }: LayoutProps) {
   const location = useLocation();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -113,9 +113,9 @@ export default function Layout({ loading = false }: LayoutProps) {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex">
+      <div className="h-screen bg-gray-50 flex overflow-hidden">
         {/* Sidebar placeholder */}
-        <div className="w-64 bg-white border-r border-gray-200">
+        <div className="w-64 bg-white border-r border-gray-200 flex-shrink-0">
           <div className="h-16 border-b border-gray-200 flex items-center px-6">
             <div className="w-8 h-8 bg-gray-200 rounded animate-pulse"></div>
             <div className="ml-2 w-24 h-6 bg-gray-200 rounded animate-pulse"></div>
@@ -123,7 +123,7 @@ export default function Layout({ loading = false }: LayoutProps) {
         </div>
 
         {/* Main content loading */}
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col overflow-hidden">
           <div className="h-16 bg-white border-b border-gray-200"></div>
           <div className="flex-1 flex items-center justify-center">
             <div className="text-center">
@@ -137,7 +137,7 @@ export default function Layout({ loading = false }: LayoutProps) {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
+    <div className="h-screen bg-gray-50 flex overflow-hidden">
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
         <div
@@ -149,19 +149,19 @@ export default function Layout({ loading = false }: LayoutProps) {
       {/* Mobile hamburger button */}
       <button
         onClick={() => setSidebarOpen(true)}
-        className="fixed top-4 left-4 z-50 lg:hidden w-10 h-10 bg-primary rounded-full flex items-center justify-center shadow-lg"
+        className="fixed top-6 left-6 z-50 lg:hidden w-12 h-12 bg-primary rounded-full flex items-center justify-center shadow-lg"
       >
-        <Menu className="h-5 w-5 text-white" />
+        <Menu className="h-6 w-6 text-white" />
       </button>
 
       {/* Sidebar */}
       <div
         className={`
-        w-64 bg-white border-r border-gray-200 flex flex-col h-screen
-        lg:relative lg:translate-x-0
-        fixed inset-y-0 left-0 z-50 transform transition-transform duration-300 ease-in-out
-        ${sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
-      `}
+      w-64 bg-white border-r border-gray-200 flex flex-col h-full flex-shrink-0
+      lg:relative lg:translate-x-0
+      fixed inset-y-0 left-0 z-50 transform transition-transform duration-300 ease-in-out
+      ${sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
+    `}
       >
         {/* Logo */}
         <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200 flex-shrink-0">
@@ -190,13 +190,13 @@ export default function Layout({ loading = false }: LayoutProps) {
                   <button
                     onClick={() => toggleExpanded(item.name)}
                     className={`
-                      w-full flex items-center justify-between px-3 py-2 text-sm font-medium rounded-md transition-colors
-                      ${
-                        isParentActive(item)
-                          ? "bg-primary text-white!"
-                          : "text-gray-700 hover:bg-gray-100"
-                      }
-                    `}
+                    w-full flex items-center justify-between px-3 py-2 text-sm font-medium rounded-md transition-colors
+                    ${
+                      isParentActive(item)
+                        ? "bg-primary text-white"
+                        : "text-gray-700 hover:bg-gray-100"
+                    }
+                  `}
                   >
                     <div className="flex items-center">
                       <item.icon
@@ -227,13 +227,13 @@ export default function Layout({ loading = false }: LayoutProps) {
                           key={child.name}
                           to={child.href}
                           className={`
-                            block px-3 py-2 text-sm rounded-md transition-colors
-                            ${
-                              isActive(child.href)
-                                ? "bg-primary/10 text-primary font-medium"
-                                : "text-gray-600 hover:bg-gray-100"
-                            }
-                          `}
+                          block px-3 py-2 text-sm rounded-md transition-colors
+                          ${
+                            isActive(child.href)
+                              ? "bg-primary/10 text-primary font-medium"
+                              : "text-gray-600 hover:bg-gray-100"
+                          }
+                        `}
                           onClick={() => setSidebarOpen(false)}
                         >
                           {child.name}
@@ -246,13 +246,13 @@ export default function Layout({ loading = false }: LayoutProps) {
                 <Link
                   to={item.href}
                   className={`
-                    flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors
-                    ${
-                      isActive(item.href)
-                        ? "bg-primary text-white!"
-                        : "text-gray-700 hover:bg-gray-100"
-                    }
-                  `}
+                  flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors
+                  ${
+                    isActive(item.href)
+                      ? "bg-primary text-white"
+                      : "text-gray-700 hover:bg-gray-100"
+                  }
+                `}
                   onClick={() => setSidebarOpen(false)}
                 >
                   <item.icon
@@ -298,10 +298,17 @@ export default function Layout({ loading = false }: LayoutProps) {
       </div>
 
       {/* Main content */}
-      <div className="flex-1 flex flex-col min-h-screen lg:ml-0">
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {/* Top bar - hidden on mobile when sidebar is present */}
+        <header className="bg-white shadow-sm border-b border-gray-200 flex-shrink-0 lg:block hidden">
+          <div className="flex items-center justify-end h-16 px-6">
+            {/* Removed date display as requested */}
+          </div>
+        </header>
+
         {/* Page content */}
-        <main className="flex-1 overflow-auto bg-gray-50 pt-16 lg:pt-0">
-          <Outlet />
+        <main className="flex-1 overflow-y-auto bg-gray-50">
+          <div className="w-full min-h-full p-6">{children || <Outlet />}</div>
         </main>
       </div>
     </div>
