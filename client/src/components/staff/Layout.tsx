@@ -74,7 +74,7 @@ const navigation: NavigationItem[] = [
   },
 ];
 
-export default function Layout({ children, loading = false }: LayoutProps) {
+export default function Layout({ loading = false }: LayoutProps) {
   const location = useLocation();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -100,6 +100,10 @@ export default function Layout({ children, loading = false }: LayoutProps) {
   const isActive = (href: string) => {
     if (href === "/staff/settings") {
       return location.pathname === "/staff/settings";
+    } else if (href.startsWith("/staff/")) {
+      return (
+        location.pathname === href || location.pathname.startsWith(href + "/")
+      );
     }
     return location.pathname === href;
   };
@@ -230,7 +234,7 @@ export default function Layout({ children, loading = false }: LayoutProps) {
                           block px-3 py-2 text-sm rounded-md transition-colors
                           ${
                             isActive(child.href)
-                              ? "bg-primary/10 text-primary font-medium"
+                              ? "bg-primary/10 text-white font-medium"
                               : "text-gray-600 hover:bg-gray-100"
                           }
                         `}
@@ -249,7 +253,7 @@ export default function Layout({ children, loading = false }: LayoutProps) {
                   flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors
                   ${
                     isActive(item.href)
-                      ? "bg-primary text-white"
+                      ? "bg-primary text-white!"
                       : "text-gray-700 hover:bg-gray-100"
                   }
                 `}
@@ -298,17 +302,12 @@ export default function Layout({ children, loading = false }: LayoutProps) {
       </div>
 
       {/* Main content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Top bar - hidden on mobile when sidebar is present */}
-        <header className="bg-white shadow-sm border-b border-gray-200 flex-shrink-0 lg:block hidden">
-          <div className="flex items-center justify-end h-16 px-6">
-            {/* Removed date display as requested */}
-          </div>
-        </header>
-
+      <div className="flex-1 flex flex-col h-screen">
         {/* Page content */}
-        <main className="flex-1 overflow-y-auto bg-gray-50">
-          <div className="w-full min-h-full p-6">{children || <Outlet />}</div>
+        <main className="flex-1 overflow-y-auto bg-gray-50 w-full">
+          <div className="w-full min-h-full">
+            <Outlet />
+          </div>
         </main>
       </div>
     </div>
