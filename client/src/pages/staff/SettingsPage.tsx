@@ -20,7 +20,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import Layout from "@/components/staff/Layout";
 import SkeletonCard from "@/components/staff/SkeletonCard";
 
 interface SettingCardProps {
@@ -110,10 +109,20 @@ const SettingsPage: React.FC = () => {
   ];
 
   return (
-    <Layout>
-      <div className="space-y-6">
-        <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-primary">Settings</h1>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 p-6">
+      <div className="max-w-7xl mx-auto space-y-8">
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+          <div className="flex items-center">
+            <div>
+              <h1 className="text-4xl font-bold text-[#213555]">
+                Settings Page
+              </h1>
+              <p className="text-gray-600 mt-2">
+                Manage the hotel settings and configurations
+              </p>
+            </div>
+          </div>
         </div>
 
         {isLoading ? (
@@ -152,7 +161,7 @@ const SettingsPage: React.FC = () => {
           </motion.div>
         )}
       </div>
-    </Layout>
+    </div>
   );
 };
 
