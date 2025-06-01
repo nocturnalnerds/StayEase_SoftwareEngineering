@@ -21,39 +21,27 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
-  Users,
-  UserPlus,
-  Shield,
-  ShieldCheck,
-  Search,
-  Filter,
-  Edit,
-  Trash2,
-  Eye,
-  Settings,
-} from "lucide-react";
 
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  role: "admin" | "manager" | "staff" | "customer";
-  status: "active" | "inactive" | "suspended";
-  lastLogin: string;
-  createdAt: string;
-  department?: string;
-}
+import {
+  Filter,
+  Eye,
+  Edit,
+  Settings,
+  Shield,
+  UserPlus,
+  Search,
+  Users,
+  ShieldCheck,
+  User,
+} from "lucide-react"; // Added UserPlus import
+
+export type Department =
+  | "Management"
+  | "Front Office"
+  | "Housekeeping"
+  | "Food & Beverage"
+  | "Maintenance"
+  | "Finance";
 
 interface Staff {
   id: string;
@@ -122,55 +110,14 @@ const StatsCard: React.FC<{
 
 const UserManagementPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState("users");
   const [searchTerm, setSearchTerm] = useState("");
-  const [filterRole, setFilterRole] = useState("all");
-  const [isAddUserOpen, setIsAddUserOpen] = useState(false);
+  const [filterDepartment, setFilterDepartment] = useState<Department>("all");
   const [isAddStaffOpen, setIsAddStaffOpen] = useState(false);
-  const [viewUserOpen, setViewUserOpen] = useState(false);
-  const [editUserOpen, setEditUserOpen] = useState(false);
   const [viewStaffOpen, setViewStaffOpen] = useState(false);
   const [editStaffOpen, setEditStaffOpen] = useState(false);
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [selectedStaff, setSelectedStaff] = useState<Staff | null>(null);
 
-  // Mock data
-  const users: User[] = [
-    {
-      id: "1",
-      name: "John Admin",
-      email: "john.admin@hotel.com",
-      phone: "+1234567890",
-      role: "admin",
-      status: "active",
-      lastLogin: "2024-01-15T10:30:00Z",
-      createdAt: "2023-01-01T00:00:00Z",
-      department: "IT",
-    },
-    {
-      id: "2",
-      name: "Jane Manager",
-      email: "jane.manager@hotel.com",
-      phone: "+1234567891",
-      role: "manager",
-      status: "active",
-      lastLogin: "2024-01-15T09:15:00Z",
-      createdAt: "2023-02-15T00:00:00Z",
-      department: "Operations",
-    },
-    {
-      id: "3",
-      name: "Bob Staff",
-      email: "bob.staff@hotel.com",
-      phone: "+1234567892",
-      role: "staff",
-      status: "active",
-      lastLogin: "2024-01-14T16:45:00Z",
-      createdAt: "2023-06-01T00:00:00Z",
-      department: "Front Office",
-    },
-  ];
-
+  // Mock staff data
   const staff: Staff[] = [
     {
       id: "1",
@@ -186,6 +133,18 @@ const UserManagementPage: React.FC = () => {
     },
     {
       id: "2",
+      name: "Bryan Cornelius",
+      email: "bryancornelius@hotel.com",
+      phone: "+1234567895",
+      position: "Chief Finance Officer",
+      department: "Finance",
+      salary: 250000,
+      hireDate: "2023-03-10",
+      status: "active",
+      permissions: ["reports", "finance"],
+    },
+    {
+      id: "3",
       name: "Charlie Brown",
       email: "charlie.brown@hotel.com",
       phone: "+1234567894",
@@ -197,10 +156,10 @@ const UserManagementPage: React.FC = () => {
       permissions: ["room-status", "maintenance"],
     },
     {
-      id: "3",
+      id: "4",
       name: "Diana Prince",
       email: "diana.prince@hotel.com",
-      phone: "+1234567895",
+      phone: "+1234569995",
       position: "Restaurant Manager",
       department: "Food & Beverage",
       salary: 50000,
@@ -249,16 +208,6 @@ const UserManagementPage: React.FC = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  const handleViewUser = (user: User) => {
-    setSelectedUser(user);
-    setViewUserOpen(true);
-  };
-
-  const handleEditUser = (user: User) => {
-    setSelectedUser(user);
-    setEditUserOpen(true);
-  };
-
   const handleViewStaff = (staffMember: Staff) => {
     setSelectedStaff(staffMember);
     setViewStaffOpen(true);
@@ -269,13 +218,20 @@ const UserManagementPage: React.FC = () => {
     setEditStaffOpen(true);
   };
 
+  const filteredStaff = staff.filter(
+    (staffMember) =>
+      (filterDepartment === "all" ||
+        staffMember.department === filterDepartment) &&
+      staffMember.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   if (loading) {
     return (
       <div className="flex-1 flex items-center justify-center min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-[#4F709C] border-t-[#213555] rounded-full animate-spin mx-auto"></div>
           <p className="mt-6 text-[#213555] font-medium animate-pulse">
-            Loading User Management Dashboard...
+            Loading Staff Dashboard...
           </p>
         </div>
       </div>
@@ -289,10 +245,10 @@ const UserManagementPage: React.FC = () => {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
           <div>
             <h1 className="text-4xl font-bold text-[#213555]">
-              User Management Dashboard
+              Staff Management
             </h1>
             <p className="text-gray-600 mt-2">
-              Manage users, staff, and permissions efficiently
+              Manage staff, departments, and permissions efficiently
             </p>
           </div>
           <div className="flex items-center gap-3">
@@ -300,136 +256,12 @@ const UserManagementPage: React.FC = () => {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
               <Input
                 type="search"
-                placeholder="Search users..."
+                placeholder="Search staff..."
                 className="pl-10 w-[250px] border-gray-200 focus:border-[#4F709C] focus:ring-[#4F709C] transition-all duration-200"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-            <Button
-              variant="outline"
-              size="icon"
-              className="hover:bg-purple-50 hover:border-purple-300 transition-all duration-200"
-            >
-              <Filter className="h-4 w-4" />
-            </Button>
-            <Dialog open={isAddUserOpen} onOpenChange={setIsAddUserOpen}>
-              <DialogTrigger asChild>
-                <Button className="bg-[#213555] hover:bg-[#4F709C] text-white shadow-lg hover:shadow-xl transition-all duration-300">
-                  <UserPlus className="mr-2 h-4 w-4" />
-                  Add User
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="bg-white border-0 shadow-2xl">
-                <DialogHeader>
-                  <DialogTitle className="text-[#213555] text-xl font-bold">
-                    Add New User
-                  </DialogTitle>
-                </DialogHeader>
-                <div className="space-y-4">
-                  <div>
-                    <Label
-                      htmlFor="userName"
-                      className="text-[#213555] font-medium"
-                    >
-                      Full Name
-                    </Label>
-                    <Input
-                      id="userName"
-                      placeholder="Enter full name"
-                      className="border-gray-200 focus:border-[#4F709C]"
-                    />
-                  </div>
-                  <div>
-                    <Label
-                      htmlFor="userEmail"
-                      className="text-[#213555] font-medium"
-                    >
-                      Email
-                    </Label>
-                    <Input
-                      id="userEmail"
-                      type="email"
-                      placeholder="Enter email"
-                      className="border-gray-200 focus:border-[#4F709C]"
-                    />
-                  </div>
-                  <div>
-                    <Label
-                      htmlFor="userPhone"
-                      className="text-[#213555] font-medium"
-                    >
-                      Phone
-                    </Label>
-                    <Input
-                      id="userPhone"
-                      placeholder="Enter phone number"
-                      className="border-gray-200 focus:border-[#4F709C]"
-                    />
-                  </div>
-                  <div>
-                    <Label
-                      htmlFor="userRole"
-                      className="text-[#213555] font-medium"
-                    >
-                      Role
-                    </Label>
-                    <Select>
-                      <SelectTrigger className="border-gray-200 focus:border-[#4F709C]">
-                        <SelectValue placeholder="Select role" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-white">
-                        <SelectItem value="admin">Administrator</SelectItem>
-                        <SelectItem value="manager">Manager</SelectItem>
-                        <SelectItem value="staff">Staff</SelectItem>
-                        <SelectItem value="customer">Customer</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Label
-                      htmlFor="userDepartment"
-                      className="text-[#213555] font-medium"
-                    >
-                      Department
-                    </Label>
-                    <Select>
-                      <SelectTrigger className="border-gray-200 focus:border-[#4F709C]">
-                        <SelectValue placeholder="Select department" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-white">
-                        <SelectItem value="front-office">
-                          Front Office
-                        </SelectItem>
-                        <SelectItem value="housekeeping">
-                          Housekeeping
-                        </SelectItem>
-                        <SelectItem value="food-beverage">
-                          Food & Beverage
-                        </SelectItem>
-                        <SelectItem value="maintenance">Maintenance</SelectItem>
-                        <SelectItem value="it">IT</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="flex space-x-2">
-                    <Button
-                      onClick={() => setIsAddUserOpen(false)}
-                      className="flex-1 bg-[#213555] hover:bg-[#4F709C] transition-colors duration-200"
-                    >
-                      Add User
-                    </Button>
-                    <Button
-                      variant="outline"
-                      onClick={() => setIsAddUserOpen(false)}
-                      className="flex-1"
-                    >
-                      Cancel
-                    </Button>
-                  </div>
-                </div>
-              </DialogContent>
-            </Dialog>
 
             <Dialog open={isAddStaffOpen} onOpenChange={setIsAddStaffOpen}>
               <DialogTrigger asChild>
@@ -543,7 +375,7 @@ const UserManagementPage: React.FC = () => {
                   <div className="flex space-x-2">
                     <Button
                       onClick={() => setIsAddStaffOpen(false)}
-                      className="flex-1 bg-[#213555] hover:bg-[#4F709C] transition-colors duration-200"
+                      className="flex-1 bg-white hover:bg-[#f0f0f0] border border-black transition-colors duration-200"
                     >
                       Add Staff
                     </Button>
@@ -557,7 +389,7 @@ const UserManagementPage: React.FC = () => {
                   </div>
                 </div>
               </DialogContent>
-            </Dialog>
+            </Dialog>                          
           </div>
         </div>
 
@@ -568,448 +400,162 @@ const UserManagementPage: React.FC = () => {
           ))}
         </div>
 
-        {/* Main Content */}
-        <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+        {/* Staff Table */}
+        <Card className="shadow-xl border-0 bg-white/95 backdrop-blur-md min-h-screen rounded-xl overflow-hidden">
           <CardHeader className="bg-gradient-to-r from-[#213555] to-[#4F709C] text-white rounded-t-lg">
-            <div className="flex justify-between items-center gap-8">
+            <div className="flex justify-between items-center gap-12">
+              {" "}
               <CardTitle className="text-xl font-bold">
-                User & Staff Management
+                Staff Management
               </CardTitle>
-              <div className="flex space-x-4">
-                <Select value={filterRole} onValueChange={setFilterRole}>
-                  <SelectTrigger className="w-40 bg-white/10 border-white/20 text-white">
+              <div className="flex space-x-6">
+                {" "}
+                <Select
+                  value={filterDepartment}
+                  onValueChange={setFilterDepartment}
+                >
+                  <SelectTrigger className="w-50 bg-white/10 border-white/20 text-white">
                     <Filter className="h-4 w-4 mr-2" />
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="bg-white">
-                    <SelectItem value="all">All Roles</SelectItem>
-                    <SelectItem value="admin">Admin</SelectItem>
-                    <SelectItem value="manager">Manager</SelectItem>
-                    <SelectItem value="staff">Staff</SelectItem>
-                    <SelectItem value="customer">Customer</SelectItem>
+                    <SelectItem value="all">All Department</SelectItem>
+                    <SelectItem value="Management">Management</SelectItem>
+                    <SelectItem value="Front Office">Front Office</SelectItem>
+                    <SelectItem value="Housekeeping">Housekeeping</SelectItem>
+                    <SelectItem value="Food & Beverage">
+                      Food & Beverage
+                    </SelectItem>
+                    <SelectItem value="Maintenance">Maintenance</SelectItem>
+                    <SelectItem value="Finance">Finance</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
             </div>
           </CardHeader>
-          <CardContent className="p-0">
-            <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <TabsList className="grid w-full grid-cols-2 bg-gray-50 border-b">
-                <TabsTrigger
-                  value="users"
-                  className="data-[state=active]:bg-[#213555] data-[state=active]:text-white"
-                >
-                  System Users ({users.length})
-                </TabsTrigger>
-                <TabsTrigger
-                  value="staff"
-                  className="data-[state=active]:bg-[#213555] data-[state=active]:text-white"
-                >
-                  Staff Members ({staff.length})
-                </TabsTrigger>
-              </TabsList>
 
-              <TabsContent value="users" className="mt-0">
-                <div className="overflow-hidden">
-                  <Table>
-                    <TableHeader>
-                      <TableRow className="bg-gray-50">
-                        <TableHead className="font-semibold text-[#213555]">
-                          Name
-                        </TableHead>
-                        <TableHead className="font-semibold text-[#213555]">
-                          Email
-                        </TableHead>
-                        <TableHead className="font-semibold text-[#213555]">
-                          Role
-                        </TableHead>
-                        <TableHead className="font-semibold text-[#213555]">
-                          Department
-                        </TableHead>
-                        <TableHead className="font-semibold text-[#213555]">
-                          Status
-                        </TableHead>
-                        <TableHead className="font-semibold text-[#213555]">
-                          Last Login
-                        </TableHead>
-                        <TableHead className="font-semibold text-[#213555]">
-                          Actions
-                        </TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {users.map((user) => (
-                        <TableRow
-                          key={user.id}
-                          className="hover:bg-purple-50 transition-colors duration-200"
-                        >
-                          <TableCell>
-                            <div>
-                              <div className="font-medium text-[#4F709C]">
-                                {user.name}
-                              </div>
-                              <div className="text-sm text-gray-500">
-                                {user.phone}
-                              </div>
-                            </div>
-                          </TableCell>
-                          <TableCell className="text-gray-600">
-                            {user.email}
-                          </TableCell>
-                          <TableCell>
-                            <Badge
-                              variant={
-                                user.role === "admin"
-                                  ? "destructive"
-                                  : user.role === "manager"
-                                  ? "default"
-                                  : "secondary"
-                              }
-                            >
-                              {user.role}
-                            </Badge>
-                          </TableCell>
-                          <TableCell className="text-gray-600">
-                            {user.department || "-"}
-                          </TableCell>
-                          <TableCell>
-                            <StatusBadge status={user.status} />
-                          </TableCell>
-                          <TableCell className="text-gray-600">
-                            {new Date(user.lastLogin).toLocaleDateString()}
-                          </TableCell>
-                          <TableCell>
-                            <div className="flex space-x-2">
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => handleViewUser(user)}
-                                className="hover:bg-purple-50"
-                              >
-                                <Eye className="h-4 w-4" />
-                              </Button>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => handleEditUser(user)}
-                                className="hover:bg-purple-50"
-                              >
-                                <Edit className="h-4 w-4" />
-                              </Button>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="text-red-600 hover:text-red-900 hover:bg-red-50"
-                              >
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
-                            </div>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
-              </TabsContent>
+          <CardContent className="p-0 flex flex-col h-full bg-gradient-to-b from-gray-50/50 to-white">
+            <div className="overflow-x-auto flex-grow w-full">
+              <table className="w-full border-collapse">
+                <thead>
+                  <tr className="bg-gradient-to-r from-gray-100 to-gray-50 border-b-2 border-gray-200">
+                    <th className="font-bold text-[#213555] py-4 px-6 text-sm uppercase tracking-wide text-left">
+                      Name
+                    </th>
+                    <th className="font-bold text-[#213555] py-4 px-6 text-sm uppercase tracking-wide text-left">
+                      Position
+                    </th>
+                    <th className="font-bold text-[#213555] py-4 px-6 text-sm uppercase tracking-wide text-left">
+                      Department
+                    </th>
+                    <th className="font-bold text-[#213555] py-4 px-6 text-sm uppercase tracking-wide text-left">
+                      Salary
+                    </th>
+                    <th className="font-bold text-[#213555] py-4 px-6 text-sm uppercase tracking-wide text-left">
+                      Hire Date
+                    </th>
+                    <th className="font-bold text-[#213555] py-4 px-6 text-sm uppercase tracking-wide text-left">
+                      Status
+                    </th>
+                    <th className="font-bold text-[#213555] py-4 px-6 text-sm uppercase tracking-wide text-center">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredStaff.map((staffMember, index) => (
+                    <tr
+                      key={staffMember.id}
+                      className={`group hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 transition-all duration-300 border-b border-gray-100 ${
+                        index % 2 === 0 ? "bg-white" : "bg-gray-50/30"
+                      }`}
+                    >
+                      <td className="py-4 px-6">
+                        <div className="font-semibold text-gray-900 group-hover:text-[#213555] transition-colors">
+                          {staffMember.name}
+                        </div>
+                      </td>
+                      <td className="py-4 px-6">
+                        <div className="text-gray-700 font-medium">
+                          {staffMember.position}
+                        </div>
+                      </td>
+                      <td className="py-4 px-6">
+                        <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 border border-blue-200">
+                          {staffMember.department}
+                        </div>
+                      </td>
+                      <td className="py-4 px-6">
+                        <div className="font-bold text-green-700">
+                          ${staffMember.salary.toLocaleString()}
+                        </div>
+                      </td>
+                      <td className="py-4 px-6">
+                        <div className="text-gray-600 font-medium">
+                          {new Date(staffMember.hireDate).toLocaleDateString(
+                            "en-US",
+                            {
+                              year: "numeric",
+                              month: "short",
+                              day: "numeric",
+                            }
+                          )}
+                        </div>
+                      </td>
+                      <td className="py-4 px-6">
+                        <StatusBadge status={staffMember.status} />
+                      </td>
+                      <td className="py-4 px-6">
+                        <div className="flex justify-center space-x-1">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleViewStaff(staffMember)}
+                            className="hover:bg-blue-100 hover:text-blue-700 transition-all duration-200 rounded-lg p-2 group/btn"
+                            title="View Details"
+                          >
+                            <Eye className="h-4 w-4 group-hover/btn:scale-110 transition-transform" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleEditStaff(staffMember)}
+                            className="hover:bg-amber-100 hover:text-amber-700 transition-all duration-200 rounded-lg p-2 group/btn"
+                            title="Edit Staff"
+                          >
+                            <Edit className="h-4 w-4 group-hover/btn:scale-110 transition-transform" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="hover:bg-purple-100 hover:text-purple-700 transition-all duration-200 rounded-lg p-2 group/btn"
+                            title="Settings"
+                          >
+                            <Settings className="h-4 w-4 group-hover/btn:scale-110 transition-transform" />
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
 
-              <TabsContent value="staff" className="mt-0">
-                <div className="overflow-hidden">
-                  <Table>
-                    <TableHeader>
-                      <TableRow className="bg-gray-50">
-                        <TableHead className="font-semibold text-[#213555]">
-                          Name
-                        </TableHead>
-                        <TableHead className="font-semibold text-[#213555]">
-                          Position
-                        </TableHead>
-                        <TableHead className="font-semibold text-[#213555]">
-                          Department
-                        </TableHead>
-                        <TableHead className="font-semibold text-[#213555]">
-                          Salary
-                        </TableHead>
-                        <TableHead className="font-semibold text-[#213555]">
-                          Hire Date
-                        </TableHead>
-                        <TableHead className="font-semibold text-[#213555]">
-                          Status
-                        </TableHead>
-                        <TableHead className="font-semibold text-[#213555]">
-                          Actions
-                        </TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {staff.map((staffMember) => (
-                        <TableRow
-                          key={staffMember.id}
-                          className="hover:bg-purple-50 transition-colors duration-200"
-                        >
-                          <TableCell>
-                            <div>
-                              <div className="font-medium text-[#4F709C]">
-                                {staffMember.name}
-                              </div>
-                              <div className="text-sm text-gray-500">
-                                {staffMember.email}
-                              </div>
-                            </div>
-                          </TableCell>
-                          <TableCell className="text-gray-600">
-                            {staffMember.position}
-                          </TableCell>
-                          <TableCell className="text-gray-600">
-                            {staffMember.department}
-                          </TableCell>
-                          <TableCell className="text-gray-600">
-                            ${staffMember.salary.toLocaleString()}
-                          </TableCell>
-                          <TableCell className="text-gray-600">
-                            {new Date(
-                              staffMember.hireDate
-                            ).toLocaleDateString()}
-                          </TableCell>
-                          <TableCell>
-                            <StatusBadge status={staffMember.status} />
-                          </TableCell>
-                          <TableCell>
-                            <div className="flex space-x-2">
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => handleViewStaff(staffMember)}
-                                className="hover:bg-purple-50"
-                              >
-                                <Eye className="h-4 w-4" />
-                              </Button>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => handleEditStaff(staffMember)}
-                                className="hover:bg-purple-50"
-                              >
-                                <Edit className="h-4 w-4" />
-                              </Button>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="hover:bg-purple-50"
-                              >
-                                <Settings className="h-4 w-4" />
-                              </Button>
-                            </div>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
+            {filteredStaff.length === 0 && (
+              <div className="flex items-center justify-center py-12">
+                <div className="text-center">
+                  <User className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                  <p className="text-gray-500 text-lg">
+                    No staff members found
+                  </p>
+                  <p className="text-gray-400 text-sm">
+                    Try adjusting your filter criteria
+                  </p>
                 </div>
-              </TabsContent>
-            </Tabs>
+              </div>
+            )}
           </CardContent>
         </Card>
-
-        {/* View User Dialog */}
-        <Dialog open={viewUserOpen} onOpenChange={setViewUserOpen}>
-          <DialogContent className="bg-white border-0 shadow-2xl max-w-md">
-            <DialogHeader>
-              <DialogTitle className="text-xl font-semibold text-[#213555]">
-                User Details
-              </DialogTitle>
-            </DialogHeader>
-            {selectedUser && (
-              <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label className="text-sm font-medium text-gray-500">
-                      Name
-                    </Label>
-                    <p className="text-sm">{selectedUser.name}</p>
-                  </div>
-                  <div>
-                    <Label className="text-sm font-medium text-gray-500">
-                      Email
-                    </Label>
-                    <p className="text-sm">{selectedUser.email}</p>
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label className="text-sm font-medium text-gray-500">
-                      Phone
-                    </Label>
-                    <p className="text-sm">{selectedUser.phone}</p>
-                  </div>
-                  <div>
-                    <Label className="text-sm font-medium text-gray-500">
-                      Role
-                    </Label>
-                    <Badge
-                      variant={
-                        selectedUser.role === "admin"
-                          ? "destructive"
-                          : "default"
-                      }
-                    >
-                      {selectedUser.role}
-                    </Badge>
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label className="text-sm font-medium text-gray-500">
-                      Department
-                    </Label>
-                    <p className="text-sm">{selectedUser.department || "-"}</p>
-                  </div>
-                  <div>
-                    <Label className="text-sm font-medium text-gray-500">
-                      Status
-                    </Label>
-                    <StatusBadge status={selectedUser.status} />
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label className="text-sm font-medium text-gray-500">
-                      Last Login
-                    </Label>
-                    <p className="text-sm">
-                      {new Date(selectedUser.lastLogin).toLocaleString()}
-                    </p>
-                  </div>
-                  <div>
-                    <Label className="text-sm font-medium text-gray-500">
-                      Created
-                    </Label>
-                    <p className="text-sm">
-                      {new Date(selectedUser.createdAt).toLocaleDateString()}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex justify-end gap-2 pt-4">
-                  <Button
-                    variant="outline"
-                    onClick={() => setViewUserOpen(false)}
-                  >
-                    Close
-                  </Button>
-                  <Button className="bg-[#213555] hover:bg-[#4F709C]">
-                    Edit User
-                  </Button>
-                </div>
-              </div>
-            )}
-          </DialogContent>
-        </Dialog>
-
-        {/* Edit User Dialog */}
-        <Dialog open={editUserOpen} onOpenChange={setEditUserOpen}>
-          <DialogContent className="bg-white border-0 shadow-2xl">
-            <DialogHeader>
-              <DialogTitle className="text-xl font-semibold text-[#213555]">
-                Edit User
-              </DialogTitle>
-            </DialogHeader>
-            {selectedUser && (
-              <div className="space-y-4">
-                <div>
-                  <Label
-                    htmlFor="editUserName"
-                    className="text-[#213555] font-medium"
-                  >
-                    Full Name
-                  </Label>
-                  <Input
-                    id="editUserName"
-                    defaultValue={selectedUser.name}
-                    className="border-gray-200 focus:border-[#4F709C]"
-                  />
-                </div>
-                <div>
-                  <Label
-                    htmlFor="editUserEmail"
-                    className="text-[#213555] font-medium"
-                  >
-                    Email
-                  </Label>
-                  <Input
-                    id="editUserEmail"
-                    type="email"
-                    defaultValue={selectedUser.email}
-                    className="border-gray-200 focus:border-[#4F709C]"
-                  />
-                </div>
-                <div>
-                  <Label
-                    htmlFor="editUserPhone"
-                    className="text-[#213555] font-medium"
-                  >
-                    Phone
-                  </Label>
-                  <Input
-                    id="editUserPhone"
-                    defaultValue={selectedUser.phone}
-                    className="border-gray-200 focus:border-[#4F709C]"
-                  />
-                </div>
-                <div>
-                  <Label
-                    htmlFor="editUserRole"
-                    className="text-[#213555] font-medium"
-                  >
-                    Role
-                  </Label>
-                  <Select defaultValue={selectedUser.role}>
-                    <SelectTrigger className="border-gray-200 focus:border-[#4F709C]">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent className="bg-white">
-                      <SelectItem value="admin">Administrator</SelectItem>
-                      <SelectItem value="manager">Manager</SelectItem>
-                      <SelectItem value="staff">Staff</SelectItem>
-                      <SelectItem value="customer">Customer</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label
-                    htmlFor="editUserStatus"
-                    className="text-[#213555] font-medium"
-                  >
-                    Status
-                  </Label>
-                  <Select defaultValue={selectedUser.status}>
-                    <SelectTrigger className="border-gray-200 focus:border-[#4F709C]">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent className="bg-white">
-                      <SelectItem value="active">Active</SelectItem>
-                      <SelectItem value="inactive">Inactive</SelectItem>
-                      <SelectItem value="suspended">Suspended</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="flex space-x-2">
-                  <Button
-                    onClick={() => setEditUserOpen(false)}
-                    className="flex-1 bg-[#213555] hover:bg-[#4F709C] transition-colors duration-200"
-                  >
-                    Save Changes
-                  </Button>
-                  <Button
-                    variant="outline"
-                    onClick={() => setEditUserOpen(false)}
-                    className="flex-1"
-                  >
-                    Cancel
-                  </Button>
-                </div>
-              </div>
-            )}
-          </DialogContent>
-        </Dialog>
 
         {/* View Staff Dialog */}
         <Dialog open={viewStaffOpen} onOpenChange={setViewStaffOpen}>
@@ -1092,7 +638,7 @@ const UserManagementPage: React.FC = () => {
                   >
                     Close
                   </Button>
-                  <Button className="bg-[#213555] hover:bg-[#4F709C]">
+                  <Button className=" bg-white hover:bg-[#f0f0f0] border border-black ">
                     Edit Staff
                   </Button>
                 </div>
@@ -1225,7 +771,7 @@ const UserManagementPage: React.FC = () => {
                 <div className="flex space-x-2">
                   <Button
                     onClick={() => setEditStaffOpen(false)}
-                    className="flex-1 bg-[#213555] hover:bg-[#4F709C] transition-colors duration-200"
+                    className="flex-1  bg-white hover:bg-[#f0f0f0] border border-black transition-colors duration-200"
                   >
                     Save Changes
                   </Button>
