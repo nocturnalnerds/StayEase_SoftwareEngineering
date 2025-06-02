@@ -22,14 +22,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/TextArea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+
 import { Badge } from "@/components/ui/badge";
 import {
   Users,
@@ -242,6 +235,8 @@ const FrontOfficePage: React.FC = () => {
     setIsViewReservationOpen(true);
   };
 
+   
+
   const filteredGuests = guests.filter((guest) => {
     const matchesSearch = guest.name
       .toLowerCase()
@@ -297,20 +292,7 @@ const FrontOfficePage: React.FC = () => {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-            <Button
-              variant="outline"
-              size="icon"
-              className="hover:bg-blue-50 hover:border-blue-300 transition-all duration-200"
-            >
-              <Filter className="h-4 w-4" />
-            </Button>
             <Dialog open={isAddGuestOpen} onOpenChange={setIsAddGuestOpen}>
-              <DialogTrigger asChild>
-                <Button className="bg-[#213555] hover:bg-[#4F709C] text-white shadow-lg hover:shadow-xl transition-all duration-300">
-                  <UserPlus className="mr-2 h-4 w-4" />
-                  Add Guest
-                </Button>
-              </DialogTrigger>
               <DialogContent className="bg-white border-0 shadow-2xl">
                 <DialogHeader>
                   <DialogTitle className="text-[#213555] text-xl font-bold">
@@ -517,7 +499,7 @@ const FrontOfficePage: React.FC = () => {
                   <div className="flex space-x-2">
                     <Button
                       onClick={() => setIsAddReservationOpen(false)}
-                      className="flex-1 bg-[#213555] hover:bg-[#4F709C] transition-colors duration-200"
+                      className="flex-1  bg-white hover:bg-[#f0f0f0] border border-black transition-colors duration-200"
                     >
                       Create Reservation
                     </Button>
@@ -543,7 +525,7 @@ const FrontOfficePage: React.FC = () => {
         </div>
 
         {/* Main Content */}
-        <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+        <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm min-h-screen">
           <CardHeader className="bg-gradient-to-r from-[#213555] to-[#4F709C] text-white rounded-t-lg">
             <div className="flex justify-between items-center gap-8">
               <CardTitle className="text-xl font-bold">
@@ -565,7 +547,7 @@ const FrontOfficePage: React.FC = () => {
               </div>
             </div>
           </CardHeader>
-          <CardContent className="p-0">
+          <CardContent className="p-0 pb-8">
             <Tabs value={activeTab} onValueChange={setActiveTab}>
               <TabsList className="grid w-full grid-cols-2 bg-gray-50 border-b">
                 <TabsTrigger
@@ -583,189 +565,240 @@ const FrontOfficePage: React.FC = () => {
               </TabsList>
 
               <TabsContent value="guests" className="mt-0">
-                <div className="overflow-hidden">
-                  <Table>
-                    <TableHeader>
-                      <TableRow className="bg-gray-50">
-                        <TableHead className="font-semibold text-[#213555]">
+                <div className="overflow-x-auto">
+                  <table className="w-full border-collapse min-w-full">
+                    <thead>
+                      <tr className="bg-gradient-to-r from-gray-100 to-gray-50 border-b-2 border-gray-200">
+                        <th className="font-bold text-[#213555] py-4 px-6 text-sm uppercase tracking-wide text-left w-1/5">
                           Guest Name
-                        </TableHead>
-                        <TableHead className="font-semibold text-[#213555]">
+                        </th>
+                        <th className="font-bold text-[#213555] py-4 px-6 text-sm uppercase tracking-wide text-left w-1/6">
                           Room
-                        </TableHead>
-                        <TableHead className="font-semibold text-[#213555]">
+                        </th>
+                        <th className="font-bold text-[#213555] py-4 px-6 text-sm uppercase tracking-wide text-left w-1/8">
                           Check-in
-                        </TableHead>
-                        <TableHead className="font-semibold text-[#213555]">
+                        </th>
+                        <th className="font-bold text-[#213555] py-4 px-6 text-sm uppercase tracking-wide text-left w-1/8">
                           Check-out
-                        </TableHead>
-                        <TableHead className="font-semibold text-[#213555]">
+                        </th>
+                        <th className="font-bold text-[#213555] py-4 px-6 text-sm uppercase tracking-wide text-left w-1/8">
                           Status
-                        </TableHead>
-                        <TableHead className="font-semibold text-[#213555]">
+                        </th>
+                        <th className="font-bold text-[#213555] py-4 px-6 text-sm uppercase tracking-wide text-left w-1/8">
                           Payment
-                        </TableHead>
-                        <TableHead className="font-semibold text-[#213555]">
+                        </th>
+                        <th className="font-bold text-[#213555] py-4 px-6 text-sm uppercase tracking-wide text-left w-1/6">
                           Actions
-                        </TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {filteredGuests.map((guest) => (
-                        <TableRow
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredGuests.map((guest, index) => (
+                        <tr
                           key={guest.id}
-                          className="hover:bg-blue-50 transition-colors duration-200"
+                          className={`group hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 transition-all duration-300 border-b border-gray-100 ${
+                            index % 2 === 0 ? "bg-white" : "bg-gray-50/30"
+                          }`}
                         >
-                          <TableCell>
+                          <td className="py-4 px-6">
                             <div>
-                              <div className="font-medium text-[#4F709C]">
+                              <div className="font-semibold text-[#4F709C] group-hover:text-[#213555] transition-colors text-base">
                                 {guest.name}
                               </div>
-                              <div className="text-sm text-gray-500">
+                              <div className="text-sm text-gray-500 mt-1">
                                 {guest.email}
                               </div>
                             </div>
-                          </TableCell>
-                          <TableCell>
+                          </td>
+                          <td className="py-4 px-6">
                             <Badge
                               variant="outline"
-                              className="bg-blue-50 text-blue-700 border-blue-200"
+                              className="bg-blue-50 text-blue-700 border-blue-200 font-medium px-3 py-1 text-sm"
                             >
                               {guest.roomNumber} ({guest.roomType})
                             </Badge>
-                          </TableCell>
-                          <TableCell className="text-gray-600">
-                            {new Date(guest.checkIn).toLocaleDateString()}
-                          </TableCell>
-                          <TableCell className="text-gray-600">
-                            {new Date(guest.checkOut).toLocaleDateString()}
-                          </TableCell>
-                          <TableCell>
-                            <Badge className={getStatusColor(guest.status)}>
+                          </td>
+                          <td className="py-4 px-6">
+                            <div className="text-gray-700 font-medium">
+                              {new Date(guest.checkIn).toLocaleDateString(
+                                "en-US",
+                                {
+                                  year: "numeric",
+                                  month: "short",
+                                  day: "numeric",
+                                }
+                              )}
+                            </div>
+                          </td>
+                          <td className="py-4 px-6">
+                            <div className="text-gray-700 font-medium">
+                              {new Date(guest.checkOut).toLocaleDateString(
+                                "en-US",
+                                {
+                                  year: "numeric",
+                                  month: "short",
+                                  day: "numeric",
+                                }
+                              )}
+                            </div>
+                          </td>
+                          <td className="py-4 px-6">
+                            <Badge
+                              className={`${getStatusColor(
+                                guest.status
+                              )} font-medium px-3 py-1 text-sm border`}
+                            >
                               {guest.status}
                             </Badge>
-                          </TableCell>
-                          <TableCell>
+                          </td>
+                          <td className="py-4 px-6">
                             <Badge
-                              className={getStatusColor(guest.paymentStatus)}
+                              className={`${getStatusColor(
+                                guest.paymentStatus
+                              )} font-medium px-3 py-1 text-sm border`}
                             >
                               {guest.paymentStatus}
                             </Badge>
-                          </TableCell>
-                          <TableCell>
+                          </td>
+                          <td className="py-4 px-6">
                             <div className="flex space-x-1">
                               <Button
                                 variant="ghost"
                                 size="sm"
                                 onClick={() => handleViewGuest(guest)}
-                                className="hover:bg-blue-50"
+                                className="hover:bg-blue-100 hover:text-blue-700 transition-all duration-200 rounded-lg p-2 group/btn"
+                                title="View Guest"
                               >
-                                <Eye className="h-4 w-4" />
+                                <Eye className="h-4 w-4 group-hover/btn:scale-110 transition-transform" />
                               </Button>
                               <Button
                                 variant="ghost"
                                 size="sm"
                                 onClick={() => handleEditGuest(guest)}
-                                className="hover:bg-blue-50"
+                                className="hover:bg-amber-100 hover:text-amber-700 transition-all duration-200 rounded-lg p-2 group/btn"
+                                title="Edit Guest"
                               >
-                                <Edit className="h-4 w-4" />
+                                <Edit className="h-4 w-4 group-hover/btn:scale-110 transition-transform" />
                               </Button>
                               <Button
                                 variant="ghost"
                                 size="sm"
-                                className="text-red-600 hover:text-red-900 hover:bg-red-50"
+                                className="text-red-600 hover:text-red-900 hover:bg-red-100 transition-all duration-200 rounded-lg p-2 group/btn"
+                                title="Delete Guest"
                               >
-                                <Trash2 className="h-4 w-4" />
+                                <Trash2 className="h-4 w-4 group-hover/btn:scale-110 transition-transform" />
                               </Button>
                               {guest.status === "reserved" && (
                                 <Button
                                   variant="ghost"
                                   size="sm"
-                                  className="text-green-600 hover:text-green-900 hover:bg-green-50"
+                                  className="text-green-600 hover:text-green-900 hover:bg-green-100 transition-all duration-200 rounded-lg p-2 group/btn"
+                                  title="Check In"
                                 >
-                                  <CheckCircle className="h-4 w-4" />
+                                  <CheckCircle className="h-4 w-4 group-hover/btn:scale-110 transition-transform" />
                                 </Button>
                               )}
                             </div>
-                          </TableCell>
-                        </TableRow>
+                          </td>
+                        </tr>
                       ))}
-                    </TableBody>
-                  </Table>
+                    </tbody>
+                  </table>
                 </div>
               </TabsContent>
 
               <TabsContent value="reservations" className="mt-0">
-                <div className="overflow-hidden">
-                  <Table>
-                    <TableHeader>
-                      <TableRow className="bg-gray-50">
-                        <TableHead className="font-semibold text-[#213555]">
+                <div className="overflow-x-auto">
+                  <table className="w-full border-collapse min-w-full">
+                    <thead>
+                      <tr className="bg-gradient-to-r from-gray-100 to-gray-50 border-b-2 border-gray-200">
+                        <th className="font-bold text-[#213555] py-4 px-6 text-sm uppercase tracking-wide text-left w-1/5">
                           Guest Name
-                        </TableHead>
-                        <TableHead className="font-semibold text-[#213555]">
+                        </th>
+                        <th className="font-bold text-[#213555] py-4 px-6 text-sm uppercase tracking-wide text-left w-1/7">
                           Room Type
-                        </TableHead>
-                        <TableHead className="font-semibold text-[#213555]">
+                        </th>
+                        <th className="font-bold text-[#213555] py-4 px-6 text-sm uppercase tracking-wide text-left w-1/8">
                           Check-in
-                        </TableHead>
-                        <TableHead className="font-semibold text-[#213555]">
+                        </th>
+                        <th className="font-bold text-[#213555] py-4 px-6 text-sm uppercase tracking-wide text-left w-1/8">
                           Check-out
-                        </TableHead>
-                        <TableHead className="font-semibold text-[#213555]">
+                        </th>
+                        <th className="font-bold text-[#213555] py-4 px-6 text-sm uppercase tracking-wide text-left w-1/10">
                           Guests
-                        </TableHead>
-                        <TableHead className="font-semibold text-[#213555]">
+                        </th>
+                        <th className="font-bold text-[#213555] py-4 px-6 text-sm uppercase tracking-wide text-left w-1/8">
                           Status
-                        </TableHead>
-                        <TableHead className="font-semibold text-[#213555]">
+                        </th>
+                        <th className="font-bold text-[#213555] py-4 px-6 text-sm uppercase tracking-wide text-left w-1/6">
                           Actions
-                        </TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {filteredReservations.map((reservation) => (
-                        <TableRow
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredReservations.map((reservation, index) => (
+                        <tr
                           key={reservation.id}
-                          className="hover:bg-blue-50 transition-colors duration-200"
+                          className={`group hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 transition-all duration-300 border-b border-gray-100 ${
+                            index % 2 === 0 ? "bg-white" : "bg-gray-50/30"
+                          }`}
                         >
-                          <TableCell>
+                          <td className="py-4 px-6">
                             <div>
-                              <div className="font-medium text-[#4F709C]">
+                              <div className="font-semibold text-[#4F709C] group-hover:text-[#213555] transition-colors text-base">
                                 {reservation.guestName}
                               </div>
-                              <div className="text-sm text-gray-500">
+                              <div className="text-sm text-gray-500 mt-1">
                                 {reservation.email}
                               </div>
                             </div>
-                          </TableCell>
-                          <TableCell>
+                          </td>
+                          <td className="py-4 px-6">
                             <Badge
                               variant="outline"
-                              className="bg-blue-50 text-blue-700 border-blue-200"
+                              className="bg-blue-50 text-blue-700 border-blue-200 font-medium px-3 py-1 text-sm"
                             >
                               {reservation.roomType}
                             </Badge>
-                          </TableCell>
-                          <TableCell className="text-gray-600">
-                            {new Date(reservation.checkIn).toLocaleDateString()}
-                          </TableCell>
-                          <TableCell className="text-gray-600">
-                            {new Date(
-                              reservation.checkOut
-                            ).toLocaleDateString()}
-                          </TableCell>
-                          <TableCell className="text-gray-600">
-                            {reservation.guests}
-                          </TableCell>
-                          <TableCell>
+                          </td>
+                          <td className="py-4 px-6">
+                            <div className="text-gray-700 font-medium">
+                              {new Date(reservation.checkIn).toLocaleDateString(
+                                "en-US",
+                                {
+                                  year: "numeric",
+                                  month: "short",
+                                  day: "numeric",
+                                }
+                              )}
+                            </div>
+                          </td>
+                          <td className="py-4 px-6">
+                            <div className="text-gray-700 font-medium">
+                              {new Date(
+                                reservation.checkOut
+                              ).toLocaleDateString("en-US", {
+                                year: "numeric",
+                                month: "short",
+                                day: "numeric",
+                              })}
+                            </div>
+                          </td>
+                          <td className="py-4 px-6">
+                            <div className="text-gray-700 font-bold text-center">
+                              {reservation.guests}
+                            </div>
+                          </td>
+                          <td className="py-4 px-6">
                             <Badge
-                              className={getStatusColor(reservation.status)}
+                              className={`${getStatusColor(
+                                reservation.status
+                              )} font-medium px-3 py-1 text-sm border`}
                             >
                               {reservation.status}
                             </Badge>
-                          </TableCell>
-                          <TableCell>
+                          </td>
+                          <td className="py-4 px-6">
                             <div className="flex space-x-1">
                               <Button
                                 variant="ghost"
@@ -773,39 +806,43 @@ const FrontOfficePage: React.FC = () => {
                                 onClick={() =>
                                   handleViewReservation(reservation)
                                 }
-                                className="hover:bg-blue-50"
+                                className="hover:bg-blue-100 hover:text-blue-700 transition-all duration-200 rounded-lg p-2 group/btn"
+                                title="View Reservation"
                               >
-                                <Eye className="h-4 w-4" />
+                                <Eye className="h-4 w-4 group-hover/btn:scale-110 transition-transform" />
                               </Button>
                               <Button
                                 variant="ghost"
                                 size="sm"
-                                className="hover:bg-blue-50"
+                                className="hover:bg-amber-100 hover:text-amber-700 transition-all duration-200 rounded-lg p-2 group/btn"
+                                title="Edit Reservation"
                               >
-                                <Edit className="h-4 w-4" />
+                                <Edit className="h-4 w-4 group-hover/btn:scale-110 transition-transform" />
                               </Button>
                               <Button
                                 variant="ghost"
                                 size="sm"
-                                className="text-red-600 hover:text-red-900 hover:bg-red-50"
+                                className="text-red-600 hover:text-red-900 hover:bg-red-100 transition-all duration-200 rounded-lg p-2 group/btn"
+                                title="Cancel Reservation"
                               >
-                                <Trash2 className="h-4 w-4" />
+                                <Trash2 className="h-4 w-4 group-hover/btn:scale-110 transition-transform" />
                               </Button>
                               {reservation.status === "pending" && (
                                 <Button
                                   variant="ghost"
                                   size="sm"
-                                  className="text-green-600 hover:text-green-900 hover:bg-green-50"
+                                  className="text-green-600 hover:text-green-900 hover:bg-green-100 transition-all duration-200 rounded-lg p-2 group/btn"
+                                  title="Confirm Reservation"
                                 >
-                                  <CheckCircle className="h-4 w-4" />
+                                  <CheckCircle className="h-4 w-4 group-hover/btn:scale-110 transition-transform" />
                                 </Button>
                               )}
                             </div>
-                          </TableCell>
-                        </TableRow>
+                          </td>
+                        </tr>
                       ))}
-                    </TableBody>
-                  </Table>
+                    </tbody>
+                  </table>
                 </div>
               </TabsContent>
             </Tabs>
@@ -911,7 +948,7 @@ const FrontOfficePage: React.FC = () => {
                   >
                     Close
                   </Button>
-                  <Button className="bg-[#213555] hover:bg-[#4F709C]">
+                  <Button className=" bg-white hover:bg-[#f0f0f0] border border-black">
                     Edit Guest
                   </Button>
                 </div>
@@ -1045,7 +1082,7 @@ const FrontOfficePage: React.FC = () => {
                   >
                     Cancel
                   </Button>
-                  <Button className="bg-[#213555] hover:bg-[#4F709C]">
+                  <Button className=" bg-white hover:bg-[#f0f0f0] border border-black">
                     Save Changes
                   </Button>
                 </div>
@@ -1160,7 +1197,7 @@ const FrontOfficePage: React.FC = () => {
                   >
                     Close
                   </Button>
-                  <Button className="bg-[#213555] hover:bg-[#4F709C]">
+                  <Button className=" bg-white hover:bg-[#f0f0f0] border border-black">
                     Edit Reservation
                   </Button>
                 </div>
