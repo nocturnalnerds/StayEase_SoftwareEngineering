@@ -28,7 +28,7 @@ export default function Signup() {
       setError("password", { message: "Password did not match" });
       return;
     }
-
+    
     registerMutation.mutate(data);
   };
 

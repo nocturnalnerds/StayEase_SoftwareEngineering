@@ -73,7 +73,6 @@ interface Reservation {
   totalAmount: number;
 }
 
-// Simple StatsCard component
 const StatsCard: React.FC<{
   title: string;
   value: string;
