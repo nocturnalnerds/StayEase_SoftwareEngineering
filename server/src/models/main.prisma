@@ -1,6 +1,5 @@
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["prismaSchemaFolder"]
 }
 
 datasource db {
@@ -31,4 +30,263 @@ model ContactUsInfo{
   phone String
   subject String
   message String?
+}
+
+
+model Staff {
+  id            String     @id @default(auto()) @map("_id") @db.ObjectId
+  username      String
+  email         String     @unique
+  firstName     String
+  lastName      String
+  phone         String
+  role          String
+  department    String
+  division      String
+  hireDate      DateTime
+  status        String
+  lastLogin     DateTime?
+  profileImage  String?
+  processedPayments Payment[] @relation("StaffToPayment")
+  preparedFoodOrders FoodOrder[] @relation("StaffToFoodOrder")
+  inventoryTransactions InventoryTransaction[]
+  generatedReports Report[]
+}
+
+model Customer {
+  id              String     @id @default(auto()) @map("_id") @db.ObjectId
+  username        String
+  email           String     @unique
+  firstName       String
+  lastName        String
+  phone           String
+  address         String
+  country         String
+  loyaltyPoints   Int        @default(0)
+  registrationDate DateTime
+  status          String
+  lastVisit       DateTime?
+  profileImage    String?
+  reservations    Reservation[]
+  foodOrders      FoodOrder[]
+  banquetBookings BanquetBooking[]
+}
+
+model RoomType {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  description  String
+  basePrice    Float
+  capacity     Int
+  maxOccupancy Int
+  amenities    String[]
+  images       String[]
+  rooms        Room[]
+  discountRates DiscountRate[]
+}
+
+model Room {
+  id             String     @id @default(auto()) @map("_id") @db.ObjectId
+  roomNumber     String     @unique
+  roomTypeId     String   @db.ObjectId
+  floor          Int
+  status         String
+  notes          String?
+  lastCleaned    DateTime?
+  currentOccupant String?
+  reservationRooms ReservationRoom[]
+  foodOrders     FoodOrder[]
+  roomType       RoomType   @relation(fields: [roomTypeId], references: [id])
+}
+
+model HouseKeeperRoom {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  roomNumber   String
+  type         String
+  status       String
+  lastCleaned  DateTime
+  assignedTo   String
+  priority     String
+  notes        String?
+}
+
+model DiscountRate {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  roomTypeId     String   @db.ObjectId
+  name           String
+  ratePercentage Float
+  startDate      DateTime
+  endDate        DateTime
+  minNights      Int
+  description    String
+  isActive       Boolean
+  reservationRooms ReservationRoom[]
+  roomType       RoomType @relation(fields: [roomTypeId], references: [id])
+  
+}
+
+model Reservation {
+  id                String     @id @default(auto()) @map("_id") @db.ObjectId
+  customerId        String   @db.ObjectId
+  customer          Customer   @relation(fields: [customerId], references: [id])
+  status            String
+  checkInDate       DateTime
+  checkOutDate      DateTime
+  adults            Int
+  children          Int
+  specialRequests   String?
+  totalAmount       Float
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+  assignedRooms     ReservationRoom[]
+  payments          Payment[]
+}
+
+model ReservationRoom {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  reservationId  String   @db.ObjectId
+  reservation    Reservation @relation(fields: [reservationId], references: [id])
+  roomId         String @db.ObjectId
+  room           Room     @relation(fields: [roomId], references: [id])
+  ratePerNight   Float
+  discountId     String? @db.ObjectId
+  discount       DiscountRate? @relation(fields: [discountId], references: [id])
+  checkInDate    DateTime
+  checkOutDate   DateTime
+}
+
+model Payment {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  reservationId  String @db.ObjectId
+  reservation    Reservation @relation(fields: [reservationId], references: [id])
+  paymentNumber  String     @unique
+  amount         Float
+  paymentMethod  String
+  paymentStatus  String
+  transactionId  String?
+  processedById  String? @db.ObjectId
+  processedBy    Staff?    @relation("StaffToPayment", fields: [processedById], references: [id])
+  notes          String?
+}
+
+model FoodItem {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  name            String
+  description     String
+  price           Float
+  category        String
+  isAvailable     Boolean
+  image           String?
+  ingredients     String[]
+  allergens       String[]
+  preparationTime Int
+  orderItems      FoodOrderItem[]
+}
+
+model FoodOrder {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  orderNumber  String   @unique
+  roomId       String? @db.ObjectId
+  room         Room?    @relation(fields: [roomId], references: [id])
+  customerId   String? @db.ObjectId
+  customer     Customer? @relation(fields: [customerId], references: [id])
+  items        FoodOrderItem[]
+  totalAmount  Float
+  orderDate    DateTime
+  status       String
+  preparedById String? @db.ObjectId
+  preparedBy   Staff?   @relation("StaffToFoodOrder", fields: [preparedById], references: [id])
+}
+
+model FoodOrderItem {
+  id                  String   @id @default(auto()) @map("_id") @db.ObjectId
+  orderId             String @db.ObjectId
+  order               FoodOrder @relation(fields: [orderId], references: [id])
+  foodItemId          String @db.ObjectId
+  foodItem            FoodItem  @relation(fields: [foodItemId], references: [id])
+  quantity            Int
+  specialInstructions String?
+  price               Float
+}
+
+model BanquetHall {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  capacity     Int
+  pricePerHour Float
+  description  String
+  images       String[]
+  amenities    String[]
+  isAvailable  Boolean
+  bookings     BanquetBooking[]
+}
+
+model BanquetBooking {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  bookingNumber  String   @unique
+  hallId         String @db.ObjectId
+  hall           BanquetHall @relation(fields: [hallId], references: [id])
+  customerId     String @db.ObjectId
+  customer       Customer    @relation(fields: [customerId], references: [id])
+  eventType      String
+  startDateTime  DateTime
+  endDateTime    DateTime
+  attendees      Int
+  totalAmount    Float
+  status         String
+  notes          String?
+}
+
+model InventoryItem {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  category      String
+  quantity      Int
+  unit          String
+  reorderLevel  Int
+  cost          Float
+  supplier      String
+  lastRestocked DateTime
+  location      String
+  transactions  InventoryTransaction[]
+}
+
+model InventoryTransaction {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  itemId         String @db.ObjectId
+  item           InventoryItem @relation(fields: [itemId], references: [id])
+  quantity       Int
+  transactionType String
+  date           DateTime
+  staffId        String @db.ObjectId
+  staff          Staff         @relation(fields: [staffId], references: [id])
+  notes          String?
+}
+
+model SystemSettings {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  hotelName    String
+  address      String
+  phone        String
+  email        String
+  website      String
+  checkInTime  String
+  checkOutTime String
+  currency     String
+  taxRate      Float
+  logo         String?
+}
+
+model Report {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  type         String
+  timeframe    String
+  startDate    DateTime
+  endDate      DateTime
+  generatedById String @db.ObjectId
+  generatedBy  Staff     @relation(fields: [generatedById], references: [id])
+  generatedAt  DateTime
+  data         Json
+  format       String
 }

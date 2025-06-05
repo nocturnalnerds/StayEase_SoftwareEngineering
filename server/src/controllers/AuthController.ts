@@ -68,6 +68,7 @@ const createUserSchema = z.object({
 
 export const register:RequestHandler = async(req,res,next) => {
   try{
+    console.log("TITID");
     const reqBody = createUserSchema.safeParse(req.body);
     if(!reqBody.data){
       res.status(STATUS.BAD_REQUEST).json({
@@ -77,6 +78,7 @@ export const register:RequestHandler = async(req,res,next) => {
       });
       return;
     }
+    
     const { email, username, password, phone } = reqBody.data;
     
     const userExist = await prisma.user.findUnique({
