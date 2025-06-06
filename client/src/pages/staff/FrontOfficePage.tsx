@@ -498,17 +498,17 @@ const FrontOfficePage: React.FC = () => {
                   </div>
                   <div className="flex space-x-2">
                     <Button
-                      onClick={() => setIsAddReservationOpen(false)}
-                      className="flex-1  bg-white hover:bg-[#f0f0f0] border border-black transition-colors duration-200"
-                    >
-                      Create Reservation
-                    </Button>
-                    <Button
                       variant="outline"
                       onClick={() => setIsAddReservationOpen(false)}
                       className="flex-1"
                     >
                       Cancel
+                    </Button>
+                    <Button
+                      onClick={() => setIsAddReservationOpen(false)}
+                      className="flex-1 bg-[#213555] hover:bg-[#4F709C] text-white transition-colors duration-200"
+                    >
+                      Create Reservation
                     </Button>
                   </div>
                 </div>
@@ -948,7 +948,7 @@ const FrontOfficePage: React.FC = () => {
                   >
                     Close
                   </Button>
-                  <Button className=" bg-white hover:bg-[#f0f0f0] border border-black">
+                  <Button className=" bg-[#213555] hover:bg-[#4F709C] text-white">
                     Edit Guest
                   </Button>
                 </div>
@@ -1082,7 +1082,7 @@ const FrontOfficePage: React.FC = () => {
                   >
                     Cancel
                   </Button>
-                  <Button className=" bg-white hover:bg-[#f0f0f0] border border-black">
+                  <Button className=" bg-[#213555] hover:bg-[#4F709C] text-white">
                     Save Changes
                   </Button>
                 </div>
@@ -1197,7 +1197,7 @@ const FrontOfficePage: React.FC = () => {
                   >
                     Close
                   </Button>
-                  <Button className=" bg-white hover:bg-[#f0f0f0] border border-black">
+                  <Button className=" bg-[#213555] hover:bg-[#4F709C] text-white">
                     Edit Reservation
                   </Button>
                 </div>
