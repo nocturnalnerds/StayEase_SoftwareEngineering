@@ -6,7 +6,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/Input";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Select,
   SelectContent,
@@ -43,7 +42,6 @@ import {
   RefreshCw,
   Edit,
   Trash2,
-  CheckCircle,
 } from "lucide-react";
 
 interface Payment {
@@ -58,22 +56,6 @@ interface Payment {
   date: string;
   description: string;
   processedBy: string;
-}
-
-interface Invoice {
-  id: string;
-  invoiceNumber: string;
-  guestName: string;
-  roomNumber: string;
-  checkIn: string;
-  checkOut: string;
-  roomCharges: number;
-  additionalCharges: number;
-  taxes: number;
-  totalAmount: number;
-  status: "paid" | "pending" | "overdue" | "cancelled";
-  dueDate: string;
-  paidDate?: string;
 }
 
 // Simple StatsCard component
@@ -112,16 +94,13 @@ const StatsCard: React.FC<{
 
 const PaymentPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState("payments");
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
   const [isProcessPaymentOpen, setIsProcessPaymentOpen] = useState(false);
   const [isCreateInvoiceOpen, setIsCreateInvoiceOpen] = useState(false);
   const [isViewPaymentOpen, setIsViewPaymentOpen] = useState(false);
   const [isEditPaymentOpen, setIsEditPaymentOpen] = useState(false);
-  const [isViewInvoiceOpen, setIsViewInvoiceOpen] = useState(false);
   const [selectedPayment, setSelectedPayment] = useState<Payment | null>(null);
-  const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
 
   // Mock data
   const payments: Payment[] = [
