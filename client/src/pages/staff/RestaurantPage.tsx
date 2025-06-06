@@ -2,18 +2,14 @@
 
 import type React from "react";
 import { useState, useEffect } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs } from "@/components/ui/tabs";
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
 import {
   Select,
   SelectContent,
@@ -31,22 +27,11 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/TextArea";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+
 import {
   Plus,
-  Search,
-  Edit2,
-  Trash2,
   Clock,
   User,
-  Coffee,
   UtensilsCrossed,
   ChefHat,
   DollarSign,
@@ -84,15 +69,8 @@ const RestaurantPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [activeOrders, setActiveOrders] = useState<Order[]>([]);
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
-  const [selectedMenuItem, setSelectedMenuItem] = useState<MenuItem | null>(
-    null
-  );
   const [isOrderDialogOpen, setIsOrderDialogOpen] = useState(false);
-  const [isMenuDialogOpen, setIsMenuDialogOpen] = useState(false);
-  const [isAddMenuDialogOpen, setIsAddMenuDialogOpen] = useState(false);
   const [isAddItemDialogOpen, setIsAddItemDialogOpen] = useState(false);
 
   useEffect(() => {
@@ -273,7 +251,6 @@ const RestaurantPage: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-red-50 p-6">
       <div className="max-w-7xl mx-auto space-y-8">
         {/* Header */}
-
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
           <div>
             <h1 className="text-4xl font-bold text-[#213555]">
@@ -519,9 +496,9 @@ const RestaurantPage: React.FC = () => {
             <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden flex-1 w-full min-w-0">
               <div className="p-0 flex-1 w-full min-w-0">
                 <div className="w-full overflow-x-auto">
-                  <table className="w-full table-fixed min-w-full">
+                  <table className="w-full table-fixed min-w-full rounded-none">
                     <thead>
-                      <tr className="bg-gray-50">
+                      <tr className="bg-gradient-to-r from-gray-100 to-gray-50 border-b-2 border-gray-200">
                         <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/7">
                           Order ID
                         </th>

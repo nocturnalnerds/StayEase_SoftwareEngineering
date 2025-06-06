@@ -339,87 +339,211 @@ export default function HouseKeepingPage() {
         </div>
 
         {/* Tabs */}
-        <Tabs defaultValue="pending" className="space-y-6">
-            <div className="bg-white min-h-screen">
-          <TabsList className="grid w-full grid-cols-3 bg-white shadow-sm border">
-            <TabsTrigger
-              value="pending"
-              className="data-[state=active]:bg-[#213555] data-[state=active]:text-white"
-            >
-              Pending ({pendingRooms.length})
-            </TabsTrigger>
-            <TabsTrigger
-              value="completed"
-              className="data-[state=active]:bg-green-500 data-[state=active]:text-white"
-            >
-              Completed ({completedRooms.length})
-            </TabsTrigger>
-            <TabsTrigger
-              value="maintenance"
-              className="data-[state=active]:bg-red-500 data-[state=active]:text-white"
-            >
-              Maintenance ({maintenanceRooms.length})
-            </TabsTrigger>
-          </TabsList>
+        <Tabs defaultValue="pending" className="space-y-0">
+          <div className="bg-white min-h-screen">
+            <TabsList className="grid w-full grid-cols-3 bg-white shadow-sm border">
+              <TabsTrigger
+                value="pending"
+                className="data-[state=active]:bg-[#213555] data-[state=active]:text-white"
+              >
+                Pending ({pendingRooms.length})
+              </TabsTrigger>
+              <TabsTrigger
+                value="completed"
+                className="data-[state=active]:bg-green-500 data-[state=active]:text-white"
+              >
+                Completed ({completedRooms.length})
+              </TabsTrigger>
+              <TabsTrigger
+                value="maintenance"
+                className="data-[state=active]:bg-red-500 data-[state=active]:text-white"
+              >
+                Maintenance ({maintenanceRooms.length})
+              </TabsTrigger>
+            </TabsList>
 
-          <TabsContent value="pending" className="space-y-6">
-            <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm overflow-hidden">
-              <CardHeader className="bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-t-lg">
-                <CardTitle className="flex items-center gap-2">
-                  <Clock className="h-5 w-5" />
-                  Pending Cleaning Tasks
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-0">
-                <div className="overflow-x-auto">
-                  <Table className="min-w-full table-fixed">
-                    <TableHeader>
-                      <TableRow className="bg-gray-50">
-                        <TableHead className="font-semibold text-[#213555] w-[15%]">
-                          Room
-                        </TableHead>
-                        <TableHead className="font-semibold text-[#213555] w-[15%]">
-                          Type
-                        </TableHead>
-                        <TableHead className="font-semibold text-[#213555] w-[12%]">
-                          Priority
-                        </TableHead>
-                        <TableHead className="font-semibold text-[#213555] w-[18%]">
-                          Assigned To
-                        </TableHead>
-                        <TableHead className="font-semibold text-[#213555] w-[15%]">
-                          Last Cleaned
-                        </TableHead>
-                        <TableHead className="font-semibold text-[#213555] w-[25%]">
-                          Actions
-                        </TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {pendingRooms.length > 0 ? (
-                        pendingRooms.map((room) => (
+            <TabsContent value="pending" className="space-y-0">
+              <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm overflow-hidden">
+                <CardHeader className="bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-t-lg">
+                  <CardTitle className="flex items-center gap-2">
+                    <Clock className="h-5 w-5" />
+                    Pending Cleaning Tasks
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-0">
+                  <div className="overflow-x-auto">
+                    <Table className="min-w-full table-fixed">
+                      <TableHeader>
+                        <TableRow className="bg-gradient-to-r from-gray-100 to-gray-50 border-b-2 border-gray-200">
+                          <TableHead className="font-semibold text-[#213555] w-[15%]">
+                            Room
+                          </TableHead>
+                          <TableHead className="font-semibold text-[#213555] w-[15%]">
+                            Type
+                          </TableHead>
+                          <TableHead className="font-semibold text-[#213555] w-[12%]">
+                            Priority
+                          </TableHead>
+                          <TableHead className="font-semibold text-[#213555] w-[18%]">
+                            Assigned To
+                          </TableHead>
+                          <TableHead className="font-semibold text-[#213555] w-[15%]">
+                            Last Cleaned
+                          </TableHead>
+                          <TableHead className="font-semibold text-[#213555] w-[25%]">
+                            Actions
+                          </TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {pendingRooms.length > 0 ? (
+                          pendingRooms.map((room) => (
+                            <TableRow
+                              key={room.id}
+                              className="hover:bg-blue-50 transition-colors duration-200"
+                            >
+                              <TableCell className="font-medium text-[#4F709C]">
+                                {room.roomNumber}
+                              </TableCell>
+                              <TableCell>
+                                <Badge
+                                  variant="outline"
+                                  className="bg-blue-50 text-blue-700 border-blue-200"
+                                >
+                                  {room.type}
+                                </Badge>
+                              </TableCell>
+                              <TableCell>
+                                <Badge
+                                  className={`${getPriorityColor(
+                                    room.priority
+                                  )} transition-all duration-200 hover:scale-105`}
+                                >
+                                  {room.priority.toUpperCase()}
+                                </Badge>
+                              </TableCell>
+                              <TableCell>
+                                <div className="flex items-center gap-2">
+                                  <Users className="h-4 w-4 text-gray-400" />
+                                  {room.assignedTo}
+                                </div>
+                              </TableCell>
+                              <TableCell className="text-gray-600">
+                                {room.lastCleaned}
+                              </TableCell>
+                              <TableCell>
+                                <div className="flex space-x-2">
+                                  <Button
+                                    size="sm"
+                                    className="bg-green-500 hover:bg-green-600 text-white transition-all duration-200 hover:scale-105"
+                                    onClick={() =>
+                                      updateRoomStatus(room.id, "Available")
+                                    }
+                                  >
+                                    <CheckCircle className="mr-1 h-4 w-4" />
+                                    Complete
+                                  </Button>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    className="hover:bg-red-50 hover:border-red-300 hover:text-red-600 transition-all duration-200"
+                                    onClick={() =>
+                                      updateRoomStatus(room.id, "Maintenance")
+                                    }
+                                  >
+                                    <XCircle className="mr-1 h-4 w-4" />
+                                    Issue
+                                  </Button>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    className="hover:bg-blue-50 hover:border-blue-300 transition-all duration-200"
+                                    onClick={() => {
+                                      setSelectedRoom(room);
+                                      setIsEditDialogOpen(true);
+                                    }}
+                                  >
+                                    <Edit2 className="h-4 w-4" />
+                                  </Button>
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          ))
+                        ) : (
+                          <TableRow>
+                            <TableCell
+                              colSpan={6}
+                              className="text-center py-12"
+                            >
+                              <CheckCircle className="mx-auto h-12 w-12 text-green-500 mb-4" />
+                              <h3 className="text-lg font-medium text-gray-900">
+                                All caught up!
+                              </h3>
+                              <p className="text-gray-500">
+                                No pending cleaning tasks
+                              </p>
+                            </TableCell>
+                          </TableRow>
+                        )}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="completed" className="space-y-0">
+              <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm overflow-hidden">
+                <CardHeader className="bg-gradient-to-r from-green-500 to-green-600 text-white rounded-t-lg">
+                  <CardTitle className="flex items-center gap-2">
+                    <CheckCircle className="h-5 w-5" />
+                    Completed Rooms
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-0">
+                  <div className="w-full overflow-x-auto">
+                    <Table className="w-full table-fixed">
+                      <colgroup>
+                        <col className="w-[120px]" />
+                        <col className="w-[140px]" />
+                        <col className="w-[160px]" />
+                        <col className="w-[140px]" />
+                        <col className="w-[140px]" />
+                      </colgroup>
+                      <TableHeader>
+                        <TableRow className="bg-gradient-to-r from-gray-100 to-gray-50 border-b-2 border-gray-200">
+                          <TableHead className="font-semibold text-[#213555]">
+                            Room
+                          </TableHead>
+                          <TableHead className="font-semibold text-[#213555]">
+                            Type
+                          </TableHead>
+                          <TableHead className="font-semibold text-[#213555]">
+                            Cleaned By
+                          </TableHead>
+                          <TableHead className="font-semibold text-[#213555]">
+                            Completed
+                          </TableHead>
+                          <TableHead className="font-semibold text-[#213555]">
+                            Actions
+                          </TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {completedRooms.map((room) => (
                           <TableRow
                             key={room.id}
-                            className="hover:bg-blue-50 transition-colors duration-200"
+                            className="hover:bg-green-50 transition-colors duration-200"
                           >
-                            <TableCell className="font-medium text-[#4F709C]">
+                            <TableCell className="font-medium text-green-600">
                               {room.roomNumber}
                             </TableCell>
                             <TableCell>
                               <Badge
                                 variant="outline"
-                                className="bg-blue-50 text-blue-700 border-blue-200"
+                                className="bg-green-50 text-green-700 border-green-200"
                               >
                                 {room.type}
-                              </Badge>
-                            </TableCell>
-                            <TableCell>
-                              <Badge
-                                className={`${getPriorityColor(
-                                  room.priority
-                                )} transition-all duration-200 hover:scale-105`}
-                              >
-                                {room.priority.toUpperCase()}
                               </Badge>
                             </TableCell>
                             <TableCell>
@@ -427,6 +551,89 @@ export default function HouseKeepingPage() {
                                 <Users className="h-4 w-4 text-gray-400" />
                                 {room.assignedTo}
                               </div>
+                            </TableCell>
+                            <TableCell className="text-gray-600">
+                              {room.lastCleaned}
+                            </TableCell>
+                            <TableCell>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="hover:bg-blue-50 hover:border-blue-300 transition-all duration-200"
+                                onClick={() => {
+                                  setSelectedRoom(room);
+                                  setIsEditDialogOpen(true);
+                                }}
+                              >
+                                <Edit2 className="mr-1 h-4 w-4" />
+                                Edit
+                              </Button>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="maintenance" className="space-y-0">
+              <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm overflow-hidden">
+                <CardHeader className="bg-gradient-to-r from-red-500 to-red-600 text-white rounded-t-lg">
+                  <CardTitle className="flex items-center gap-2">
+                    <AlertTriangle className="h-5 w-5" />
+                    Maintenance Required
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-0">
+                  <div className="w-full overflow-x-auto">
+                    <Table className="w-full table-fixed">
+                      <colgroup>
+                        <col className="w-[120px]" />
+                        <col className="w-[140px]" />
+                        <col className="w-[180px]" />
+                        <col className="w-[140px]" />
+                        <col className="w-[200px]" />
+                      </colgroup>
+                      <TableHeader>
+                        <TableRow className="bg-gradient-to-r from-gray-100 to-gray-50 border-b-2 border-gray-200">
+                          <TableHead className="font-semibold text-[#213555]">
+                            Room
+                          </TableHead>
+                          <TableHead className="font-semibold text-[#213555]">
+                            Type
+                          </TableHead>
+                          <TableHead className="font-semibold text-[#213555]">
+                            Issue
+                          </TableHead>
+                          <TableHead className="font-semibold text-[#213555]">
+                            Reported
+                          </TableHead>
+                          <TableHead className="font-semibold text-[#213555]">
+                            Actions
+                          </TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {maintenanceRooms.map((room) => (
+                          <TableRow
+                            key={room.id}
+                            className="hover:bg-red-50 transition-colors duration-200"
+                          >
+                            <TableCell className="font-medium text-red-600">
+                              {room.roomNumber}
+                            </TableCell>
+                            <TableCell>
+                              <Badge
+                                variant="outline"
+                                className="bg-red-50 text-red-700 border-red-200"
+                              >
+                                {room.type}
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="text-gray-600">
+                              {room.notes || "General maintenance"}
                             </TableCell>
                             <TableCell className="text-gray-600">
                               {room.lastCleaned}
@@ -441,18 +648,7 @@ export default function HouseKeepingPage() {
                                   }
                                 >
                                   <CheckCircle className="mr-1 h-4 w-4" />
-                                  Complete
-                                </Button>
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  className="hover:bg-red-50 hover:border-red-300 hover:text-red-600 transition-all duration-200"
-                                  onClick={() =>
-                                    updateRoomStatus(room.id, "Maintenance")
-                                  }
-                                >
-                                  <XCircle className="mr-1 h-4 w-4" />
-                                  Issue
+                                  Resolved
                                 </Button>
                                 <Button
                                   variant="outline"
@@ -463,212 +659,19 @@ export default function HouseKeepingPage() {
                                     setIsEditDialogOpen(true);
                                   }}
                                 >
-                                  <Edit2 className="h-4 w-4" />
+                                  <Edit2 className="mr-1 h-4 w-4" />
+                                  Edit
                                 </Button>
                               </div>
                             </TableCell>
                           </TableRow>
-                        ))
-                      ) : (
-                        <TableRow>
-                          <TableCell colSpan={6} className="text-center py-12">
-                            <CheckCircle className="mx-auto h-12 w-12 text-green-500 mb-4" />
-                            <h3 className="text-lg font-medium text-gray-900">
-                              All caught up!
-                            </h3>
-                            <p className="text-gray-500">
-                              No pending cleaning tasks
-                            </p>
-                          </TableCell>
-                        </TableRow>
-                      )}
-                    </TableBody>
-                  </Table>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="completed" className="space-y-6">
-            <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm overflow-hidden">
-              <CardHeader className="bg-gradient-to-r from-green-500 to-green-600 text-white rounded-t-lg">
-                <CardTitle className="flex items-center gap-2">
-                  <CheckCircle className="h-5 w-5" />
-                  Completed Rooms
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-0">
-                <div className="w-full overflow-x-auto">
-                  <Table className="w-full table-fixed">
-                    <colgroup>
-                      <col className="w-[120px]" />
-                      <col className="w-[140px]" />
-                      <col className="w-[160px]" />
-                      <col className="w-[140px]" />
-                      <col className="w-[140px]" />
-                    </colgroup>
-                    <TableHeader>
-                      <TableRow className="bg-gray-50">
-                        <TableHead className="font-semibold text-[#213555]">
-                          Room
-                        </TableHead>
-                        <TableHead className="font-semibold text-[#213555]">
-                          Type
-                        </TableHead>
-                        <TableHead className="font-semibold text-[#213555]">
-                          Cleaned By
-                        </TableHead>
-                        <TableHead className="font-semibold text-[#213555]">
-                          Completed
-                        </TableHead>
-                        <TableHead className="font-semibold text-[#213555]">
-                          Actions
-                        </TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {completedRooms.map((room) => (
-                        <TableRow
-                          key={room.id}
-                          className="hover:bg-green-50 transition-colors duration-200"
-                        >
-                          <TableCell className="font-medium text-green-600">
-                            {room.roomNumber}
-                          </TableCell>
-                          <TableCell>
-                            <Badge
-                              variant="outline"
-                              className="bg-green-50 text-green-700 border-green-200"
-                            >
-                              {room.type}
-                            </Badge>
-                          </TableCell>
-                          <TableCell>
-                            <div className="flex items-center gap-2">
-                              <Users className="h-4 w-4 text-gray-400" />
-                              {room.assignedTo}
-                            </div>
-                          </TableCell>
-                          <TableCell className="text-gray-600">
-                            {room.lastCleaned}
-                          </TableCell>
-                          <TableCell>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              className="hover:bg-blue-50 hover:border-blue-300 transition-all duration-200"
-                              onClick={() => {
-                                setSelectedRoom(room);
-                                setIsEditDialogOpen(true);
-                              }}
-                            >
-                              <Edit2 className="mr-1 h-4 w-4" />
-                              Edit
-                            </Button>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="maintenance" className="space-y-6">
-            <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm overflow-hidden">
-              <CardHeader className="bg-gradient-to-r from-red-500 to-red-600 text-white rounded-t-lg">
-                <CardTitle className="flex items-center gap-2">
-                  <AlertTriangle className="h-5 w-5" />
-                  Maintenance Required
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-0">
-                <div className="w-full overflow-x-auto">
-                  <Table className="w-full table-fixed">
-                    <colgroup>
-                      <col className="w-[120px]" />
-                      <col className="w-[140px]" />
-                      <col className="w-[180px]" />
-                      <col className="w-[140px]" />
-                      <col className="w-[200px]" />
-                    </colgroup>
-                    <TableHeader>
-                      <TableRow className="bg-gray-50">
-                        <TableHead className="font-semibold text-[#213555]">
-                          Room
-                        </TableHead>
-                        <TableHead className="font-semibold text-[#213555]">
-                          Type
-                        </TableHead>
-                        <TableHead className="font-semibold text-[#213555]">
-                          Issue
-                        </TableHead>
-                        <TableHead className="font-semibold text-[#213555]">
-                          Reported
-                        </TableHead>
-                        <TableHead className="font-semibold text-[#213555]">
-                          Actions
-                        </TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {maintenanceRooms.map((room) => (
-                        <TableRow
-                          key={room.id}
-                          className="hover:bg-red-50 transition-colors duration-200"
-                        >
-                          <TableCell className="font-medium text-red-600">
-                            {room.roomNumber}
-                          </TableCell>
-                          <TableCell>
-                            <Badge
-                              variant="outline"
-                              className="bg-red-50 text-red-700 border-red-200"
-                            >
-                              {room.type}
-                            </Badge>
-                          </TableCell>
-                          <TableCell className="text-gray-600">
-                            {room.notes || "General maintenance"}
-                          </TableCell>
-                          <TableCell className="text-gray-600">
-                            {room.lastCleaned}
-                          </TableCell>
-                          <TableCell>
-                            <div className="flex space-x-2">
-                              <Button
-                                size="sm"
-                                className="bg-green-500 hover:bg-green-600 text-white transition-all duration-200 hover:scale-105"
-                                onClick={() =>
-                                  updateRoomStatus(room.id, "Available")
-                                }
-                              >
-                                <CheckCircle className="mr-1 h-4 w-4" />
-                                Resolved
-                              </Button>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                className="hover:bg-blue-50 hover:border-blue-300 transition-all duration-200"
-                                onClick={() => {
-                                  setSelectedRoom(room);
-                                  setIsEditDialogOpen(true);
-                                }}
-                              >
-                                <Edit2 className="mr-1 h-4 w-4" />
-                                Edit
-                              </Button>
-                            </div>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
           </div>
         </Tabs>
 
