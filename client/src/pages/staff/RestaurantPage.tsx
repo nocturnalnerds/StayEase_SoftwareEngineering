@@ -11,7 +11,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -30,7 +30,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Textarea } from "@/components/ui/textarea";
+import { Textarea } from "@/components/ui/TextArea";
 import {
   Table,
   TableBody,
@@ -285,6 +285,7 @@ const RestaurantPage: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-red-50 p-6">
       <div className="max-w-7xl mx-auto space-y-8">
         {/* Header */}
+
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
           <div>
             <h1 className="text-4xl font-bold text-[#213555]">
@@ -385,8 +386,8 @@ const RestaurantPage: React.FC = () => {
         </div>
 
         {/* Tabs */}
-        <Tabs defaultValue="orders" className="w-full">
-          <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+        <Tabs defaultValue="orders" className="w-full flex-1 flex flex-col">
+          <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden flex-1 flex flex-col">
             <div className="p-6 border-b border-gray-100">
               <TabsList className="bg-gray-100 p-1 rounded-lg">
                 <TabsTrigger
@@ -404,8 +405,11 @@ const RestaurantPage: React.FC = () => {
               </TabsList>
             </div>
 
-            <TabsContent value="orders" className="p-6 space-y-6">
-              <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+            <TabsContent
+              value="orders"
+              className="p-6 space-y-6 flex-1 flex flex-col"
+            >
+              <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm flex-1 flex flex-col">
                 <CardHeader className="bg-gradient-to-r from-orange-500 to-red-600 text-white rounded-t-lg">
                   <CardTitle className="flex items-center gap-2">
                     <UtensilsCrossed className="h-5 w-5" />
@@ -415,30 +419,30 @@ const RestaurantPage: React.FC = () => {
                     Manage current restaurant orders
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="p-0">
-                  <div className="overflow-hidden">
-                    <Table>
+                <CardContent className="p-0 flex-1 flex flex-col">
+                  <div className="overflow-x-auto flex-1">
+                    <Table className="min-w-full table-fixed h-full">
                       <TableHeader>
                         <TableRow className="bg-gray-50">
-                          <TableHead className="font-semibold text-[#213555]">
+                          <TableHead className="font-semibold text-[#213555] w-[12%]">
                             Order ID
                           </TableHead>
-                          <TableHead className="font-semibold text-[#213555]">
+                          <TableHead className="font-semibold text-[#213555] w-[10%]">
                             Table
                           </TableHead>
-                          <TableHead className="font-semibold text-[#213555]">
+                          <TableHead className="font-semibold text-[#213555] w-[20%]">
                             Customer
                           </TableHead>
-                          <TableHead className="font-semibold text-[#213555]">
+                          <TableHead className="font-semibold text-[#213555] w-[15%]">
                             Time
                           </TableHead>
-                          <TableHead className="font-semibold text-[#213555]">
+                          <TableHead className="font-semibold text-[#213555] w-[15%]">
                             Status
                           </TableHead>
-                          <TableHead className="font-semibold text-[#213555]">
+                          <TableHead className="font-semibold text-[#213555] w-[12%]">
                             Total
                           </TableHead>
-                          <TableHead className="font-semibold text-[#213555]">
+                          <TableHead className="font-semibold text-[#213555] w-[16%]">
                             Actions
                           </TableHead>
                         </TableRow>
@@ -494,8 +498,11 @@ const RestaurantPage: React.FC = () => {
               </Card>
             </TabsContent>
 
-            <TabsContent value="menu" className="p-6 space-y-6">
-              <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+            <TabsContent
+              value="menu"
+              className="p-6 space-y-6 flex-1 flex flex-col"
+            >
+              <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm flex-1 flex flex-col">
                 <CardHeader className="bg-gradient-to-r from-red-500 to-red-600 text-white rounded-t-lg">
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                     <div>
@@ -509,10 +516,10 @@ const RestaurantPage: React.FC = () => {
                     </div>
                     <div className="flex flex-col sm:flex-row gap-2">
                       <div className="relative">
-                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-400" />
+                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-[#4F709C]" />
                         <Input
                           placeholder="Search menu items..."
-                          className="pl-8 w-full sm:w-[200px] bg-white border-gray-200 focus:border-[#4F709C]"
+                          className="pl-8 w-full sm:w-[250px] bg-white border-gray-200 focus:border-[#4F709C] text-[#213555]"
                           value={searchTerm}
                           onChange={(e) => setSearchTerm(e.target.value)}
                         />
@@ -521,12 +528,16 @@ const RestaurantPage: React.FC = () => {
                         value={selectedCategory}
                         onValueChange={setSelectedCategory}
                       >
-                        <SelectTrigger className="w-full sm:w-[150px] bg-white border-gray-200 focus:border-[#4F709C]">
+                        <SelectTrigger className="w-full sm:w-[160px] bg-white  border-gray-200 focus:border-[#4F709C] text-[#213555]">
                           <SelectValue placeholder="Category" />
                         </SelectTrigger>
-                        <SelectContent className="bg-white">
+                        <SelectContent className="bg-white text-[#213555]">
                           {categories.map((category) => (
-                            <SelectItem key={category} value={category}>
+                            <SelectItem
+                              key={category}
+                              value={category}
+                              className="text-[#213555]"
+                            >
                               {category === "all" ? "All Categories" : category}
                             </SelectItem>
                           ))}
@@ -632,7 +643,7 @@ const RestaurantPage: React.FC = () => {
                             >
                               Cancel
                             </Button>
-                            <Button className="bg-red-500 hover:bg-red-600 transition-colors duration-200">
+                            <Button className="bg-red-500 hover:bg-red-600 text-white transition-colors duration-200">
                               Save Item
                             </Button>
                           </DialogFooter>
@@ -641,24 +652,24 @@ const RestaurantPage: React.FC = () => {
                     </div>
                   </div>
                 </CardHeader>
-                <CardContent className="p-0">
-                  <div className="overflow-hidden">
-                    <Table>
+                <CardContent className="p-0 flex-1 flex flex-col">
+                  <div className="overflow-x-auto flex-1">
+                    <Table className="min-w-full table-fixed h-full">
                       <TableHeader>
                         <TableRow className="bg-gray-50">
-                          <TableHead className="font-semibold text-[#213555]">
+                          <TableHead className="font-semibold text-[#213555] w-[30%]">
                             Name
                           </TableHead>
-                          <TableHead className="font-semibold text-[#213555]">
+                          <TableHead className="font-semibold text-[#213555] w-[20%]">
                             Category
                           </TableHead>
-                          <TableHead className="font-semibold text-[#213555]">
+                          <TableHead className="font-semibold text-[#213555] w-[15%]">
                             Price
                           </TableHead>
-                          <TableHead className="font-semibold text-[#213555]">
+                          <TableHead className="font-semibold text-[#213555] w-[15%]">
                             Status
                           </TableHead>
-                          <TableHead className="font-semibold text-[#213555]">
+                          <TableHead className="font-semibold text-[#213555] w-[20%]">
                             Actions
                           </TableHead>
                         </TableRow>
@@ -820,7 +831,7 @@ const RestaurantPage: React.FC = () => {
                         }
                         className={
                           selectedOrder.status === status
-                            ? "bg-[#213555] hover:bg-[#4F709C]"
+                            ? "bg-[#213555] hover:bg-[#4F709C] text-white"
                             : "hover:bg-orange-50 hover:border-orange-300"
                         }
                         onClick={() =>
@@ -940,7 +951,7 @@ const RestaurantPage: React.FC = () => {
               >
                 Cancel
               </Button>
-              <Button className="bg-red-500 hover:bg-red-600 transition-colors duration-200">
+              <Button className="bg-red-500 hover:bg-red-600 text-white transition-colors duration-200">
                 Save Changes
               </Button>
             </DialogFooter>
