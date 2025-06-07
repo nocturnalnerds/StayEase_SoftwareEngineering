@@ -4,7 +4,7 @@ import type React from "react";
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -103,7 +103,7 @@ const StatsCard: React.FC<{
   icon: React.ComponentType<{ className?: string }>;
   trend: string;
   color: string;
-}> = ({ title, value, icon: Icon, trend, color }) => {
+}> = ({ title, value, icon: Icon, trend }) => {
   return (
     <Card className="bg-gradient-to-br from-purple-500 to-purple-600 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -571,7 +571,7 @@ const UserManagementPage: React.FC = () => {
         {/* Main Content */}
         <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
           <CardHeader className="bg-gradient-to-r from-[#213555] to-[#4F709C] text-white rounded-t-lg">
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center gap-8">
               <CardTitle className="text-xl font-bold">
                 User & Staff Management
               </CardTitle>

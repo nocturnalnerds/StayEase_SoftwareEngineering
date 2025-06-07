@@ -545,7 +545,7 @@ const FrontOfficePage: React.FC = () => {
         {/* Main Content */}
         <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
           <CardHeader className="bg-gradient-to-r from-[#213555] to-[#4F709C] text-white rounded-t-lg">
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center gap-8">
               <CardTitle className="text-xl font-bold">
                 Guest Management
               </CardTitle>
