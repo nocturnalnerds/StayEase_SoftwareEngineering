@@ -33,4 +33,4 @@ roomRouter.delete("/rooms/:id", deleteRoom);
 //dashboard
 roomRouter.get("/roomDashboard", getRoomDashboardData);
 
-export default roomRouter;
+export {roomRouter};

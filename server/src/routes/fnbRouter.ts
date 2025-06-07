@@ -11,17 +11,17 @@ getMenuByName,
 getRestaurantDashboard
 } from "../controllers/FnBController";
 
-const router = Router();
+const fnbRouter = Router();
 
-router.get("/menus", getAllMenus);
-router.get("/menus/:id", getMenuById);
-router.post("/menus", ...addMenu);
-router.get("/menus/category/:category", getMenusByCategory);
+fnbRouter.get("/menus", getAllMenus);
+fnbRouter.get("/menus/:id", getMenuById);
+fnbRouter.post("/menus", ...addMenu);
+fnbRouter.get("/menus/category/:category", getMenusByCategory);
 
-router.post("/categories", addFoodCategory);
-router.get("/categories", getAllCategories);
-router.get("/menus/name/:name", getMenuByName);
+fnbRouter.post("/categories", addFoodCategory);
+fnbRouter.get("/categories", getAllCategories);
+fnbRouter.get("/menus/name/:name", getMenuByName);
 
-router.get("/fnbDashboard", getRestaurantDashboard);
+fnbRouter.get("/fnbDashboard", getRestaurantDashboard);
 
-export default router;
+export {fnbRouter};
