@@ -13,6 +13,7 @@ import type {
   RevenueData,
   OccupancyData,
   SystemSettings,
+  HouseKeeperRoom,
 } from "@/lib/types";
 
 // Mock staff data
@@ -323,7 +324,6 @@ export const roomData: Room[] = [
     roomType: roomTypeData[0],
     floor: 1,
     status: "Available",
-    isSmoking: false,
     lastCleaned: "2023-06-14T10:30:00",
   },
   {
@@ -332,7 +332,6 @@ export const roomData: Room[] = [
     roomType: roomTypeData[0],
     floor: 1,
     status: "Occupied",
-    isSmoking: false,
     lastCleaned: "2023-06-13T11:15:00",
     currentOccupant: 1,
   },
@@ -342,7 +341,6 @@ export const roomData: Room[] = [
     roomType: roomTypeData[0],
     floor: 1,
     status: "Cleaning",
-    isSmoking: false,
     lastCleaned: "2023-06-15T08:45:00",
   },
   {
@@ -351,7 +349,6 @@ export const roomData: Room[] = [
     roomType: roomTypeData[1],
     floor: 2,
     status: "Available",
-    isSmoking: false,
     lastCleaned: "2023-06-14T09:20:00",
   },
   {
@@ -360,7 +357,6 @@ export const roomData: Room[] = [
     roomType: roomTypeData[1],
     floor: 2,
     status: "Occupied",
-    isSmoking: false,
     lastCleaned: "2023-06-12T10:00:00",
     currentOccupant: 2,
   },
@@ -370,7 +366,6 @@ export const roomData: Room[] = [
     roomType: roomTypeData[2],
     floor: 3,
     status: "Available",
-    isSmoking: false,
     lastCleaned: "2023-06-14T14:30:00",
   },
   {
@@ -379,7 +374,6 @@ export const roomData: Room[] = [
     roomType: roomTypeData[2],
     floor: 3,
     status: "Maintenance",
-    isSmoking: false,
     notes: "Fixing air conditioning unit",
     lastCleaned: "2023-06-10T11:45:00",
   },
@@ -389,7 +383,6 @@ export const roomData: Room[] = [
     roomType: roomTypeData[3],
     floor: 4,
     status: "Available",
-    isSmoking: false,
     lastCleaned: "2023-06-14T15:10:00",
   },
   {
@@ -398,7 +391,6 @@ export const roomData: Room[] = [
     roomType: roomTypeData[3],
     floor: 4,
     status: "Reserved",
-    isSmoking: false,
     lastCleaned: "2023-06-13T16:20:00",
   },
   {
@@ -407,7 +399,6 @@ export const roomData: Room[] = [
     roomType: roomTypeData[4],
     floor: 5,
     status: "Occupied",
-    isSmoking: false,
     lastCleaned: "2023-06-11T09:30:00",
     currentOccupant: 3,
   },
@@ -1287,6 +1278,59 @@ export const discountRates: DiscountRate[] = [
     minNights: 2,
     description: "Book for weekends and get 12% off",
     isActive: true,
+  },
+];
+
+export const houseKeeperRooms: HouseKeeperRoom[] = [
+  {
+    id: 1,
+    roomNumber: "101",
+    type: "Standard",
+    status: "Cleaning",
+    lastCleaned: "2025-05-30",
+    assignedTo: "John Doe",
+    priority: "medium",
+    notes: undefined,
+  },
+  {
+    id: 2,
+    roomNumber: "102",
+    type: "Deluxe",
+    status: "Available",
+    lastCleaned: "2025-06-01",
+    assignedTo: "Jane Smith",
+    priority: "low",
+    notes: undefined,
+  },
+  {
+    id: 3,
+    roomNumber: "103",
+    type: "Suite",
+    status: "Maintenance",
+    lastCleaned: "2025-05-29",
+    assignedTo: "Emily Davis",
+    priority: "high",
+    notes: "AC unit needs repair",
+  },
+  {
+    id: 4,
+    roomNumber: "104",
+    type: "Standard",
+    status: "Occupied",
+    lastCleaned: "2025-05-28",
+    assignedTo: "Robert Johnson",
+    priority: "medium",
+    notes: undefined,
+  },
+  {
+    id: 5,
+    roomNumber: "105",
+    type: "Deluxe",
+    status: "Cleaning",
+    lastCleaned: "2025-05-31",
+    assignedTo: "Jane Smith",
+    priority: "high",
+    notes: undefined,
   },
 ];
 

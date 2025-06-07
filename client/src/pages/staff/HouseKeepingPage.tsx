@@ -1,11 +1,11 @@
-"use client";
-
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
+import { Textarea } from "@/components/ui/TextArea";
 import {
   Table,
   TableBody,
@@ -14,7 +14,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
 import {
   Select,
   SelectContent,
@@ -22,7 +21,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Dialog,
   DialogContent,
@@ -44,67 +42,21 @@ import {
   Edit2,
   Plus,
 } from "lucide-react";
-import type { RoomStatus } from "@/lib/types";
-
-interface Room {
-  id: number;
-  roomNumber: string;
-  type: string;
-  status: RoomStatus;
-  lastCleaned: string;
-  assignedTo: string;
-  priority: "low" | "medium" | "high";
-  notes?: string;
-}
+import type { HouseKeeperRoom, RoomStatus } from "@/lib/types";
+import { getPriorityColor } from "@/lib/utils";
+import { houseKeeperRooms } from "@/lib/data";
 
 export default function HouseKeepingPage() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const [rooms, setRooms] = useState<Room[]>([]);
-  const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
+  const [rooms, setRooms] = useState<HouseKeeperRoom[]>([]);
+  const [selectedRoom, setSelectedRoom] = useState<HouseKeeperRoom | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      const mockRooms: Room[] = Array.from({ length: 20 }).map((_, index) => {
-        const roomStatuses: RoomStatus[] = [
-          "Occupied",
-          "Available",
-          "Maintenance",
-          "Cleaning",
-        ];
-        const priorities = ["low", "medium", "high"] as const;
-        const randomStatus =
-          roomStatuses[Math.floor(Math.random() * roomStatuses.length)];
-        const staffMembers = [
-          "John Doe",
-          "Jane Smith",
-          "Robert Johnson",
-          "Emily Davis",
-        ];
-        const randomStaff =
-          staffMembers[Math.floor(Math.random() * staffMembers.length)];
-        const randomPriority =
-          priorities[Math.floor(Math.random() * priorities.length)];
-
-        return {
-          id: index + 1,
-          roomNumber: `${101 + index}`,
-          type:
-            index % 3 === 0 ? "Standard" : index % 3 === 1 ? "Deluxe" : "Suite",
-          status: randomStatus,
-          lastCleaned: new Date(
-            Date.now() - Math.floor(Math.random() * 7) * 86400000
-          ).toLocaleDateString(),
-          assignedTo: randomStaff,
-          priority: randomPriority,
-          notes:
-            randomStatus === "Maintenance" ? "AC unit needs repair" : undefined,
-        };
-      });
-
-      setRooms(mockRooms);
+      setRooms(houseKeeperRooms);
       setLoading(false);
     }, 1500);
 
@@ -128,38 +80,12 @@ export default function HouseKeepingPage() {
     );
   };
 
-  const updateRoom = (updatedRoom: Room) => {
+  const updateRoom = (updatedRoom: HouseKeeperRoom) => {
     setRooms(
       rooms.map((room) => (room.id === updatedRoom.id ? updatedRoom : room))
     );
     setIsEditDialogOpen(false);
     setSelectedRoom(null);
-  };
-
-  const getStatusColor = (status: RoomStatus) => {
-    switch (status) {
-      case "Occupied":
-        return "bg-red-100 text-red-800 border-red-200";
-      case "Available":
-        return "bg-green-100 text-green-800 border-green-200";
-      case "Maintenance":
-        return "bg-orange-100 text-orange-800 border-orange-200";
-      case "Cleaning":
-        return "bg-blue-100 text-blue-800 border-blue-200";
-      default:
-        return "bg-gray-100 text-gray-800 border-gray-200";
-    }
-  };
-
-  const getPriorityColor = (priority: "low" | "medium" | "high") => {
-    switch (priority) {
-      case "high":
-        return "bg-red-100 text-red-800 border-red-200";
-      case "medium":
-        return "bg-yellow-100 text-yellow-800 border-yellow-200";
-      case "low":
-        return "bg-green-100 text-green-800 border-green-200";
-    }
   };
 
   const filteredRooms = rooms.filter(

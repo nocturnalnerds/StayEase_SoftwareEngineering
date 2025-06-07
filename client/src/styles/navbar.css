@@ -10,8 +10,8 @@
 
 .navbar-section {
   .header {
-    position: sticky;
-    top: 0;
+    position: fixed;
+    /* top: 0; */
     display: flex;
     align-items: center;
     justify-content: space-between;

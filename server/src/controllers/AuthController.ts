@@ -45,6 +45,7 @@ export const login:RequestHandler = async(req, res, next) => {
       id: userExist.id,
       email: userExist.email,
       username: userExist.username,
+      roles: userExist.role,
     };
 
     const jwtToken = jwt.sign(tokenPayload, JWT_SECRET, { expiresIn: "6h" });
@@ -77,6 +78,7 @@ export const register:RequestHandler = async(req,res,next) => {
       });
       return;
     }
+    
     const { email, username, password, phone } = reqBody.data;
     
     const userExist = await prisma.user.findUnique({
@@ -93,12 +95,14 @@ export const register:RequestHandler = async(req,res,next) => {
         "password" : hashPass,
         "username" : username,
         "phone" : phone,
+        "role": "customer",
       },
     });
     const tokenPayload = {
       id: newUser.id,
       email: newUser.email,
-      username: newUser.username
+      username: newUser.username,
+      roles: newUser.role
     };
     const jwtToken = jwt.sign(tokenPayload, JWT_SECRET, { expiresIn: "6h" })
     res.status(STATUS.OK).json({
