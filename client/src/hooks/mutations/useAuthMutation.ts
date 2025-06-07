@@ -44,7 +44,7 @@ export default function useAuthMutation(
   };
 
   const loginMutation = useMutation({
-    mutationFn: (payload: LoginPayload) => API.post(`http:/localhost:8000/auth/login`, payload),
+    mutationFn: (payload: LoginPayload) => API.post(`auth/login`, payload),
     onSuccess: handleLoginSuccess,
     onError: (err) => {
       console.error("Login error", err);
@@ -54,7 +54,7 @@ export default function useAuthMutation(
 
   const registerMutation = useMutation({
     mutationFn: (payload: RegisterPayload) =>
-      API.post("http:/localhost:8000/auth/register", payload),
+      API.post("auth/register", payload),
     onSuccess: handleLoginSuccess,
     onError: (err) => {
       setError("email", { message: "Email already exists" });
