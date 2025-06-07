@@ -117,12 +117,12 @@ const OffersPage: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <div className="flex items-center justify-center md:justify-start">
+          <div className="flex items-center justify-center md:justify-start mt-[80px]">
             <Hotel className="h-8 w-8 text-primary mr-3" />
             <h1 className="text-3xl font-bold text-primary">Available Rooms</h1>
           </div>
 
-          <div className="w-full md:w-auto flex flex-col sm:flex-row gap-2">
+          <div className="w-full md:w-auto flex flex-col sm:flex-row gap-2 mt-[70px]">
             <div className="relative flex-grow md:flex-grow-0 md:w-64">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
               <Input
