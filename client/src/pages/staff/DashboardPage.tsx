@@ -5,7 +5,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import {
-  Calendar,
   Clock,
   DollarSign,
   Users,
@@ -125,20 +124,7 @@ export default function DashboardPage() {
               Welcome back! Here's what's happening at your hotel today.
             </p>
           </div>
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              className="border-gray-200 hover:bg-gray-50"
-            >
-              <Calendar className="mr-2 h-4 w-4" />
-              Filter by Date
-            </Button>
-            <Button size="sm" className="bg-[#213555] hover:bg-[#4F709C]">
-              <Clock className="mr-2 h-4 w-4" />
-              Last 30 Days
-            </Button>
-          </div>
+          <div className="flex items-center gap-2"></div>
         </div>
 
         {/* Stats Cards */}
@@ -177,7 +163,7 @@ export default function DashboardPage() {
           value={activeTab}
           onValueChange={setActiveTab}
         >
-          <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+          <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden w-full">
             <div className="p-6 border-b border-gray-100">
               <TabsList className="bg-gray-100 p-1 rounded-lg">
                 <TabsTrigger
@@ -186,23 +172,11 @@ export default function DashboardPage() {
                 >
                   Overview
                 </TabsTrigger>
-                <TabsTrigger
-                  value="revenue"
-                  className="data-[state=active]:bg-green-500 data-[state=active]:text-white"
-                >
-                  Revenue
-                </TabsTrigger>
-                <TabsTrigger
-                  value="occupancy"
-                  className="data-[state=active]:bg-blue-500 data-[state=active]:text-white"
-                >
-                  Occupancy
-                </TabsTrigger>
               </TabsList>
             </div>
 
-            <TabsContent value="overview" className="p-6 space-y-6">
-              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-7">
+            <TabsContent value="overview" className="p-6 space-y-6 w-full">
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-7 w-full">
                 <Card className="col-span-4 border border-gray-200 hover:shadow-lg transition-shadow duration-300">
                   <CardHeader>
                     <CardTitle className="text-[#213555]">
@@ -280,52 +254,6 @@ export default function DashboardPage() {
                       <Package className="h-6 w-6 mb-2" />
                       <span className="text-sm">Inventory</span>
                     </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="revenue" className="p-6 space-y-6">
-              <Card className="border border-gray-200 hover:shadow-lg transition-shadow duration-300">
-                <CardHeader>
-                  <CardTitle className="text-[#213555]">
-                    Revenue Breakdown
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="h-[350px] flex items-center justify-center text-gray-500 bg-gray-50 rounded-lg">
-                    <div className="text-center">
-                      <DollarSign className="h-16 w-16 mx-auto mb-4 text-green-500" />
-                      <p className="text-lg font-medium text-[#213555]">
-                        Revenue Breakdown Chart
-                      </p>
-                      <p className="text-sm">
-                        Detailed revenue breakdown visualization
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="occupancy" className="p-6 space-y-6">
-              <Card className="border border-gray-200 hover:shadow-lg transition-shadow duration-300">
-                <CardHeader>
-                  <CardTitle className="text-[#213555]">
-                    Occupancy Rate
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="h-[350px] flex items-center justify-center text-gray-500 bg-gray-50 rounded-lg">
-                    <div className="text-center">
-                      <Home className="h-16 w-16 mx-auto mb-4 text-blue-500" />
-                      <p className="text-lg font-medium text-[#213555]">
-                        Occupancy Rate Chart
-                      </p>
-                      <p className="text-sm">
-                        Room occupancy rate visualization
-                      </p>
-                    </div>
                   </div>
                 </CardContent>
               </Card>
