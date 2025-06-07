@@ -46,7 +46,7 @@ const roomTypeSchema = z.object({
 export const getAllRoomType: RequestHandler = async (req, res, next) => {
     try {
         const rooms = await prisma.roomType.findMany();
-
+        
         const roomsWithPresignedImages = await Promise.all(
             rooms.map(async (room) => {
             // If the first image is already a URL (starts with http:// or https://), skip presigning
@@ -147,6 +147,7 @@ export const addRoomTypes: RequestHandler[] = [
                     maxOccupancy,
                     amenities,
                     images
+                    // Do NOT include 'id' here; let Prisma auto-generate it
                 }
             });
 
