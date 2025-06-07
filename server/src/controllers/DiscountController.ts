@@ -126,3 +126,29 @@ export const deleteDiscountRate: RequestHandler = async (req, res, next) => {
         next(error);
     }
 };
+
+export const searchDiscountByName: RequestHandler = async (req, res, next) => {
+    const schema = z.object({
+        name: z.string().min(1),
+    });
+
+    try {
+        const { name } = schema.parse(req.query);
+
+        const discounts = await prisma.discountRate.findMany({
+            where: {
+                name: {
+                    contains: name,
+                    mode: "insensitive",
+                },
+            },
+            include: {
+                roomType: true,
+            },
+        });
+
+        res.status(STATUS.OK).json({ data: discounts });
+    } catch (error) {
+        next(error);
+    }
+};
