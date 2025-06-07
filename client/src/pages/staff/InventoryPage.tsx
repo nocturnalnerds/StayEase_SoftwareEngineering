@@ -486,17 +486,17 @@ const InventoryPage: React.FC = () => {
                   </div>
                   <div className="flex space-x-2">
                     <Button
-                      onClick={() => setIsAddItemOpen(false)}
-                      className="flex-1 bg-[#213555] hover:bg-[#4F709C] transition-colors duration-200"
-                    >
-                      Add Item
-                    </Button>
-                    <Button
                       variant="outline"
                       onClick={() => setIsAddItemOpen(false)}
                       className="flex-1"
                     >
                       Cancel
+                    </Button>
+                    <Button
+                      onClick={() => setIsAddItemOpen(false)}
+                      className="flex-1 bg-[#213555] hover:bg-[#4F709C] text-white transition-colors duration-200"
+                    >
+                      Add Item
                     </Button>
                   </div>
                 </div>
@@ -580,17 +580,17 @@ const InventoryPage: React.FC = () => {
                   </div>
                   <div className="flex space-x-2">
                     <Button
-                      onClick={() => setIsAddOrderOpen(false)}
-                      className="flex-1 bg-[#213555] hover:bg-[#4F709C] transition-colors duration-200"
-                    >
-                      Create Order
-                    </Button>
-                    <Button
                       variant="outline"
                       onClick={() => setIsAddOrderOpen(false)}
                       className="flex-1"
                     >
                       Cancel
+                    </Button>
+                    <Button
+                      onClick={() => setIsAddOrderOpen(false)}
+                      className="flex-1  bg-[#213555] hover:bg-[#4F709C] text-white transition-colors duration-200"
+                    >
+                      Create Order
                     </Button>
                   </div>
                 </div>
@@ -618,7 +618,7 @@ const InventoryPage: React.FC = () => {
                   value={filterCategory}
                   onValueChange={setFilterCategory}
                 >
-                  <SelectTrigger className="w-40 bg-white/10 border-white/20 text-white">
+                  <SelectTrigger className="w-50 bg-white/10 border-white/20 text-white">
                     <Filter className="h-4 w-4 mr-2" />
                     <SelectValue />
                   </SelectTrigger>
@@ -635,7 +635,9 @@ const InventoryPage: React.FC = () => {
               </div>
             </div>
           </CardHeader>
-          <CardContent className="p-0">
+          <CardContent className="p-0 h-[calc(100vh-200px)] w-full">
+            {" "}
+            {/* Adjust height and ensure full width */}
             <Tabs value={activeTab} onValueChange={setActiveTab}>
               <TabsList className="grid w-full grid-cols-2 bg-gray-50 border-b">
                 <TabsTrigger
@@ -652,9 +654,12 @@ const InventoryPage: React.FC = () => {
                 </TabsTrigger>
               </TabsList>
 
-              <TabsContent value="inventory" className="mt-0">
-                <div className="overflow-hidden">
-                  <Table>
+              {/* Tab Content for Inventory */}
+              <TabsContent value="inventory" className="mt-0 w-full">
+                <div className="overflow-x-auto w-full">
+                  <Table className="min-w-full w-full">
+                    {" "}
+                    {/* Make the table stretch to full width */}
                     <TableHeader>
                       <TableRow className="bg-gray-50">
                         <TableHead className="font-semibold text-[#213555]">
@@ -683,7 +688,7 @@ const InventoryPage: React.FC = () => {
                         </TableHead>
                       </TableRow>
                     </TableHeader>
-                    <TableBody>
+                    <TableBody className="overflow-auto w-full">
                       {inventoryItems.map((item) => (
                         <TableRow
                           key={item.id}
@@ -761,9 +766,10 @@ const InventoryPage: React.FC = () => {
                 </div>
               </TabsContent>
 
-              <TabsContent value="orders" className="mt-0">
-                <div className="overflow-hidden">
-                  <Table>
+              {/* Tab Content for Orders */}
+              <TabsContent value="orders" className="mt-0 w-full">
+                <div className="overflow-x-auto w-full">
+                  <Table className="min-w-full w-full">
                     <TableHeader>
                       <TableRow className="bg-gray-50">
                         <TableHead className="font-semibold text-[#213555]">
@@ -951,7 +957,7 @@ const InventoryPage: React.FC = () => {
                   >
                     Close
                   </Button>
-                  <Button className="bg-[#213555] hover:bg-[#4F709C]">
+                  <Button className="bg-[#213555] hover:bg-[#4F709C] text-white">
                     Edit Item
                   </Button>
                 </div>
@@ -964,7 +970,7 @@ const InventoryPage: React.FC = () => {
         <Dialog open={editItemOpen} onOpenChange={setEditItemOpen}>
           <DialogContent className="bg-white border-0 shadow-2xl">
             <DialogHeader>
-              <DialogTitle className="text-xl font-semibold text-[#213555]">
+              <DialogTitle className="text-xl font-semibold text-white ">
                 Edit Item
               </DialogTitle>
             </DialogHeader>
@@ -1097,17 +1103,17 @@ const InventoryPage: React.FC = () => {
                 </div>
                 <div className="flex space-x-2">
                   <Button
-                    onClick={() => setEditItemOpen(false)}
-                    className="flex-1 bg-[#213555] hover:bg-[#4F709C] transition-colors duration-200"
-                  >
-                    Save Changes
-                  </Button>
-                  <Button
                     variant="outline"
                     onClick={() => setEditItemOpen(false)}
                     className="flex-1"
                   >
                     Cancel
+                  </Button>
+                  <Button
+                    onClick={() => setEditItemOpen(false)}
+                    className="flex-1 bg-[#213555] hover:bg-[#4F709C] text-white transition-colors duration-200"
+                  >
+                    Save Changes
                   </Button>
                 </div>
               </div>
@@ -1190,7 +1196,7 @@ const InventoryPage: React.FC = () => {
                   >
                     Close
                   </Button>
-                  <Button className="bg-[#213555] hover:bg-[#4F709C]">
+                  <Button className="bg-[#213555] hover:bg-[#4F709C] text-white">
                     Edit Order
                   </Button>
                 </div>
@@ -1280,17 +1286,17 @@ const InventoryPage: React.FC = () => {
                 </div>
                 <div className="flex space-x-2">
                   <Button
-                    onClick={() => setEditOrderOpen(false)}
-                    className="flex-1 bg-[#213555] hover:bg-[#4F709C] transition-colors duration-200"
-                  >
-                    Save Changes
-                  </Button>
-                  <Button
                     variant="outline"
                     onClick={() => setEditOrderOpen(false)}
                     className="flex-1"
                   >
                     Cancel
+                  </Button>
+                  <Button
+                    onClick={() => setEditOrderOpen(false)}
+                    className="flex-1 bg-[#213555] hover:bg-[#4F709C] text-white transition-colors duration-200"
+                  >
+                    Save Changes
                   </Button>
                 </div>
               </div>
