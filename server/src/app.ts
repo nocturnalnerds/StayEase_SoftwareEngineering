@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 
-import {authRouter, contactRouter} from "./routes";
+import {authRouter, contactRouter, roomRouter} from "./routes";
 import { AppError } from "./utils/http/AppError";
 import { STATUS } from "./utils/http/statusCodes";
 import { ErrorController } from "./controllers";
@@ -24,7 +24,8 @@ app.use(express.json());
  * Register all application routes
  * This includes all the endpoints defined in the router
  */
-app.use(authRouter);
+app.use('/auth', authRouter);
+app.use('/rooms', roomRouter)
 app.use(contactRouter);
 
 /**

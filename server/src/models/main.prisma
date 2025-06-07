@@ -1,68 +1,64 @@
 generator client {
-  provider        = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "mongodb"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model User {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  id          String   @id @default(uuid())
   email       String   @unique
   username    String
   password    String
   phone       String
+  role        String 
   dateOfBirth DateTime?
   created_at  DateTime @default(now())
 }
 
-model Admin {
-  id         String   @id @default(auto()) @map("_id") @db.ObjectId
-  email      String   @unique
-  password   String
-  created_at DateTime @default(now())
-}
-model ContactUsInfo{
-  id String @id @default(auto()) @map("_id") @db.ObjectId
-  name String
-  email String
-  phone String
+
+model ContactUsInfo {
+  id      String   @id @default(uuid())
+  name    String
+  email   String
+  phone   String
   subject String
   message String?
 }
 
-
 model Staff {
-  id            String     @id @default(auto()) @map("_id") @db.ObjectId
-  username      String
-  email         String     @unique
-  firstName     String
-  lastName      String
-  phone         String
-  role          String
-  department    String
-  division      String
-  hireDate      DateTime
-  status        String
-  lastLogin     DateTime?
-  profileImage  String?
-  processedPayments Payment[] @relation("StaffToPayment")
-  preparedFoodOrders FoodOrder[] @relation("StaffToFoodOrder")
+  id                   String                 @id @default(uuid())
+  username             String
+  email                String                 @unique
+  firstName            String
+  lastName             String
+  phone                String
+  role                 String
+  department           String
+  division             String
+  hireDate             DateTime
+  status               String
+  lastLogin            DateTime?
+  profileImage         String?
+  processedPayments    Payment[]              @relation("StaffToPayment")
+  preparedFoodOrders   FoodOrder[]            @relation("StaffToFoodOrder")
   inventoryTransactions InventoryTransaction[]
-  generatedReports Report[]
+  generatedReports     Report[]
 }
 
 model Customer {
-  id              String     @id @default(auto()) @map("_id") @db.ObjectId
+  id              Int            @id @default(autoincrement())
   username        String
-  email           String     @unique
+  email           String            @unique
   firstName       String
   lastName        String
   phone           String
   address         String
   country         String
-  loyaltyPoints   Int        @default(0)
+  loyaltyPoints   Int               @default(0)
   registrationDate DateTime
   status          String
   lastVisit       DateTime?
@@ -73,7 +69,7 @@ model Customer {
 }
 
 model RoomType {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  id           Int         @id @default(autoincrement())
   name         String
   description  String
   basePrice    Float
@@ -86,33 +82,34 @@ model RoomType {
 }
 
 model Room {
-  id             String     @id @default(auto()) @map("_id") @db.ObjectId
-  roomNumber     String     @unique
-  roomTypeId     String   @db.ObjectId
-  floor          Int
-  status         String
-  notes          String?
-  lastCleaned    DateTime?
-  currentOccupant String?
+  id               Int             @id @default(autoincrement())
+  roomNumber       String             @unique
+  roomTypeId       Int
+  floor            Int
+  status           String @default("Available")
+  smoking          Boolean @default(false)
+  notes            String?
+  lastCleaned      DateTime?
+  currentOccupant  String?
   reservationRooms ReservationRoom[]
-  foodOrders     FoodOrder[]
-  roomType       RoomType   @relation(fields: [roomTypeId], references: [id])
+  foodOrders       FoodOrder[]
+  roomType         RoomType           @relation(fields: [roomTypeId], references: [id])
 }
 
 model HouseKeeperRoom {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
-  roomNumber   String
-  type         String
-  status       String
-  lastCleaned  DateTime
-  assignedTo   String
-  priority     String
-  notes        String?
+  id          String   @id @default(uuid())
+  roomNumber  String
+  type        String
+  status      String
+  lastCleaned DateTime
+  assignedTo  String
+  priority    String
+  notes       String?
 }
 
 model DiscountRate {
-  id             String   @id @default(auto()) @map("_id") @db.ObjectId
-  roomTypeId     String   @db.ObjectId
+  id             String            @id @default(uuid())
+  roomTypeId     Int
   name           String
   ratePercentage Float
   startDate      DateTime
@@ -121,56 +118,59 @@ model DiscountRate {
   description    String
   isActive       Boolean
   reservationRooms ReservationRoom[]
-  roomType       RoomType @relation(fields: [roomTypeId], references: [id])
-  
+  roomType       RoomType          @relation(fields: [roomTypeId], references: [id])
 }
 
 model Reservation {
-  id                String     @id @default(auto()) @map("_id") @db.ObjectId
-  customerId        String   @db.ObjectId
-  customer          Customer   @relation(fields: [customerId], references: [id])
-  status            String
-  checkInDate       DateTime
-  checkOutDate      DateTime
-  adults            Int
-  children          Int
-  specialRequests   String?
-  totalAmount       Float
-  createdAt         DateTime   @default(now())
-  updatedAt         DateTime   @updatedAt
-  assignedRooms     ReservationRoom[]
-  payments          Payment[]
+  id              Int            @id @default(autoincrement())
+  reservationNumber String   @unique
+  customerId      Int
+  customer        Customer          @relation(fields: [customerId], references: [id])
+  status          String
+  checkInDate     DateTime
+  checkOutDate    DateTime
+  adults          Int
+  children        Int
+  specialRequests String?
+  totalAmount     Float
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  assignedRooms   ReservationRoom[]
+  payments        Payment[]
 }
 
 model ReservationRoom {
-  id             String   @id @default(auto()) @map("_id") @db.ObjectId
-  reservationId  String   @db.ObjectId
-  reservation    Reservation @relation(fields: [reservationId], references: [id])
-  roomId         String @db.ObjectId
-  room           Room     @relation(fields: [roomId], references: [id])
-  ratePerNight   Float
-  discountId     String? @db.ObjectId
-  discount       DiscountRate? @relation(fields: [discountId], references: [id])
-  checkInDate    DateTime
-  checkOutDate   DateTime
+  id            String         @id @default(uuid())
+  reservationId Int
+  roomId        Int
+  discountId    String?
+
+  reservation   Reservation    @relation(fields: [reservationId], references: [id])
+  room          Room           @relation(fields: [roomId], references: [id])
+  discount      DiscountRate?  @relation(fields: [discountId], references: [id])
+  ratePerNight  Float
+  checkInDate   DateTime
+  checkOutDate  DateTime
 }
 
 model Payment {
-  id             String   @id @default(auto()) @map("_id") @db.ObjectId
-  reservationId  String @db.ObjectId
-  reservation    Reservation @relation(fields: [reservationId], references: [id])
-  paymentNumber  String     @unique
+  id             Int      @id @default(autoincrement())
+  reservationId  Int
+  paymentNumber  String      @unique
   amount         Float
   paymentMethod  String
   paymentStatus  String
   transactionId  String?
-  processedById  String? @db.ObjectId
-  processedBy    Staff?    @relation("StaffToPayment", fields: [processedById], references: [id])
+  paymentDate    DateTime
+  processedById  String?
+
+  reservation    Reservation @relation(fields: [reservationId], references: [id])
+  processedBy    Staff?      @relation("StaffToPayment", fields: [processedById], references: [id])
   notes          String?
 }
 
 model FoodItem {
-  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  id              String           @id @default(uuid())
   name            String
   description     String
   price           Float
@@ -184,50 +184,50 @@ model FoodItem {
 }
 
 model FoodOrder {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
-  orderNumber  String   @unique
-  roomId       String? @db.ObjectId
-  room         Room?    @relation(fields: [roomId], references: [id])
-  customerId   String? @db.ObjectId
-  customer     Customer? @relation(fields: [customerId], references: [id])
+  id           String     @id @default(uuid())
+  orderNumber  String     @unique
+  roomId       Int?
+  customerId   Int?
+  preparedById String?
+
+  room         Room?      @relation(fields: [roomId], references: [id])
+  customer     Customer?  @relation(fields: [customerId], references: [id])
+  preparedBy   Staff?     @relation("StaffToFoodOrder", fields: [preparedById], references: [id])
   items        FoodOrderItem[]
   totalAmount  Float
   orderDate    DateTime
   status       String
-  preparedById String? @db.ObjectId
-  preparedBy   Staff?   @relation("StaffToFoodOrder", fields: [preparedById], references: [id])
 }
 
 model FoodOrderItem {
-  id                  String   @id @default(auto()) @map("_id") @db.ObjectId
-  orderId             String @db.ObjectId
-  order               FoodOrder @relation(fields: [orderId], references: [id])
-  foodItemId          String @db.ObjectId
-  foodItem            FoodItem  @relation(fields: [foodItemId], references: [id])
+  id                  String     @id @default(uuid())
+  orderId             String
+  foodItemId          String
   quantity            Int
   specialInstructions String?
   price               Float
+
+  order               FoodOrder  @relation(fields: [orderId], references: [id])
+  foodItem            FoodItem   @relation(fields: [foodItemId], references: [id])
 }
 
 model BanquetHall {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
-  name         String
-  capacity     Int
+  id          String           @id @default(uuid())
+  name        String
+  capacity    Int
   pricePerHour Float
-  description  String
-  images       String[]
-  amenities    String[]
-  isAvailable  Boolean
-  bookings     BanquetBooking[]
+  description String
+  images      String[]
+  amenities   String[]
+  isAvailable Boolean
+  bookings    BanquetBooking[]
 }
 
 model BanquetBooking {
-  id             String   @id @default(auto()) @map("_id") @db.ObjectId
-  bookingNumber  String   @unique
-  hallId         String @db.ObjectId
-  hall           BanquetHall @relation(fields: [hallId], references: [id])
-  customerId     String @db.ObjectId
-  customer       Customer    @relation(fields: [customerId], references: [id])
+  id             String         @id @default(uuid())
+  bookingNumber  String         @unique
+  hallId         String
+  customerId     Int
   eventType      String
   startDateTime  DateTime
   endDateTime    DateTime
@@ -235,10 +235,13 @@ model BanquetBooking {
   totalAmount    Float
   status         String
   notes          String?
+
+  hall           BanquetHall    @relation(fields: [hallId], references: [id])
+  customer       Customer       @relation(fields: [customerId], references: [id])
 }
 
 model InventoryItem {
-  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  id            String                 @id @default(uuid())
   name          String
   category      String
   quantity      Int
@@ -252,19 +255,20 @@ model InventoryItem {
 }
 
 model InventoryTransaction {
-  id             String   @id @default(auto()) @map("_id") @db.ObjectId
-  itemId         String @db.ObjectId
-  item           InventoryItem @relation(fields: [itemId], references: [id])
+  id             String        @id @default(uuid())
+  itemId         String
   quantity       Int
   transactionType String
   date           DateTime
-  staffId        String @db.ObjectId
-  staff          Staff         @relation(fields: [staffId], references: [id])
+  staffId        String
   notes          String?
+
+  item           InventoryItem @relation(fields: [itemId], references: [id])
+  staff          Staff         @relation(fields: [staffId], references: [id])
 }
 
 model SystemSettings {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  id           String   @id @default(uuid())
   hotelName    String
   address      String
   phone        String
@@ -278,15 +282,16 @@ model SystemSettings {
 }
 
 model Report {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
-  name         String
-  type         String
-  timeframe    String
-  startDate    DateTime
-  endDate      DateTime
-  generatedById String @db.ObjectId
-  generatedBy  Staff     @relation(fields: [generatedById], references: [id])
-  generatedAt  DateTime
-  data         Json
-  format       String
+  id            String  @id @default(uuid())
+  name          String
+  type          String
+  timeframe     String
+  startDate     DateTime
+  endDate       DateTime
+  generatedById String
+  generatedAt   DateTime
+  data          Json
+  format        String
+
+  generatedBy   Staff   @relation(fields: [generatedById], references: [id])
 }
