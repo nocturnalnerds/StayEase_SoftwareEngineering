@@ -116,7 +116,7 @@ model DiscountRate {
   startDate      DateTime
   endDate        DateTime
   minNights      Int
-  description    String
+  description    String?
   isActive       Boolean
   reservationRooms ReservationRoom[]
   roomType       RoomType          @relation(fields: [roomTypeId], references: [id])

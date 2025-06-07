@@ -50,8 +50,9 @@ export const createUser: RequestHandler = async (req, res, next) => {
             return;
         }
 
+        const userCount = await prisma.user.count();
         const newUser = await prisma.user.create({
-            data: { username: name, email, password, phone, role },
+            data: { id: (userCount + 1).toString(), username: name, email, password, phone, role },
         });
 
         res.status(STATUS.CREATED).json(newUser);
