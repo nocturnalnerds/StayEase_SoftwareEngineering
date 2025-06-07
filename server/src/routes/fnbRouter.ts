@@ -9,7 +9,7 @@ addFoodCategory,
 getAllCategories,
 getMenuByName,
 getRestaurantDashboard
-} from "../controllers/RestaurantController";
+} from "../controllers/FnBController";
 
 const router = Router();
 
