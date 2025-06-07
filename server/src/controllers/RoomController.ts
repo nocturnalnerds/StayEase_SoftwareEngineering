@@ -140,6 +140,7 @@ export const addRoomTypes: RequestHandler[] = [
 
             const newRoomType = await prisma.roomType.create({
                 data: {
+                    id: (await prisma.roomType.count()) + 1,
                     name,
                     description,
                     basePrice,

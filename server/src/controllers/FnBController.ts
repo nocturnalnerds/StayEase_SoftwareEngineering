@@ -122,6 +122,7 @@ export const addMenu: RequestHandler[] = [
 
         const newMenu = await prisma.foodItem.create({
             data: {
+                id: (await prisma.foodItem.count()) + 1,
                 name,
                 category,
                 description: description ?? "",

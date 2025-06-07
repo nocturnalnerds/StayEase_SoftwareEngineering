@@ -5,6 +5,7 @@ import {authRouter, contactRouter, roomRouter, fnbRouter} from "./routes";
 import { AppError } from "./utils/http/AppError";
 import { STATUS } from "./utils/http/statusCodes";
 import { ErrorController } from "./controllers";
+import { userRouter } from "./routes/userManagementRouter";
 
 const app = express();
 
@@ -27,6 +28,7 @@ app.use(express.json());
 app.use('/auth', authRouter);
 app.use('/rooms', roomRouter);
 app.use('/fnb', fnbRouter);
+app.use('/users', userRouter)
 app.use(contactRouter);
 
 

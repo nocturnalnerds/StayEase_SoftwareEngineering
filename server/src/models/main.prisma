@@ -37,6 +37,7 @@ model Staff {
   lastName             String
   phone                String
   role                 String
+  salary               Int                    @default(5000)
   department           String
   division             String
   hireDate             DateTime
