@@ -246,7 +246,7 @@ model BanquetBooking {
 }
 
 model InventoryItem {
-  id            String                 @id @default(uuid())
+  id            Int                 @id @default(autoincrement())
   name          String
   category      String
   quantity      Int
@@ -257,19 +257,22 @@ model InventoryItem {
   lastRestocked DateTime
   location      String
   transactions  InventoryTransaction[]
+
 }
 
-model InventoryTransaction {
-  id             String        @id @default(uuid())
-  itemId         String
-  quantity       Int
-  transactionType String
-  date           DateTime
-  staffId        String
-  notes          String?
 
-  item           InventoryItem @relation(fields: [itemId], references: [id])
-  staff          Staff         @relation(fields: [staffId], references: [id])
+model InventoryTransaction {
+  id               String   @id @default(uuid())
+  orderNumber      String   @unique
+  supplier         String
+  items            Int
+  totalAmount      Float
+  orderDate        DateTime
+  expectedDelivery DateTime
+  status           String
+  item             InventoryItem @relation(fields: [items], references: [id])
+
+  Staff Staff[]
 }
 
 model SystemSettings {
