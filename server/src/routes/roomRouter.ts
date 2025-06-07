@@ -1,6 +1,5 @@
 import { Router } from "express";
 import {
-
 getAllRoomType,
 getRoomTypeById,
 addRoomTypes,
@@ -11,7 +10,9 @@ updateRoomAvailability,
 updateRoomCleaningDate,
 addNewRooms,
 deleteRoom,
-getRoomDashboardData
+getRoomDashboardData,
+updateRoomType,
+updateRoom
 } from "../controllers/RoomController";
 
 const roomRouter = Router();
@@ -21,6 +22,7 @@ roomRouter.get("/room-types", getAllRoomType);
 roomRouter.get("/room-types/:id", getRoomTypeById);
 roomRouter.post("/room-types", ...addRoomTypes);
 roomRouter.delete("/room-types/:id", deleteRoomType);
+roomRouter.patch("/room-types/:id", updateRoomType);
 
 // Rooms
 roomRouter.get("/rooms", getAllRooms);
@@ -29,6 +31,7 @@ roomRouter.post("/rooms", addNewRooms);
 roomRouter.patch("/rooms/:id/availability", updateRoomAvailability);
 roomRouter.patch("/rooms/:id/cleaning", updateRoomCleaningDate);
 roomRouter.delete("/rooms/:id", deleteRoom);
+roomRouter.patch("/rooms/:id", updateRoom);
 
 //dashboard
 roomRouter.get("/roomDashboard", getRoomDashboardData);

@@ -348,3 +348,85 @@ export const getRoomDashboardData: RequestHandler = async (req, res, next) => {
         next(e);
     }
 };
+
+export const updateRoom: RequestHandler = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const { roomTypeId, roomNumber, floor, smoking, notes, status, lastCleaned } = req.body;
+
+        const room = await prisma.room.findUnique({
+            where: { id: Number(id) }
+        });
+
+        if (!room) {
+            res.status(STATUS.NOT_FOUND).json({ message: "Room not found" });
+            return;
+        }
+
+        const updatedRoom = await prisma.room.update({
+            where: { id: Number(id) },
+            data: {
+                ...(roomTypeId !== undefined && { roomTypeId: Number(roomTypeId) }),
+                ...(roomNumber !== undefined && { roomNumber: String(roomNumber) }),
+                ...(floor !== undefined && { floor: Number(floor) }),
+                ...(smoking !== undefined && { smoking: smoking === 'Smoking' || smoking === true }),
+                ...(notes !== undefined && { notes: String(notes) }),
+                ...(status !== undefined && { status: String(status) }),
+                ...(lastCleaned !== undefined && { lastCleaned: new Date(lastCleaned) }),
+            }
+        });
+        res.status(STATUS.OK).json({ message: "Room updated successfully", room: updatedRoom });
+    } catch (e) {
+        next(e);
+    }
+};
+
+export const updateRoomType: RequestHandler = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const parseResult = roomTypeSchema.safeParse(req.body);
+
+        if (!parseResult.success) {
+            res.status(STATUS.BAD_REQUEST).json({
+                message: "Invalid input",
+                errors: parseResult.error.errors
+            });
+            return;
+        }
+
+        const { name, description, basePrice, capacity, maxOccupancy, amenities } = parseResult.data;
+
+        // Optionally handle images update if needed
+        let images: string[] | undefined = undefined;
+        if (req.files && Array.isArray(req.files)) {
+            const files = req.files as Express.MulterS3.File[];
+            images = files.map(file => file.key);
+        }
+
+        const existingRoomType = await prisma.roomType.findUnique({
+            where: { id: Number(id) }
+        });
+
+        if (!existingRoomType) {
+            res.status(STATUS.NOT_FOUND).json({ message: "Room type not found" });
+            return;
+        }
+
+        const updatedRoomType = await prisma.roomType.update({
+            where: { id: Number(id) },
+            data: {
+                name,
+                description,
+                basePrice,
+                capacity,
+                maxOccupancy,
+                amenities,
+                ...(images ? { images } : {})
+            }
+        });
+
+        res.status(STATUS.OK).json({ message: "Room type updated successfully", roomType: updatedRoomType });
+    } catch (e) {
+        next(e);
+    }
+};
