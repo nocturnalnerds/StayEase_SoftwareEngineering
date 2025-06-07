@@ -39,7 +39,9 @@ export const getAllMenus: RequestHandler = async (req,res, next) => {
         const foodItemsWithUrls = await Promise.all(
             foodItems.map(async (item) => {
                 let imageUrl = null;
-                if (item.image) {
+                if (item.image && (item.image.startsWith("http://") || item.image.startsWith("https://"))) {
+                    imageUrl = item.image;
+                } else if (item.image) {
                     const command = new GetObjectCommand({
                         Bucket: process.env.WASABI_BUCKET!,
                         Key: item.image
@@ -75,7 +77,9 @@ export const getMenuById: RequestHandler = async (req, res, next) => {
         }
 
         let imageUrl = null;
-        if (foodItem.image) {
+        if (foodItem.image && (foodItem.image.startsWith("http://") || foodItem.image.startsWith("https://"))) {
+            imageUrl = foodItem.image;
+        } else if (foodItem.image) {
             const command = new GetObjectCommand({
                 Bucket: process.env.WASABI_BUCKET!,
                 Key: foodItem.image
@@ -151,7 +155,9 @@ export const getMenusByCategory: RequestHandler = async (req, res, next) => {
         const foodItemsWithUrls = await Promise.all(
             foodItems.map(async (item) => {
                 let imageUrl = null;
-                if (item.image) {
+                if (item.image && (item.image.startsWith("http://") || item.image.startsWith("https://"))) {
+                    imageUrl = item.image;
+                } else if (item.image) {
                     const command = new GetObjectCommand({
                         Bucket: process.env.WASABI_BUCKET!,
                         Key: item.image
@@ -237,7 +243,9 @@ export const getMenuByName: RequestHandler = async (req, res, next) => {
         const foodItemsWithUrls = await Promise.all(
             foodItems.map(async (item) => {
                 let imageUrl = null;
-                if (item.image) {
+                if (item.image && (item.image.startsWith("http://") || item.image.startsWith("https://"))) {
+                    imageUrl = item.image;
+                } else if (item.image) {
                     const command = new GetObjectCommand({
                         Bucket: process.env.WASABI_BUCKET!,
                         Key: item.image

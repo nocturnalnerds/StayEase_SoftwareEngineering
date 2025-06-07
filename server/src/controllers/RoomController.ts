@@ -49,6 +49,15 @@ export const getAllRoomType: RequestHandler = async (req, res, next) => {
 
         const roomsWithPresignedImages = await Promise.all(
             rooms.map(async (room) => {
+            // If the first image is already a URL (starts with http:// or https://), skip presigning
+            if (
+                room.images &&
+                Array.isArray(room.images) &&
+                room.images.length > 0 &&
+                (room.images[0].startsWith("http://") || room.images[0].startsWith("https://"))
+            ) {
+                return room;
+            }
             if (!room.images || !Array.isArray(room.images)) {
                 return { ...room, images: [] };
             }
@@ -84,15 +93,25 @@ export const getRoomTypeById: RequestHandler = async (req, res, next) => {
 
         let images: string[] = [];
         if (roomType.images && Array.isArray(roomType.images)) {
+            // If the first image is already a URL (starts with http:// or https://), skip presigning
+            if (
+                roomType.images.length > 0 &&
+                roomType.images.every((img: string) =>
+                    img.startsWith("http://") || img.startsWith("https://")
+                )
+            ) {
+            images = roomType.images;
+            } else {
             images = await Promise.all(
                 roomType.images.map(async (imageKey: string) => {
-                    const command = new GetObjectCommand({
-                        Bucket: process.env.WASABI_BUCKET!,
-                        Key: imageKey,
-                    });
-                    return getSignedUrl(s3Client, command, { expiresIn: 3600 });
+                const command = new GetObjectCommand({
+                    Bucket: process.env.WASABI_BUCKET!,
+                    Key: imageKey,
+                });
+                return getSignedUrl(s3Client, command, { expiresIn: 3600 });
                 })
             );
+            }
         }
 
         res.status(STATUS.OK).json({ ...roomType, images });
