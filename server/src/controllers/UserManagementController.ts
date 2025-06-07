@@ -64,6 +64,63 @@ export const createUser: RequestHandler = async (req, res, next) => {
     }
 };
 
+export const createStaff: RequestHandler = async (req, res, next) => {
+    const staffSchema = z.object({
+        name: z.string().min(1, "Name is required"),
+        role: z.string().min(1, "Role is required"),
+        email: z.string().email("Invalid email address"),
+        firstName: z.string().min(1, "First name is required"),
+        lastName: z.string().min(1, "Last name is required"),
+        phone: z.string().min(10, "Phone number must be at least 10 digits"),
+        department: z.string().min(1, "Department is required"),
+        salary: z.number().min(0, "Salary must be a positive number"),
+        division: z.string().min(1, "Division is required"),
+        hireDate: z.string().min(1, "Hire date is required"),
+        status: z.string().min(1, "Status is required"),
+    });
+
+    const parseResult = staffSchema.safeParse(req.body);
+
+    if (!parseResult.success) {
+        res.status(STATUS.BAD_REQUEST).json({
+            error: "Invalid staff data",
+            details: parseResult.error.errors,
+        });
+        return;
+    }
+
+    const { name, role,email, firstName,division, lastName ,phone, department, salary, hireDate, status } = parseResult.data;
+
+    try {
+        const staffCount = await prisma.staff.count();
+        const newStaff = await prisma.staff.create({
+            data: {
+                id: (staffCount + 1).toString(),
+                username: name,
+                email,
+                firstName,
+                lastName,
+                phone,
+                role,
+                department,
+                salary,
+                hireDate: new Date(hireDate),
+                status,
+                division,
+                lastLogin: new Date(hireDate),
+            },
+        });
+
+        res.status(STATUS.CREATED).json(newStaff);
+    } catch (e) {
+        res.status(STATUS.INTERNAL_SERVER_ERROR).json({
+            error: "Failed to create staff",
+            details: e instanceof Error ? e.message : String(e),
+        });
+    }
+};
+
+
 
 export const getAllStaff: RequestHandler = async (req, res, next) => {
     try {
@@ -128,6 +185,7 @@ export const getStaffById: RequestHandler = async (req, res, next) => {
         });
     }
 };
+
 
 export const updateUser: RequestHandler = async (req, res, next) => {
     const { id } = req.params;

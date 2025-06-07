@@ -283,6 +283,7 @@ export const addNewRooms: RequestHandler = async (req, res, next) => {
 
         const newRoom = await prisma.room.create({
             data: {
+                id: (await prisma.room.count()) + 1,
                 roomTypeId: Number(roomTypeId),
                 roomNumber: String(roomNumber),
                 floor: Number(floor),

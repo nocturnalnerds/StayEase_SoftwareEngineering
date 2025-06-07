@@ -204,6 +204,7 @@ export const addFoodCategory: RequestHandler = async (req, res, next) => {
 
         const newCategory = await prisma.foodCategory.create({
             data: {
+                id: (await prisma.foodCategory.count()) + 1,
                 name
             }
         });
