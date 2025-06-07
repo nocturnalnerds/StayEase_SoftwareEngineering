@@ -170,17 +170,22 @@ model Payment {
 }
 
 model FoodItem {
-  id              String           @id @default(uuid())
+  id              Int           @id @default(autoincrement())
   name            String
   description     String
   price           Float
-  category        String
-  isAvailable     Boolean
+  category        String @default("")
+  isAvailable     Boolean @default(true)
   image           String?
   ingredients     String[]
   allergens       String[]
   preparationTime Int
   orderItems      FoodOrderItem[]
+}
+
+model FoodCategory{
+  id Int @id @default(autoincrement())
+  name String @unique
 }
 
 model FoodOrder {
@@ -202,7 +207,7 @@ model FoodOrder {
 model FoodOrderItem {
   id                  String     @id @default(uuid())
   orderId             String
-  foodItemId          String
+  foodItemId          Int
   quantity            Int
   specialInstructions String?
   price               Float
