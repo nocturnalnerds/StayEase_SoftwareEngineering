@@ -88,6 +88,7 @@ export const createStaff: RequestHandler = async (req, res, next) => {
     const newStaff = await prisma.staff.create({
       data: {
         id: (staffCount + 1).toString(),
+        username: `${firstName} ${lastName}`,
         firstName,
         lastName,
         phone,

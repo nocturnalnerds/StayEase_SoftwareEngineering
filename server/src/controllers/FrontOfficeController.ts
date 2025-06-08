@@ -54,7 +54,8 @@ export const newReservation: RequestHandler = async (req, res, next) => {
             lastName: z.string().min(1, { message: "lastName is required" }),
             email: z.string().email(),
             phone: z.string().min(1, { message: "phone is required" }),
-            roomId: z.number(),
+            roomTypeId: z.number(),
+            roomNumber: z.number(),
             adults: z.number().min(1, { message: "adults must be at least 1" }),
             children: z.number().min(0, { message: "children cannot be negative" }),
             specialRequest: z.string().optional(),
@@ -75,7 +76,8 @@ export const newReservation: RequestHandler = async (req, res, next) => {
             lastName,
             email,
             phone,
-            roomId,
+            roomTypeId,
+            roomNumber,
             adults,
             children,
             specialRequest,
@@ -83,6 +85,27 @@ export const newReservation: RequestHandler = async (req, res, next) => {
             checkOutDate,
             discountRateId,
         } = parsed.data;
+
+        // Fetch the room and its roomType
+        
+        // Validate that the room exists and matches the given roomTypeId
+        const room = await prisma.room.findUnique({
+            where: { roomNumber: String(roomNumber) },
+            include: { roomType: true }
+        });
+        const roomId = room?.id;
+
+        if (!room) {
+            res.status(STATUS.BAD_REQUEST).json({ error: "Room not found" });
+            return;
+        }
+
+        if (room.roomTypeId !== roomTypeId) {
+            res.status(STATUS.BAD_REQUEST).json({ error: "Room does not match the specified roomTypeId" });
+            return;
+        }
+
+        const roomType = room.roomType;
 
         const customer = await prisma.customer.create({
             data: {
@@ -94,26 +117,6 @@ export const newReservation: RequestHandler = async (req, res, next) => {
                 phone,
             }
         });
-
-        const room = await prisma.room.findUnique({
-            where: { id: roomId },
-            include: { roomType: true }
-        });
-
-        const roomTypeId = room?.roomTypeId;
-        if (!roomTypeId) {
-            res.status(STATUS.BAD_REQUEST).json({ error: "Room type not found for the given roomId" });
-            return;
-        }
-
-        const roomType = await prisma.roomType.findUnique({
-            where: { id: roomTypeId }
-        });
-
-        if (!roomType) {
-            res.status(STATUS.BAD_REQUEST).json({ error: "Invalid roomTypeId" });
-            return;
-        }
         
         const checkIn = new Date(checkInDate);
         const checkOut = new Date(checkOutDate);
@@ -161,13 +164,16 @@ export const newReservation: RequestHandler = async (req, res, next) => {
             }
         });
 
-        await prisma.reservationRoom.create({
+        if(roomId){
+            await prisma.reservationRoom.create({
             data: {
                 reservationId: reservation.id,
                 roomId: roomId,
                 discountId: String(discountRateId)
             }
         });
+        }
+        
         res.status(STATUS.CREATED).json({ message: "Reservation created successfully", reservation });
     } catch (error) {
         next(error);
@@ -490,6 +496,42 @@ export const updateReservation: RequestHandler = async (req, res, next) => {
         next(error);
     }
 };
+
+export const deleteReservation: RequestHandler = async (req, res, next) => {
+    try {
+        const schema = z.object({
+            reservationId: z.number(),
+        });
+
+        const parsed = schema.safeParse(req.params);
+        if (!parsed.success) {
+            res.status(STATUS.BAD_REQUEST).json({ error: parsed.error.errors });
+            return;
+        }
+
+        const { reservationId } = parsed.data;
+
+        // Delete related assigned rooms first (if any)
+        await prisma.reservationRoom.deleteMany({
+            where: { reservationId }
+        });
+
+        // Delete payments related to this reservation (if any)
+        await prisma.payment.deleteMany({
+            where: { reservationId }
+        });
+
+        // Delete the reservation itself
+        await prisma.reservation.delete({
+            where: { id: reservationId }
+        });
+
+        res.status(STATUS.OK).json({ message: "Reservation deleted successfully" });
+    } catch (error) {
+        next(error);
+    }
+};
+
 
 export const getRoomList: RequestHandler = async (req, res, next) => {
     try {
