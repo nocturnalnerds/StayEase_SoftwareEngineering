@@ -301,6 +301,7 @@ export const updatePaymentStatus: RequestHandler = async (req, res, next) => {
                     paymentStatus: paymentStatus,
                     transactionId: `TXN${Math.floor(100000 + Math.random() * 900000)}`,
                     paymentDate: new Date(),
+                    paymentType: "Room Charge",
                     processedById: String(staffId),
                 }
             });   
