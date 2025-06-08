@@ -134,7 +134,7 @@ export const getAllStaff: RequestHandler = async (req, res, next) => {
             department: member.department,
             division: member.division,
             salary: member.salary,
-            HireDate: member.hireDate,
+            hireDate: member.hireDate,
             status: member.status,
             lastLogin: member.lastLogin,
             profileImage: member.profileImage,
