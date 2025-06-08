@@ -130,6 +130,7 @@ export type Room = {
   id: number;
   roomNumber: string;
   roomType: RoomType;
+  roomTypeId: number;
   floor: number;
   status: RoomStatus;
   notes?: string;
