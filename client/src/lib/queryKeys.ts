@@ -1,4 +1,5 @@
 export const QUERY_KEYS = {
   USERS: "users",
-  MOVIES: "movies",
+  ROOMS: "rooms",
+  ROOM_TYPES: "roomTypes",
 };

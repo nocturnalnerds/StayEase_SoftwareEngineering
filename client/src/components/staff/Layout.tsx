@@ -105,6 +105,7 @@ export default function Layout({ loading = false }: LayoutProps) {
         location.pathname === href || location.pathname.startsWith(href + "/")
       );
     }
+
     return location.pathname === href;
   };
 
@@ -171,8 +172,8 @@ export default function Layout({ loading = false }: LayoutProps) {
         <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200 flex-shrink-0">
           <div className="flex items-center">
             <Hotel className="h-8 w-8 text-primary" />
-            <span className="ml-2 text-xl font-bold text-gray-900">
-              Hotel MS
+            <span className="ml-2 text-xl font-bold text-primary">
+              StayEase
             </span>
           </div>
           <Button

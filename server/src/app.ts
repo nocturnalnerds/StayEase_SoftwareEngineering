@@ -1,7 +1,14 @@
 import express from "express";
 import cors from "cors";
 
-import {authRouter, contactRouter, roomRouter, fnbRouter, userRouter, discountRouter } from "./routes";
+import {
+  authRouter,
+  contactRouter,
+  roomRouter,
+  fnbRouter,
+  userRouter,
+  discountRouter,
+} from "./routes";
 import { AppError } from "./utils/http/AppError";
 import { STATUS } from "./utils/http/statusCodes";
 import { ErrorController } from "./controllers";
@@ -38,7 +45,6 @@ app.use('/payment', paymentReport);
 app.use('/housekeeping', houseKeepingRouter);
 app.use('/restaurant', restaurantRouter);
 app.use(contactRouter);
-
 
 /**
  * Handle requests to undefined routes

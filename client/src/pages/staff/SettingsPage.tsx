@@ -3,16 +3,15 @@
 import { useState, useEffect } from "react";
 import type React from "react";
 import { motion } from "framer-motion";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
   Hotel,
   UtensilsCrossed,
-  PartyPopper,
   Package,
   CreditCard,
   Tag,
-  Settings,
   ChevronRight,
+  Construction,
 } from "lucide-react";
 import {
   Card,
@@ -30,7 +29,6 @@ interface SettingCardProps {
 }
 
 const SettingsPage: React.FC = () => {
-  const location = useLocation();
   const [isLoading, setIsLoading] = useState(true);
 
   // Simulate loading
@@ -68,43 +66,37 @@ const SettingsPage: React.FC = () => {
       title: "Room Settings",
       description: "Manage room types, amenities, and room numbers",
       icon: <Hotel className="h-6 w-6" />,
-      path: "/settings/rooms",
+      path: "/staff/settings/rooms",
     },
     {
       title: "Food & Beverage",
       description: "Configure menu items, prices, and categories",
       icon: <UtensilsCrossed className="h-6 w-6" />,
-      path: "/settings/food-beverage",
-    },
-    {
-      title: "Banquet Settings",
-      description: "Set up banquet halls and event spaces",
-      icon: <PartyPopper className="h-6 w-6" />,
-      path: "/settings/banquet",
+      path: "/staff/settings/food-beverage",
     },
     {
       title: "Inventory Settings",
       description: "Configure inventory categories and suppliers",
       icon: <Package className="h-6 w-6" />,
-      path: "/settings/inventory",
+      path: "/staff/inventory",
     },
     {
       title: "Payment Settings",
       description: "Manage payment methods and transaction settings",
       icon: <CreditCard className="h-6 w-6" />,
-      path: "/settings/payment",
+      path: "/staff/payment",
     },
     {
       title: "Discount Rates",
       description: "Configure discount rates for room types",
       icon: <Tag className="h-6 w-6" />,
-      path: "/settings/discount-rates",
+      path: "/staff/settings/discount-rates",
     },
     {
-      title: "System Settings",
-      description: "General hotel information and system configuration",
-      icon: <Settings className="h-6 w-6" />,
-      path: "/settings/system",
+      title: "Upcoming Features",
+      description: "StayEaser Developer is cooking something good!",
+      icon: <Construction className="h-6 w-6" />,
+      path: "",
     },
   ];
 

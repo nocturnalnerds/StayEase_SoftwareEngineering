@@ -219,15 +219,13 @@ const BookingPage: React.FC = () => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
           >
-           
-              <div className="rounded-lg overflow-hidden mb-6 shadow-lg flex-shrink-0">
-                <img
-                  src={selectedRoomType.images[0] || "/placeholder.svg"}
-                  alt={selectedRoomType.name}
-                  className="w-full h-60 md:h-72 object-cover rounded-md"
-                />
-              </div>
-        
+            <div className="rounded-lg overflow-hidden mb-6 shadow-lg flex-shrink-0">
+              <img
+                src={selectedRoomType.images[0] || "/placeholder.svg"}
+                alt={selectedRoomType.name}
+                className="w-full h-60 md:h-72 object-cover rounded-md"
+              />
+            </div>
 
             <div className="bg-white rounded-lg p-6 shadow-md space-y-6 flex-grow">
               <div className="flex justify-between items-start">
@@ -303,7 +301,7 @@ const BookingPage: React.FC = () => {
           </motion.div>
 
           <motion.div
-          className="h-full"
+            className="h-full"
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}

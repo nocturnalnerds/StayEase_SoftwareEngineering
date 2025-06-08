@@ -1,13 +1,18 @@
 export type APIErrorResponse = {
-  message: string;
-  statusCode: number;
-  status: string;
+  response?: {
+    data?: {
+      message?: string;
+    };
+    status?: number;
+  };
+  message?: string;
 };
 
 export type APISuccessResponse<T> = {
   message: string;
   statusCode: number;
   data: T;
+  [key: string]: any;
 };
 
 export type RoomCardProps = {
@@ -125,6 +130,7 @@ export type Room = {
   id: number;
   roomNumber: string;
   roomType: RoomType;
+  roomTypeId: number;
   floor: number;
   status: RoomStatus;
   notes?: string;
@@ -141,7 +147,7 @@ export type HouseKeeperRoom = {
   assignedTo: string;
   priority: "low" | "medium" | "high";
   notes?: string;
-}
+};
 
 export type DiscountRate = {
   id: number;

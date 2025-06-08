@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import { APISuccessResponse, User } from "../../lib/types";
+import { APIErrorResponse, APISuccessResponse, User } from "../../lib/types";
 import { AxiosResponse } from "axios";
 import { QUERY_KEYS } from "../../lib/queryKeys";
 import { API } from "../../lib/API";
@@ -31,7 +31,7 @@ export default function useAuthMutation(
       APISuccessResponse<{ token: string; userData: User }>
     >
   ) => {
-    const { token, userData } = response.data.data;
+    const { token, userData } = response.data.user || response.data.newUser;
     localStorage.setItem("token", token);
 
     toast.success("Login successful!");
@@ -40,15 +40,15 @@ export default function useAuthMutation(
       data: { data: userData },
     });
 
-    navigate("/movies");
+    navigate("/booking");
   };
 
   const loginMutation = useMutation({
     mutationFn: (payload: LoginPayload) => API.post(`auth/login`, payload),
     onSuccess: handleLoginSuccess,
-    onError: (err) => {
+    onError: (err: APIErrorResponse) => {
       console.error("Login error", err);
-      toast.error("Login failed!");
+      toast.error(err.response?.data?.message || "Login failed!");
     },
   });
 
@@ -56,17 +56,16 @@ export default function useAuthMutation(
     mutationFn: (payload: RegisterPayload) =>
       API.post("auth/register", payload),
     onSuccess: handleLoginSuccess,
-    onError: (err) => {
+    onError: (err: APIErrorResponse) => {
       setError("email", { message: "Email already exists" });
       setError("password", { message: "Password is required" });
       setError("username", { message: "Name is required" });
       setError("phone", { message: "Phone number is required" });
 
       console.error("Register error", err);
-      toast.error("Registration failed!");
+      toast.error(err.response?.data?.message || "Registration failed!");
     },
   });
 
   return { loginMutation, registerMutation };
 }
-
