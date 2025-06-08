@@ -44,6 +44,15 @@ app.use("/front-office", frontOfficeRouter);
 app.use("/payment", paymentReport);
 app.use("/housekeeping", houseKeepingRouter);
 app.use("/restaurant", restaurantRouter);
+app.use("/auth", authRouter);
+app.use("/rooms", roomRouter);
+app.use("/fnb", fnbRouter);
+app.use("/users-management", userRouter);
+app.use("/discount", discountRouter);
+app.use("/front-office", frontOfficeRouter);
+app.use("/payment", paymentReport);
+app.use("/housekeeping", houseKeepingRouter);
+app.use("/restaurant", restaurantRouter);
 app.use(contactRouter);
 
 /**
