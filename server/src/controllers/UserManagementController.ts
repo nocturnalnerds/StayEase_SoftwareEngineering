@@ -128,7 +128,7 @@ export const getAllStaff: RequestHandler = async (req, res, next) => {
         const formattedStaff = staff.map(member => ({
             username: member.username,
             firstName: member.firstName,
-            lastNamae : member.lastName,
+            lastName : member.lastName,
             phone: member.phone,
             role: member.role,
             department: member.department,
