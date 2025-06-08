@@ -423,97 +423,106 @@ const RoomSettingsPage: React.FC = () => {
                   animate="visible"
                 >
                   {filteredRoomTypes.map((roomType) => (
-                    <motion.div key={roomType.id} variants={itemVariants}>
-                      <Card className="overflow-hidden border-secondary/10 hover:shadow-md transition-shadow duration-300 max-w-[350px]">
-                        <div className="h-48 overflow-hidden">
+                    <motion.div
+                      key={roomType.id}
+                      variants={itemVariants}
+                      className="w-full"
+                    >
+                      <Card className="overflow-hidden border-secondary/10 hover:shadow-lg transition-all duration-300 h-full flex flex-col">
+                        <div className="h-48 overflow-hidden relative">
                           <img
                             src={roomType.images[0] || "/placeholder.svg"}
                             alt={roomType.name}
-                            className="w-full h-full object-cover"
+                            className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
                           />
                         </div>
-                        <CardHeader className="pb-2">
-                          <div className="flex items-start space-x-20">
-                            <CardTitle>{roomType.name}</CardTitle>
-                            <DropdownMenu>
-                              <DropdownMenuTrigger
-                                onClick={(e) => e.stopPropagation()}
-                                className="focus:outline-none"
-                              >
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  className="text-[#213555]"
+
+                        <CardHeader className="pb-3 flex-shrink-0">
+                          <div className="grid grid-cols-2 items-center w-full">
+                            <CardTitle className="text-lg font-semibold text-[#213555] justify-self-start">
+                              {roomType.name}
+                            </CardTitle>
+                            <div className="justify-self-end">
+                              <DropdownMenu>
+                                <DropdownMenuTrigger
+                                  onClick={(e) => e.stopPropagation()}
+                                  className="focus:outline-none"
                                 >
-                                  Actions
-                                </Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent
-                                align="end"
-                                className="bg-white shadow-md rounded-md"
-                                onClick={(e) => e.stopPropagation()}
-                              >
-                                <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleAddUpdateRoomType();
-                                  }}
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    className="text-[#213555] hover:bg-[#213555] hover:text-white transition-colors"
+                                  >
+                                    Actions
+                                  </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent
+                                  align="end"
+                                  className="bg-white shadow-md rounded-md"
+                                  onClick={(e) => e.stopPropagation()}
                                 >
-                                  <Pencil className="h-4 w-4 mr-2" />
-                                  Edit
-                                </DropdownMenuItem>
-                                <DropdownMenuItem
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    if (
-                                      window.confirm(
-                                        "Are you sure you want to delete this room type?"
-                                      )
-                                    ) {
-                                      handleDeleteRoomType(roomType.id);
-                                    }
-                                  }}
-                                  className="text-red-600 cursor-pointer hover:bg-red-50"
-                                >
-                                  <Trash2 className="h-4 w-4 mr-2" />
-                                  Delete
-                                </DropdownMenuItem>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
+                                  <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                  <DropdownMenuSeparator />
+                                  <DropdownMenuItem
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleAddUpdateRoomType();
+                                    }}
+                                  >
+                                    <Pencil className="h-4 w-4 mr-2" />
+                                    Edit
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      if (
+                                        window.confirm(
+                                          "Are you sure you want to delete this room type?"
+                                        )
+                                      ) {
+                                        handleDeleteRoomType(roomType.id);
+                                      }
+                                    }}
+                                    className="text-red-600 cursor-pointer hover:bg-red-50"
+                                  >
+                                    <Trash2 className="h-4 w-4 mr-2" />
+                                    Delete
+                                  </DropdownMenuItem>
+                                </DropdownMenuContent>
+                              </DropdownMenu>
+                            </div>
                           </div>
                         </CardHeader>
 
-                        <CardContent>
-                          <div className="space-y-5">
-                            <p className="text-sm text-gray-500 line-clamp-2">
+                        <CardContent className="flex-1 flex flex-col justify-between pt-0">
+                          <div className="space-y-4">
+                            <p className="text-sm text-gray-600 line-clamp-2 leading-relaxed">
                               {roomType.description}
                             </p>
 
-                            <div className="flex items-center justify-between">
+                            <div className="flex items-center justify-between py-2 border-t border-gray-100">
                               <div className="flex items-center gap-1">
-                                <span className="font-medium">
+                                <span className="font-semibold text-lg text-[#213555]">
                                   {formatCurrency(roomType.basePrice)}
                                 </span>
-                                <span className="text-xs text-gray-500 ml-1">
+                                <span className="text-xs text-gray-500">
                                   /night
                                 </span>
                               </div>
-                              <div className="flex items-center gap-1">
-                                <Users className="h-4 w-4 text-secondary mr-1" />
+                              <div className="flex items-center gap-1 text-sm text-gray-600">
+                                <Users className="h-4 w-4 text-[#4F709C]" />
                                 <span>{roomType.capacity} guests</span>
                               </div>
                             </div>
 
-                            <div className="flex flex-wrap gap-2">
+                            <div className="flex flex-wrap gap-1.5">
                               {roomType.amenities
                                 .slice(0, 3)
                                 .map((amenity, i) => (
                                   <Badge
                                     key={i}
                                     variant="outline"
-                                    className="bg-secondary/5 border-secondary/20"
+                                    className="bg-[#213555]/5 border-[#213555]/20 text-xs py-1 px-2"
                                   >
                                     {amenity}
                                   </Badge>
@@ -521,7 +530,7 @@ const RoomSettingsPage: React.FC = () => {
                               {roomType.amenities.length > 3 && (
                                 <Badge
                                   variant="outline"
-                                  className="bg-secondary/5 border-secondary/20"
+                                  className="bg-[#4F709C]/10 border-[#4F709C]/30 text-xs py-1 px-2"
                                 >
                                   +{roomType.amenities.length - 3} more
                                 </Badge>
@@ -547,28 +556,49 @@ const RoomSettingsPage: React.FC = () => {
               </CardHeader>
               <CardContent className="p-0">
                 <div className="overflow-x-auto">
-                  <table className="w-full min-w-[800px]">
+                  <table className="w-full table-fixed min-w-[800px]">
                     <thead>
                       <tr className="border-b border-secondary/10 bg-gray-50">
-                        <th className="text-left p-4 font-semibold text-[#213555]">
+                        <th
+                          className="text-left p-4 font-semibold text-[#213555]"
+                          style={{ width: "14%" }}
+                        >
                           Room Number
                         </th>
-                        <th className="text-left p-4 font-semibold text-[#213555]">
+                        <th
+                          className="text-left p-4 font-semibold text-[#213555]"
+                          style={{ width: "18%" }}
+                        >
                           Type
                         </th>
-                        <th className="text-left p-4 font-semibold text-[#213555]">
+                        <th
+                          className="text-left p-4 font-semibold text-[#213555]"
+                          style={{ width: "10%" }}
+                        >
                           Floor
                         </th>
-                        <th className="text-left p-4 font-semibold text-[#213555]">
+                        <th
+                          className="text-left p-4 font-semibold text-[#213555]"
+                          style={{ width: "15%" }}
+                        >
                           Status
                         </th>
-                        <th className="text-left p-4 font-semibold text-[#213555]">
+                        <th
+                          className="text-left p-4 font-semibold text-[#213555]"
+                          style={{ width: "12%" }}
+                        >
                           Smoking
                         </th>
-                        <th className="text-left p-4 font-semibold text-[#213555]">
+                        <th
+                          className="text-left p-4 font-semibold text-[#213555]"
+                          style={{ width: "16%" }}
+                        >
                           Last Cleaned
                         </th>
-                        <th className="text-right p-4 font-semibold text-[#213555]">
+                        <th
+                          className="text-right p-4 font-semibold text-[#213555]"
+                          style={{ width: "15%" }}
+                        >
                           Actions
                         </th>
                       </tr>
@@ -579,74 +609,90 @@ const RoomSettingsPage: React.FC = () => {
                           key={room.id}
                           className="border-b border-secondary/10 hover:bg-blue-50 transition-colors duration-200"
                         >
-                          <td className="p-4">
+                          <td className="p-4 truncate" style={{ width: "14%" }}>
                             <div className="flex items-center gap-2">
-                              <Bed className="h-4 w-4 text-secondary mr-2" />
-                              <span className="font-medium">
+                              <Bed className="h-4 w-4 text-secondary flex-shrink-0" />
+                              <span className="font-medium truncate">
                                 {room.roomNumber}
                               </span>
                             </div>
                           </td>
-                          <td className="p-4">{room.roomType.name}</td>
-                          <td className="p-4">{room.floor}</td>
-                          <td className="p-4">
+                          <td className="p-4 truncate" style={{ width: "18%" }}>
+                            <span className="truncate block">
+                              {room.roomType.name}
+                            </span>
+                          </td>
+                          <td className="p-4" style={{ width: "10%" }}>
+                            {room.floor}
+                          </td>
+                          <td className="p-4" style={{ width: "15%" }}>
                             <Badge
                               className={`
                               ${
                                 room.status === "Available"
-                                  ? "bg-green-100 text-green-800"
+                                  ? "bg-green-100 text-green-800 border-green-200"
                                   : ""
                               }
                               ${
                                 room.status === "Occupied"
-                                  ? "bg-blue-100 text-blue-800"
+                                  ? "bg-blue-100 text-blue-800 border-blue-200"
                                   : ""
                               }
                               ${
                                 room.status === "Cleaning"
-                                  ? "bg-yellow-100 text-yellow-800"
+                                  ? "bg-yellow-100 text-yellow-800 border-yellow-200"
                                   : ""
                               }
                               ${
                                 room.status === "Maintenance"
-                                  ? "bg-orange-100 text-orange-800"
+                                  ? "bg-orange-100 text-orange-800 border-orange-200"
                                   : ""
                               }
                               ${
                                 room.status === "Out of Order"
-                                  ? "bg-red-100 text-red-800"
+                                  ? "bg-red-100 text-red-800 border-red-200"
                                   : ""
                               }
                               ${
                                 room.status === "Reserved"
-                                  ? "bg-purple-100 text-purple-800"
+                                  ? "bg-purple-100 text-purple-800 border-purple-200"
                                   : ""
                               }
+                              text-xs px-2 py-1 font-medium whitespace-nowrap
                             `}
                             >
                               {room.status}
                             </Badge>
                           </td>
-                          <td className="p-4">No</td>
-                          <td className="p-4">
-                            {room.lastCleaned
-                              ? new Date(room.lastCleaned).toLocaleDateString()
-                              : "N/A"}
+                          <td className="p-4" style={{ width: "12%" }}>
+                            <span className="text-gray-600">No</span>
                           </td>
-                          <td className="p-4 text-right">
+                          <td className="p-4" style={{ width: "16%" }}>
+                            <span className="text-sm text-gray-600 block truncate">
+                              {room.lastCleaned
+                                ? new Date(
+                                    room.lastCleaned
+                                  ).toLocaleDateString()
+                                : "N/A"}
+                            </span>
+                          </td>
+                          <td
+                            className="p-4 text-right"
+                            style={{ width: "15%" }}
+                          >
                             <DropdownMenu>
                               <DropdownMenuTrigger>
                                 <Button
                                   variant="outline"
                                   size="sm"
-                                  className="text-[#213555]"
+                                  className="text-[#213555] hover:bg-[#213555] hover:text-white transition-colors"
                                 >
                                   Actions
                                 </Button>
                               </DropdownMenuTrigger>
                               <DropdownMenuContent
                                 align="end"
-                                className="bg-white shadow-md rounded-md dark:bg-gray-800"
+                                className="bg-white shadow-md rounded-md"
                               >
                                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
                                 <DropdownMenuSeparator />
