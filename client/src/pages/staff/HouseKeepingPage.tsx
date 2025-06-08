@@ -50,7 +50,9 @@ export default function HouseKeepingPage() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [rooms, setRooms] = useState<HouseKeeperRoom[]>([]);
-  const [selectedRoom, setSelectedRoom] = useState<HouseKeeperRoom | null>(null);
+  const [selectedRoom, setSelectedRoom] = useState<HouseKeeperRoom | null>(
+    null
+  );
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
 
@@ -270,7 +272,7 @@ export default function HouseKeepingPage() {
                   >
                     Cancel
                   </Button>
-                  <Button className="bg-[#213555] hover:bg-[#4F709C]">
+                  <Button className="bg-[#213555] hover:bg-[#4F709C] text-white">
                     Create Task
                   </Button>
                 </DialogFooter>
@@ -338,6 +340,7 @@ export default function HouseKeepingPage() {
 
         {/* Tabs */}
         <Tabs defaultValue="pending" className="space-y-6">
+            <div className="bg-white min-h-screen">
           <TabsList className="grid w-full grid-cols-3 bg-white shadow-sm border">
             <TabsTrigger
               value="pending"
@@ -360,7 +363,7 @@ export default function HouseKeepingPage() {
           </TabsList>
 
           <TabsContent value="pending" className="space-y-6">
-            <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+            <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm overflow-hidden">
               <CardHeader className="bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-t-lg">
                 <CardTitle className="flex items-center gap-2">
                   <Clock className="h-5 w-5" />
@@ -368,26 +371,26 @@ export default function HouseKeepingPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-0">
-                <div className="overflow-hidden">
-                  <Table>
+                <div className="overflow-x-auto">
+                  <Table className="min-w-full table-fixed">
                     <TableHeader>
                       <TableRow className="bg-gray-50">
-                        <TableHead className="font-semibold text-[#213555]">
+                        <TableHead className="font-semibold text-[#213555] w-[15%]">
                           Room
                         </TableHead>
-                        <TableHead className="font-semibold text-[#213555]">
+                        <TableHead className="font-semibold text-[#213555] w-[15%]">
                           Type
                         </TableHead>
-                        <TableHead className="font-semibold text-[#213555]">
+                        <TableHead className="font-semibold text-[#213555] w-[12%]">
                           Priority
                         </TableHead>
-                        <TableHead className="font-semibold text-[#213555]">
+                        <TableHead className="font-semibold text-[#213555] w-[18%]">
                           Assigned To
                         </TableHead>
-                        <TableHead className="font-semibold text-[#213555]">
+                        <TableHead className="font-semibold text-[#213555] w-[15%]">
                           Last Cleaned
                         </TableHead>
-                        <TableHead className="font-semibold text-[#213555]">
+                        <TableHead className="font-semibold text-[#213555] w-[25%]">
                           Actions
                         </TableHead>
                       </TableRow>
@@ -419,9 +422,11 @@ export default function HouseKeepingPage() {
                                 {room.priority.toUpperCase()}
                               </Badge>
                             </TableCell>
-                            <TableCell className="flex items-center gap-2">
-                              <Users className="h-4 w-4 text-gray-400" />
-                              {room.assignedTo}
+                            <TableCell>
+                              <div className="flex items-center gap-2">
+                                <Users className="h-4 w-4 text-gray-400" />
+                                {room.assignedTo}
+                              </div>
                             </TableCell>
                             <TableCell className="text-gray-600">
                               {room.lastCleaned}
@@ -485,7 +490,7 @@ export default function HouseKeepingPage() {
           </TabsContent>
 
           <TabsContent value="completed" className="space-y-6">
-            <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+            <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm overflow-hidden">
               <CardHeader className="bg-gradient-to-r from-green-500 to-green-600 text-white rounded-t-lg">
                 <CardTitle className="flex items-center gap-2">
                   <CheckCircle className="h-5 w-5" />
@@ -493,8 +498,15 @@ export default function HouseKeepingPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-0">
-                <div className="overflow-hidden">
-                  <Table>
+                <div className="w-full overflow-x-auto">
+                  <Table className="w-full table-fixed">
+                    <colgroup>
+                      <col className="w-[120px]" />
+                      <col className="w-[140px]" />
+                      <col className="w-[160px]" />
+                      <col className="w-[140px]" />
+                      <col className="w-[140px]" />
+                    </colgroup>
                     <TableHeader>
                       <TableRow className="bg-gray-50">
                         <TableHead className="font-semibold text-[#213555]">
@@ -531,9 +543,11 @@ export default function HouseKeepingPage() {
                               {room.type}
                             </Badge>
                           </TableCell>
-                          <TableCell className="flex items-center gap-2">
-                            <Users className="h-4 w-4 text-gray-400" />
-                            {room.assignedTo}
+                          <TableCell>
+                            <div className="flex items-center gap-2">
+                              <Users className="h-4 w-4 text-gray-400" />
+                              {room.assignedTo}
+                            </div>
                           </TableCell>
                           <TableCell className="text-gray-600">
                             {room.lastCleaned}
@@ -562,7 +576,7 @@ export default function HouseKeepingPage() {
           </TabsContent>
 
           <TabsContent value="maintenance" className="space-y-6">
-            <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+            <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm overflow-hidden">
               <CardHeader className="bg-gradient-to-r from-red-500 to-red-600 text-white rounded-t-lg">
                 <CardTitle className="flex items-center gap-2">
                   <AlertTriangle className="h-5 w-5" />
@@ -570,8 +584,15 @@ export default function HouseKeepingPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-0">
-                <div className="overflow-hidden">
-                  <Table>
+                <div className="w-full overflow-x-auto">
+                  <Table className="w-full table-fixed">
+                    <colgroup>
+                      <col className="w-[120px]" />
+                      <col className="w-[140px]" />
+                      <col className="w-[180px]" />
+                      <col className="w-[140px]" />
+                      <col className="w-[200px]" />
+                    </colgroup>
                     <TableHeader>
                       <TableRow className="bg-gray-50">
                         <TableHead className="font-semibold text-[#213555]">
@@ -648,6 +669,7 @@ export default function HouseKeepingPage() {
               </CardContent>
             </Card>
           </TabsContent>
+          </div>
         </Tabs>
 
         {/* Edit Room Dialog */}
@@ -744,7 +766,7 @@ export default function HouseKeepingPage() {
                 Cancel
               </Button>
               <Button
-                className="bg-[#213555] hover:bg-[#4F709C] transition-colors duration-200"
+                className="bg-[#213555] hover:bg-[#4F709C] text-white transition-colors duration-200"
                 onClick={() => {
                   if (selectedRoom) {
                     updateRoom(selectedRoom);
