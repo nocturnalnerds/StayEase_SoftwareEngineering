@@ -12,6 +12,7 @@ searchConfirmedReservationsByGuestName,
 updateReservation,
 getRoomList,
 getDashboardStats,
+deleteReservation,
 } from "../controllers/FrontOfficeController";
 
 const frontOfficeRouter = Router();
@@ -27,5 +28,5 @@ frontOfficeRouter.get("/reservations/confirmed/search", searchConfirmedReservati
 frontOfficeRouter.patch("/reservation", updateReservation);
 frontOfficeRouter.get("/rooms", getRoomList);
 frontOfficeRouter.get("/dashboard-stats", getDashboardStats);
-
+frontOfficeRouter.delete("/reservation/:id", deleteReservation);
 export {frontOfficeRouter};
