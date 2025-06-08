@@ -126,11 +126,18 @@ export const getAllStaff: RequestHandler = async (req, res, next) => {
     try {
         const staff = await prisma.staff.findMany();
         const formattedStaff = staff.map(member => ({
-            name: member.username,
-            position: member.role + member.department,
+            username: member.username,
+            firstName: member.firstName,
+            lastNamae : member.lastName,
+            phone: member.phone,
+            role: member.role,
+            department: member.department,
+            division: member.division,
             salary: member.salary,
             HireDate: member.hireDate,
-            Status: member.status,
+            status: member.status,
+            lastLogin: member.lastLogin,
+            profileImage: member.profileImage,
         }));
         res.status(STATUS.OK).json(formattedStaff);
     } catch (e) {
