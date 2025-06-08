@@ -5,6 +5,8 @@ import {authRouter, contactRouter, roomRouter, fnbRouter, userRouter, discountRo
 import { AppError } from "./utils/http/AppError";
 import { STATUS } from "./utils/http/statusCodes";
 import { ErrorController } from "./controllers";
+import { frontOfficeRouter } from "./routes/frontOfficeRouter";
+import { paymentReport } from "./routes/paymentReportRouter";
 
 const app = express();
 
@@ -29,6 +31,8 @@ app.use('/rooms', roomRouter);
 app.use('/fnb', fnbRouter);
 app.use('/users', userRouter)
 app.use('/discount', discountRouter)
+app.use('/front-office', frontOfficeRouter)
+app.use('/payment', paymentReport);
 app.use(contactRouter);
 
 

@@ -57,11 +57,8 @@ model Customer {
   firstName       String
   lastName        String
   phone           String
-  address         String
-  country         String
-  loyaltyPoints   Int               @default(0)
-  registrationDate DateTime
-  status          String
+  registrationDate DateTime @default(now())
+  status          String @default("Active")
   lastVisit       DateTime?
   profileImage    String?
   reservations    Reservation[]
@@ -84,7 +81,7 @@ model RoomType {
 
 model Room {
   id               Int             @id @default(autoincrement())
-  roomNumber       String             @unique
+  roomNumber       String          @unique
   roomTypeId       Int
   floor            Int
   status           String @default("Available")
@@ -123,21 +120,23 @@ model DiscountRate {
 }
 
 model Reservation {
-  id              Int            @id @default(autoincrement())
-  reservationNumber String   @unique
-  customerId      Int
-  customer        Customer          @relation(fields: [customerId], references: [id])
-  status          String
-  checkInDate     DateTime
-  checkOutDate    DateTime
-  adults          Int
-  children        Int
-  specialRequests String?
-  totalAmount     Float
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @updatedAt
-  assignedRooms   ReservationRoom[]
-  payments        Payment[]
+  id                Int             @id @default(autoincrement())
+  reservationNumber String          @unique
+  customerId        Int
+  status            String          @default("pending")
+  paymentStatus     String          @default("pending")
+  checkInStatus     String          @default("pending")
+  checkInDate       DateTime
+  checkOutDate      DateTime
+  adults            Int
+  children          Int
+  specialRequests   String?
+  totalAmount       Float
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  customer          Customer          @relation(fields: [customerId], references: [id])
+  assignedRooms     ReservationRoom[]
+  payments          Payment[]
 }
 
 model ReservationRoom {
@@ -149,9 +148,6 @@ model ReservationRoom {
   reservation   Reservation    @relation(fields: [reservationId], references: [id])
   room          Room           @relation(fields: [roomId], references: [id])
   discount      DiscountRate?  @relation(fields: [discountId], references: [id])
-  ratePerNight  Float
-  checkInDate   DateTime
-  checkOutDate  DateTime
 }
 
 model Payment {
