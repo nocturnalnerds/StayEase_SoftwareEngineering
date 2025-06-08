@@ -201,3 +201,31 @@ export const getDashboardStats: RequestHandler = async (req, res) => {
             .json({ message: "Failed to fetch dashboard stats", error });
     }
 };
+
+export const getAllPayments: RequestHandler = async (req, res) => {
+    try {
+        const payments = await prisma.payment.findMany({
+            select: {
+                id: true,
+                reservation: true,
+                reservationId: true,
+                paymentNumber: true,
+                amount: true,
+                paymentMethod: true,
+                paymentStatus: true,
+                paymentType: true,
+                transactionId: true,
+                paymentDate: true,
+            },
+            orderBy: {
+            paymentDate: "desc",
+            },
+        });
+
+        res.status(STATUS.OK).json(payments);
+    } catch (error) {
+        res
+            .status(STATUS.INTERNAL_SERVER_ERROR)
+            .json({ message: "Failed to fetch payments", error });
+    }
+};

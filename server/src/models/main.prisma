@@ -159,13 +159,14 @@ model Payment {
   amount         Float
   paymentMethod  String
   paymentStatus  String
+  paymentType    String      @default("Room Charge")
   transactionId  String?
   paymentDate    DateTime
   processedById  String?
+  notes          String?
 
   reservation    Reservation @relation(fields: [reservationId], references: [id])
   processedBy    Staff?      @relation("StaffToPayment", fields: [processedById], references: [id])
-  notes          String?
 }
 
 model FoodItem {

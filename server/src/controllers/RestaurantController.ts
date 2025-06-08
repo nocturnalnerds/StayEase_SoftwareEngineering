@@ -134,8 +134,8 @@ export const getDashboardStats: RequestHandler = async (req, res) => {
         tomorrow.setDate(today.getDate() + 1);
 
         const [pendingOrders, preparingOrders, currentlyDiningOrders, todayRevenue] = await Promise.all([
-            prisma.foodOrder.count({ where: { status: "pending" } }),
-            prisma.foodOrder.count({ where: { status: "preparing" } }),
+            prisma.foodOrder.count({ where: { status: "Pending" } }),
+            prisma.foodOrder.count({ where: { status: "Preparing" } }),
             prisma.foodOrder.count({
                 where: {
                     orderDate: {
