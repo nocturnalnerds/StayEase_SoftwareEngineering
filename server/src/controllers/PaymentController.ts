@@ -159,3 +159,45 @@ function buildPdf(payments: PaymentWithDetails[]): Promise<Buffer> {
     doc.end();
     });
 }
+
+
+export const getDashboardStats: RequestHandler = async (req, res) => {
+    try {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const tomorrow = new Date(today);
+        tomorrow.setDate(today.getDate() + 1);
+
+        // Today's revenue
+        const todayRevenue = await prisma.payment.aggregate({
+            _sum: { amount: true },
+            where: {
+                paymentDate: {
+                    gte: today,
+                    lt: tomorrow,
+                },
+                paymentStatus: "COMPLETED",
+            },
+        });
+
+        // Pending payments count
+        const pendingPayments = await prisma.payment.count({
+            where: {
+                paymentStatus: "PENDING",
+            },
+        });
+
+        // Total transactions count
+        const totalTransactions = await prisma.payment.count();
+
+        res.status(STATUS.OK).json({
+            todayRevenue: todayRevenue._sum.amount ?? 0,
+            pendingPayments,
+            totalTransactions,
+        });
+    } catch (error) {
+        res
+            .status(STATUS.INTERNAL_SERVER_ERROR)
+            .json({ message: "Failed to fetch dashboard stats", error });
+    }
+};

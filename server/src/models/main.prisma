@@ -45,7 +45,6 @@ model Staff {
   lastLogin            DateTime?
   profileImage         String?
   processedPayments    Payment[]              @relation("StaffToPayment")
-  preparedFoodOrders   FoodOrder[]            @relation("StaffToFoodOrder")
   inventoryTransactions InventoryTransaction[]
   generatedReports     Report[]
 }
@@ -62,7 +61,6 @@ model Customer {
   lastVisit       DateTime?
   profileImage    String?
   reservations    Reservation[]
-  foodOrders      FoodOrder[]
   banquetBookings BanquetBooking[]
 }
 
@@ -90,20 +88,24 @@ model Room {
   lastCleaned      DateTime?
   currentOccupant  String?
   reservationRooms ReservationRoom[]
-  foodOrders       FoodOrder[]
   roomType         RoomType           @relation(fields: [roomTypeId], references: [id])
+  houseKeeperRooms HouseKeeperRoom[]
 }
 
 model HouseKeeperRoom {
   id          String   @id @default(uuid())
-  roomNumber  String
-  type        String
-  status      String
+  roomId      Int?     // Make it optional first
+  room        Room?    @relation(fields: [roomId], references: [id])
+  taskType    String   @default("Cleaning")
+  status      String   @default("pending")
   lastCleaned DateTime
   assignedTo  String
   priority    String
   notes       String?
 }
+
+
+
 
 model DiscountRate {
   id             String            @id @default(uuid())
@@ -188,13 +190,8 @@ model FoodCategory{
 model FoodOrder {
   id           String     @id @default(uuid())
   orderNumber  String     @unique
-  roomId       Int?
-  customerId   Int?
-  preparedById String?
-
-  room         Room?      @relation(fields: [roomId], references: [id])
-  customer     Customer?  @relation(fields: [customerId], references: [id])
-  preparedBy   Staff?     @relation("StaffToFoodOrder", fields: [preparedById], references: [id])
+  customerName String     @default("John Doe")
+  Table        Int?
   items        FoodOrderItem[]
   totalAmount  Float
   orderDate    DateTime
@@ -207,7 +204,6 @@ model FoodOrderItem {
   foodItemId          Int
   quantity            Int
   specialInstructions String?
-  price               Float
 
   order               FoodOrder  @relation(fields: [orderId], references: [id])
   foodItem            FoodItem   @relation(fields: [foodItemId], references: [id])
