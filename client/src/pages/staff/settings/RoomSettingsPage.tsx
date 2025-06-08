@@ -821,7 +821,10 @@ const RoomSettingsPage: React.FC = () => {
               <DialogClose asChild>
                 <Button variant="outline">Cancel</Button>
               </DialogClose>
-              <Button className="bg-[#213555] hover:bg-[#4F709C] text-white shadow-lg hover:shadow-xl transition-all duration-300">
+              <Button
+                className="bg-[#213555] hover:bg-[#4F709C] text-white shadow-lg hover:shadow-xl transition-all duration-300"
+                onClick={handleAddUpdateRoomType}
+              >
                 {editingRoomType ? "Update" : "Save"} Room Type
               </Button>
             </DialogFooter>

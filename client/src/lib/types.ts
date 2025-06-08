@@ -31,6 +31,7 @@ export type User = {
   name: string;
   password: string;
   phone: string;
+  role: string;
 };
 
 export type Admin = {
@@ -83,11 +84,9 @@ export type Staff = {
   phone: string;
   role: Role;
   department: Department;
-  division: Division;
   hireDate: string;
   status: "Active" | "Inactive" | "On Leave";
-  lastLogin?: string;
-  profileImage?: string;
+  salary: number;
 };
 
 export type Customer = {
@@ -192,6 +191,7 @@ export type ReservationRoom = {
   id: number;
   reservationId: number;
   room: Room;
+  roomId: number;
   ratePerNight: number;
   discountId?: number;
   discount?: DiscountRate;

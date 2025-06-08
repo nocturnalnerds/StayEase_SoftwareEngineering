@@ -36,6 +36,7 @@ import {
   Eye,
   CheckCircle,
 } from "lucide-react";
+import useReservationQuery from "@/hooks/queries/useReservationQuery";
 
 interface Guest {
   id: string;
@@ -104,6 +105,15 @@ const FrontOfficePage: React.FC = () => {
   const [selectedGuest, setSelectedGuest] = useState<Guest | null>(null);
   const [selectedReservation, setSelectedReservation] =
     useState<Reservation | null>(null);
+
+  const { reservationData, isLoading: isReservationLoading } =
+    useReservationQuery();
+
+  useEffect(() => {
+    if (!isReservationLoading) {
+      setLoading(false);
+    }
+  }, [isReservationLoading]);
 
   // Mock data
   const guests: Guest[] = [
@@ -234,8 +244,6 @@ const FrontOfficePage: React.FC = () => {
     setSelectedReservation(reservation);
     setIsViewReservationOpen(true);
   };
-
-   
 
   const filteredGuests = guests.filter((guest) => {
     const matchesSearch = guest.name

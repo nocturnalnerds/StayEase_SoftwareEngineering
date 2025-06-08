@@ -36,7 +36,7 @@ export default function useAuthMutation(
 
     toast.success("Login successful!");
 
-    queryClient.setQueryData([QUERY_KEYS.USERS], {
+    queryClient.setQueryData([QUERY_KEYS.USER], {
       data: { data: userData },
     });
 

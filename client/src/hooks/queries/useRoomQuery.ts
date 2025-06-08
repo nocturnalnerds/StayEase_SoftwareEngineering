@@ -9,11 +9,19 @@ export default function useRoomQuery() {
     queryKey: [QUERY_KEYS.ROOMS],
   });
 
+  const dashboardQuery = useQuery({
+    queryFn: () => API.get<APISuccessResponse<Room[]>>("/rooms/roomDashboard"),
+    queryKey: [QUERY_KEYS.ROOM_DASHBOARD],
+  });
+
   const roomData: Room[] = roomQuery.data?.data ?? [];
+  const dashboardData = dashboardQuery.data?.data ?? [];
 
   return {
     roomData,
     roomQuery,
+    dashboardData,
+    dashboardQuery,
     isLoading: roomQuery.isLoading,
     isError: roomQuery.isError,
   };
