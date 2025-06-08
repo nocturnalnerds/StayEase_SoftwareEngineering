@@ -11,7 +11,8 @@ export type ReservationPayload = {
   lastName: string;
   email: string;
   phone: string;
-  roomId: number;
+  roomNumber?: number;
+  roomTypeId: number;
   adults: number;
   children: number;
   specialRequest?: string;
@@ -117,11 +118,30 @@ export default function useReservationMutation() {
     },
   });
 
+  const confirmReservation = useMutation({
+    mutationFn: (id: number) =>
+      API.post(`/front-office/confirmed-reservation/${id}`),
+
+    onSuccess: () => {
+      toast.success("Reservation confirmed successfully!");
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.RESERVATIONS],
+      });
+    },
+    onError: (err: APIErrorResponse) => {
+      console.error("Confirm reservation error", err);
+      toast.error(
+        err.response?.data?.message || "Confirming reservation failed!"
+      );
+    },
+  });
+
   return {
     addReservation,
     updateReservation,
     deleteReservation,
     updatePaymentStatus,
     updateCheckInStatus,
+    confirmReservation,
   };
 }

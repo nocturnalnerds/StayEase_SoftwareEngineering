@@ -26,7 +26,6 @@ import {
   Filter,
   Eye,
   Edit,
-  Settings,
   Shield,
   UserPlus,
   Search,

@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/Input";
@@ -22,12 +22,9 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/TextArea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-
 import { Badge } from "@/components/ui/badge";
 import {
   Users,
-  UserPlus,
-  UserX,
   Calendar,
   Search,
   Filter,
@@ -35,65 +32,40 @@ import {
   Trash2,
   Eye,
   CheckCircle,
+  UserCheck,
+  ClipboardList,
 } from "lucide-react";
+import { Reservation, RoomType } from "@/lib/types";
 import useReservationQuery from "@/hooks/queries/useReservationQuery";
+import useReservationMutation from "@/hooks/mutations/useReservationMutation";
+import toast from "react-hot-toast";
+import useRoomQuery from "@/hooks/queries/useRoomQuery";
+import useRoomTypeQuery from "@/hooks/queries/useRoomTypeQuery";
 
-interface Guest {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  address: string;
-  checkIn: string;
-  checkOut: string;
-  roomNumber: string;
-  roomType: string;
-  status: "checked-in" | "checked-out" | "reserved" | "cancelled";
-  totalAmount: number;
-  paymentStatus: "paid" | "pending" | "partial";
-}
-
-interface Reservation {
-  id: string;
-  guestName: string;
-  email: string;
-  phone: string;
-  checkIn: string;
-  checkOut: string;
-  roomType: string;
-  guests: number;
-  specialRequests: string;
-  status: "confirmed" | "pending" | "cancelled";
-  totalAmount: number;
-}
-
-const StatsCard: React.FC<{
+type StatsCardProps = {
   title: string;
-  value: string;
-  icon: React.ComponentType<{ className?: string }>;
-  trend: { value: number; isPositive: boolean };
-}> = ({ title, value, icon: Icon, trend }) => {
+  value: number | string;
+  icon: React.ReactNode;
+};
+
+const StatsCard: React.FC<StatsCardProps> = ({ title, value, icon }) => {
   return (
     <Card className="bg-gradient-to-br from-blue-500 to-blue-600 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium opacity-90">
+        <CardTitle className="text-sm font-medium opacity-90 flex items-center gap-2">
+          {icon}
           {title}
         </CardTitle>
-        <Icon className="h-5 w-5 opacity-80" />
       </CardHeader>
       <CardContent>
         <div className="text-3xl font-bold">{value}</div>
-        <p className="text-xs opacity-80 mt-1">
-          {trend.isPositive ? "+" : ""}
-          {trend.value} from last month
-        </p>
+        <p className="text-xs opacity-80 mt-1">Stable</p>
       </CardContent>
     </Card>
   );
 };
 
 const FrontOfficePage: React.FC = () => {
-  const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("guests");
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
@@ -102,141 +74,27 @@ const FrontOfficePage: React.FC = () => {
   const [isViewGuestOpen, setIsViewGuestOpen] = useState(false);
   const [isEditGuestOpen, setIsEditGuestOpen] = useState(false);
   const [isViewReservationOpen, setIsViewReservationOpen] = useState(false);
-  const [selectedGuest, setSelectedGuest] = useState<Guest | null>(null);
+  const [selectedConfirmed, setSelectedConfirmed] =
+    useState<Reservation | null>(null);
   const [selectedReservation, setSelectedReservation] =
     useState<Reservation | null>(null);
 
-  const { reservationData, isLoading: isReservationLoading } =
-    useReservationQuery();
+  const { reservationData, dashboardData, isLoading } = useReservationQuery();
+  const {
+    addReservation,
+    deleteReservation,
+    updateReservation,
+    confirmReservation,
+  } = useReservationMutation();
+  const { roomTypeData } = useRoomTypeQuery();
 
-  useEffect(() => {
-    if (!isReservationLoading) {
-      setLoading(false);
-    }
-  }, [isReservationLoading]);
-
-  // Mock data
-  const guests: Guest[] = [
-    {
-      id: "1",
-      name: "John Doe",
-      email: "john.doe@email.com",
-      phone: "+1234567890",
-      address: "123 Main St, City",
-      checkIn: "2024-01-15",
-      checkOut: "2024-01-18",
-      roomNumber: "101",
-      roomType: "Deluxe",
-      status: "checked-in",
-      totalAmount: 450,
-      paymentStatus: "paid",
-    },
-    {
-      id: "2",
-      name: "Jane Smith",
-      email: "jane.smith@email.com",
-      phone: "+1234567891",
-      address: "456 Oak Ave, City",
-      checkIn: "2024-01-16",
-      checkOut: "2024-01-20",
-      roomNumber: "205",
-      roomType: "Suite",
-      status: "reserved",
-      totalAmount: 800,
-      paymentStatus: "pending",
-    },
-  ];
-
-  const reservations: Reservation[] = [
-    {
-      id: "1",
-      guestName: "Alice Johnson",
-      email: "alice.johnson@email.com",
-      phone: "+1234567892",
-      checkIn: "2024-01-20",
-      checkOut: "2024-01-23",
-      roomType: "Standard",
-      guests: 2,
-      specialRequests: "Late check-in",
-      status: "confirmed",
-      totalAmount: 300,
-    },
-    {
-      id: "2",
-      guestName: "Bob Wilson",
-      email: "bob.wilson@email.com",
-      phone: "+1234567893",
-      checkIn: "2024-01-22",
-      checkOut: "2024-01-25",
-      roomType: "Deluxe",
-      guests: 1,
-      specialRequests: "Ground floor room",
-      status: "pending",
-      totalAmount: 375,
-    },
-  ];
-
-  const stats = [
-    {
-      title: "Total Guests",
-      value: "24",
-      icon: Users,
-      trend: { value: 12, isPositive: true },
-    },
-    {
-      title: "Check-ins Today",
-      value: "8",
-      icon: UserPlus,
-      trend: { value: 5, isPositive: true },
-    },
-    {
-      title: "Check-outs Today",
-      value: "6",
-      icon: UserX,
-      trend: { value: 2, isPositive: false },
-    },
-    {
-      title: "Reservations",
-      value: "15",
-      icon: Calendar,
-      trend: { value: 8, isPositive: true },
-    },
-  ];
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 1500);
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "checked-in":
-      case "confirmed":
-      case "paid":
-        return "bg-green-100 text-green-800 border-green-200";
-      case "reserved":
-      case "pending":
-      case "partial":
-        return "bg-yellow-100 text-yellow-800 border-yellow-200";
-      case "checked-out":
-        return "bg-blue-100 text-blue-800 border-blue-200";
-      case "cancelled":
-        return "bg-red-100 text-red-800 border-red-200";
-      default:
-        return "bg-gray-100 text-gray-800 border-gray-200";
-    }
-  };
-
-  const handleViewGuest = (guest: Guest) => {
-    setSelectedGuest(guest);
+  const handleViewConfirmed = (reservation: Reservation) => {
+    setSelectedConfirmed(reservation);
     setIsViewGuestOpen(true);
   };
 
-  const handleEditGuest = (guest: Guest) => {
-    setSelectedGuest(guest);
+  const handleEditConfirmed = (reservation: Reservation) => {
+    setSelectedConfirmed(reservation);
     setIsEditGuestOpen(true);
   };
 
@@ -245,25 +103,152 @@ const FrontOfficePage: React.FC = () => {
     setIsViewReservationOpen(true);
   };
 
-  const filteredGuests = guests.filter((guest) => {
-    const matchesSearch = guest.name
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
-    const matchesStatus =
-      filterStatus === "all" || guest.status === filterStatus;
-    return matchesSearch && matchesStatus;
-  });
+  const handleCreateReservation = () => {
+    const guestName = (
+      document.getElementById("reservationName") as HTMLInputElement
+    ).value;
+    const [firstName, lastName] = guestName.split(" ");
 
-  const filteredReservations = reservations.filter((reservation) => {
-    const matchesSearch = reservation.guestName
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
-    const matchesStatus =
-      filterStatus === "all" || reservation.status === filterStatus;
-    return matchesSearch && matchesStatus;
-  });
+    const reservationData = {
+      firstName: firstName || guestName, // If no last name, use full name as first name
+      lastName: lastName || firstName, // If no last name, set the first part as last name
+      email: (document.getElementById("reservationEmail") as HTMLInputElement)
+        .value,
+      phone: (document.getElementById("reservationPhone") as HTMLInputElement)
+        .value,
+      checkInDate: (document.getElementById("checkInDate") as HTMLInputElement)
+        .value,
+      checkOutDate: (
+        document.getElementById("checkOutDate") as HTMLInputElement
+      ).value,
+      roomTypeId: parseInt(
+        (document.getElementById("roomTypeId") as HTMLSelectElement).value
+      ),
+      roomNumber: parseInt(
+        (document.getElementById("roomNumber") as HTMLInputElement).value
+      ),
+      specialRequests: (
+        document.getElementById("specialRequests") as HTMLTextAreaElement
+      ).value,
+      children: parseInt(
+        (document.getElementById("totalChildren") as HTMLInputElement).value ||
+          "0"
+      ),
+      adults: parseInt(
+        (document.getElementById("totalAdult") as HTMLInputElement).value || "0"
+      ),
+    };
 
-  if (loading) {
+    if (
+      !reservationData.firstName ||
+      !reservationData.lastName ||
+      !reservationData.email ||
+      !reservationData.phone ||
+      !reservationData.checkInDate ||
+      !reservationData.checkOutDate ||
+      !reservationData.roomTypeId ||
+      !reservationData.roomNumber ||
+      !reservationData.adults ||
+      !reservationData.children
+    ) {
+      alert("Please fill in all required fields.");
+      return;
+    }
+
+    addReservation.mutate(reservationData, {
+      onSuccess: () => {
+        setIsAddReservationOpen(false);
+        setSelectedReservation(null);
+      },
+    }); // Calling the mutation
+  };
+
+  const handleUpdateReservation = () => {
+    if (!selectedConfirmed) return;
+
+    // Ambil value dari input, jika kosong maka undefined
+    const fullName = (
+      document.getElementById("editFullName") as HTMLInputElement
+    )?.value?.trim();
+    const [firstName, lastName] = fullName
+      ? fullName.split(" ")
+      : [undefined, undefined];
+    const email = (
+      document.getElementById("editGuestEmail") as HTMLInputElement
+    )?.value?.trim();
+    const phone = (
+      document.getElementById("editGuestPhone") as HTMLInputElement
+    )?.value?.trim();
+    const roomNumber = parseInt(
+      (
+        document.getElementById("editGuestRoom") as HTMLInputElement
+      )?.value?.trim()
+    );
+    const status = (
+      document.getElementById("editGuestStatus") as HTMLSelectElement
+    )?.value;
+    const paymentStatus = (
+      document.getElementById("editPaymentStatus") as HTMLSelectElement
+    )?.value;
+
+    // Hanya masukkan field yang ada valuenya
+    const updatedData: any = {
+      ...(firstName && { firstName }),
+      ...(lastName && { lastName }),
+      ...(email && { email }),
+      ...(phone && { phone }),
+      ...(roomNumber && { roomNumber }),
+      ...(status && { status }),
+      ...(paymentStatus && { paymentStatus }),
+      ...selectedConfirmed,
+    };
+
+    updateReservation.mutate(updatedData, {
+      onSuccess: () => {
+        setIsEditGuestOpen(false);
+        setSelectedConfirmed(null);
+        toast.success("Reservation updated successfully!");
+      },
+    });
+  };
+
+  const handleDeleteReservation = (reservationId: number) => {
+    deleteReservation.mutate(reservationId);
+  };
+
+  const handleConfirmedReservation = (id: number) => {
+    confirmReservation.mutate(id);
+  };
+
+  const filteredConfirmed = reservationData
+    .filter((reservation) => {
+      const matchesSearch =
+        `${reservation.customer.firstName} ${reservation.customer.lastName}`
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase());
+      const isConfirmed = reservation.status.toLowerCase() !== "pending";
+      return matchesSearch && isConfirmed;
+    })
+    .sort(
+      (a, b) =>
+        new Date(b.checkInDate).getTime() - new Date(a.checkInDate).getTime()
+    );
+
+  const filteredReservations = reservationData
+    .filter((reservation) => {
+      const matchesSearch =
+        `${reservation.customer.firstName} ${reservation.customer.lastName}`
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase());
+      const isPending = reservation.status.toLowerCase() === "pending";
+      return matchesSearch && isPending;
+    })
+    .sort(
+      (a, b) =>
+        new Date(b.checkInDate).getTime() - new Date(a.checkInDate).getTime()
+    );
+
+  if (isLoading) {
     return (
       <div className="flex-1 flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
         <div className="text-center">
@@ -410,7 +395,7 @@ const FrontOfficePage: React.FC = () => {
                       htmlFor="reservationName"
                       className="text-[#213555] font-medium"
                     >
-                      Guest Name
+                      Guest Full Name
                     </Label>
                     <Input
                       id="reservationName"
@@ -473,23 +458,72 @@ const FrontOfficePage: React.FC = () => {
                       />
                     </div>
                   </div>
-                  <div>
-                    <Label
-                      htmlFor="roomType"
-                      className="text-[#213555] font-medium"
-                    >
-                      Room Type
-                    </Label>
-                    <Select>
-                      <SelectTrigger className="border-gray-200 focus:border-[#4F709C]">
-                        <SelectValue placeholder="Select room type" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-white">
-                        <SelectItem value="standard">Standard</SelectItem>
-                        <SelectItem value="deluxe">Deluxe</SelectItem>
-                        <SelectItem value="suite">Suite</SelectItem>
-                      </SelectContent>
-                    </Select>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label
+                        htmlFor="roomTypeId"
+                        className="text-[#213555] font-medium"
+                      >
+                        Room Type
+                      </Label>
+                      <select
+                        id="roomTypeId"
+                        className="border-gray-200 border-1 bg-white focus:border-[#4F709C]! rounded px-3 py-1 w-full"
+                        defaultValue=""
+                      >
+                        <option value="" disabled>
+                          Select room type
+                        </option>
+                        {roomTypeData.map((roomType: RoomType) => (
+                          <option key={roomType.id} value={roomType.id}>
+                            {roomType.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <Label
+                        htmlFor="roomNumber"
+                        className="text-[#213555] font-medium"
+                      >
+                        Room Number
+                      </Label>
+                      <Input
+                        id="roomNumber"
+                        placeholder="Enter room number"
+                        className="border-gray-200 focus:border-[#4F709C]"
+                      />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-3 gap-6">
+                    <div>
+                      <Label
+                        htmlFor="totalAdult"
+                        className="text-[#213555] font-medium"
+                      >
+                        Adult Total
+                      </Label>
+                      <Input
+                        id="totalAdult"
+                        type="number"
+                        placeholder="Enter number of adults"
+                        className="border-gray-200 focus:border-[#4F709C]"
+                      />
+                    </div>
+                    <div>
+                      <Label
+                        htmlFor="totalChildren"
+                        className="text-[#213555] font-medium"
+                      >
+                        Children Total
+                      </Label>
+                      <Input
+                        id="totalChildren"
+                        type="number"
+                        placeholder="Enter number of children"
+                        className="border-gray-200 focus:border-[#4F709C]"
+                      />
+                    </div>
                   </div>
                   <div>
                     <Label
@@ -513,7 +547,7 @@ const FrontOfficePage: React.FC = () => {
                       Cancel
                     </Button>
                     <Button
-                      onClick={() => setIsAddReservationOpen(false)}
+                      onClick={handleCreateReservation}
                       className="flex-1 bg-[#213555] hover:bg-[#4F709C] text-white transition-colors duration-200"
                     >
                       Create Reservation
@@ -527,9 +561,26 @@ const FrontOfficePage: React.FC = () => {
 
         {/* Stats Cards */}
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-          {stats.map((stat, index) => (
-            <StatsCard key={index} {...stat} />
-          ))}
+          <StatsCard
+            title="Total Guests"
+            value={dashboardData.totalGuests}
+            icon={<Users className="w-5 h-5" />}
+          />
+          <StatsCard
+            title="Check-ins Today"
+            value={dashboardData.checkInToday}
+            icon={<UserCheck className="w-5 h-5" />}
+          />
+          <StatsCard
+            title="Check-outs Today"
+            value={dashboardData.checkOutToday}
+            icon={<Calendar className="w-5 h-5" />}
+          />
+          <StatsCard
+            title="Reservations"
+            value={dashboardData.totalReservations}
+            icon={<ClipboardList className="w-5 h-5" />}
+          />
         </div>
 
         {/* Main Content */}
@@ -562,7 +613,7 @@ const FrontOfficePage: React.FC = () => {
                   value="guests"
                   className="data-[state=active]:bg-[#213555] data-[state=active]:text-white"
                 >
-                  Current Guests ({filteredGuests.length})
+                  Confirmed Reservations ({filteredConfirmed.length})
                 </TabsTrigger>
                 <TabsTrigger
                   value="reservations"
@@ -601,9 +652,9 @@ const FrontOfficePage: React.FC = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {filteredGuests.map((guest, index) => (
+                      {filteredConfirmed.map((confirmed, index) => (
                         <tr
-                          key={guest.id}
+                          key={confirmed.id}
                           className={`group hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 transition-all duration-300 border-b border-gray-100 ${
                             index % 2 === 0 ? "bg-white" : "bg-gray-50/30"
                           }`}
@@ -611,10 +662,11 @@ const FrontOfficePage: React.FC = () => {
                           <td className="py-4 px-6">
                             <div>
                               <div className="font-semibold text-[#4F709C] group-hover:text-[#213555] transition-colors text-base">
-                                {guest.name}
+                                {confirmed.customer.firstName}{" "}
+                                {confirmed.customer.lastName}
                               </div>
                               <div className="text-sm text-gray-500 mt-1">
-                                {guest.email}
+                                {confirmed.customer.email}
                               </div>
                             </div>
                           </td>
@@ -623,49 +675,47 @@ const FrontOfficePage: React.FC = () => {
                               variant="outline"
                               className="bg-blue-50 text-blue-700 border-blue-200 font-medium px-3 py-1 text-sm"
                             >
-                              {guest.roomNumber} ({guest.roomType})
+                              {`${confirmed.assignedRooms[0].room.roomNumber} (${confirmed.assignedRooms[0].room.roomType.name})`}
                             </Badge>
                           </td>
                           <td className="py-4 px-6">
                             <div className="text-gray-700 font-medium">
-                              {new Date(guest.checkIn).toLocaleDateString(
-                                "en-US",
-                                {
-                                  year: "numeric",
-                                  month: "short",
-                                  day: "numeric",
-                                }
-                              )}
+                              {new Date(
+                                confirmed.checkInDate
+                              ).toLocaleDateString("en-US", {
+                                year: "numeric",
+                                month: "short",
+                                day: "numeric",
+                              })}
                             </div>
                           </td>
                           <td className="py-4 px-6">
                             <div className="text-gray-700 font-medium">
-                              {new Date(guest.checkOut).toLocaleDateString(
-                                "en-US",
-                                {
-                                  year: "numeric",
-                                  month: "short",
-                                  day: "numeric",
-                                }
-                              )}
+                              {new Date(
+                                confirmed.checkOutDate
+                              ).toLocaleDateString("en-US", {
+                                year: "numeric",
+                                month: "short",
+                                day: "numeric",
+                              })}
                             </div>
                           </td>
                           <td className="py-4 px-6">
                             <Badge
                               className={`${getStatusColor(
-                                guest.status
+                                confirmed.status
                               )} font-medium px-3 py-1 text-sm border`}
                             >
-                              {guest.status}
+                              {confirmed.status}
                             </Badge>
                           </td>
                           <td className="py-4 px-6">
                             <Badge
                               className={`${getStatusColor(
-                                guest.paymentStatus
+                                confirmed.paymentStatus
                               )} font-medium px-3 py-1 text-sm border`}
                             >
-                              {guest.paymentStatus}
+                              {confirmed.paymentStatus}
                             </Badge>
                           </td>
                           <td className="py-4 px-6">
@@ -673,7 +723,7 @@ const FrontOfficePage: React.FC = () => {
                               <Button
                                 variant="ghost"
                                 size="sm"
-                                onClick={() => handleViewGuest(guest)}
+                                onClick={() => handleViewConfirmed(confirmed)}
                                 className="hover:bg-blue-100 hover:text-blue-700 transition-all duration-200 rounded-lg p-2 group/btn"
                                 title="View Guest"
                               >
@@ -682,7 +732,7 @@ const FrontOfficePage: React.FC = () => {
                               <Button
                                 variant="ghost"
                                 size="sm"
-                                onClick={() => handleEditGuest(guest)}
+                                onClick={() => handleEditConfirmed(confirmed)}
                                 className="hover:bg-amber-100 hover:text-amber-700 transition-all duration-200 rounded-lg p-2 group/btn"
                                 title="Edit Guest"
                               >
@@ -693,10 +743,14 @@ const FrontOfficePage: React.FC = () => {
                                 size="sm"
                                 className="text-red-600 hover:text-red-900 hover:bg-red-100 transition-all duration-200 rounded-lg p-2 group/btn"
                                 title="Delete Guest"
+                                onClick={() =>
+                                  handleDeleteReservation(confirmed.id)
+                                }
                               >
                                 <Trash2 className="h-4 w-4 group-hover/btn:scale-110 transition-transform" />
                               </Button>
-                              {guest.status === "reserved" && (
+                              {confirmed.status.toLowerCase() ===
+                                "reserved" && (
                                 <Button
                                   variant="ghost"
                                   size="sm"
@@ -754,10 +808,10 @@ const FrontOfficePage: React.FC = () => {
                           <td className="py-4 px-6">
                             <div>
                               <div className="font-semibold text-[#4F709C] group-hover:text-[#213555] transition-colors text-base">
-                                {reservation.guestName}
+                                {`${reservation.customer.firstName} ${reservation.customer.lastName}`}
                               </div>
                               <div className="text-sm text-gray-500 mt-1">
-                                {reservation.email}
+                                {reservation.customer.email}
                               </div>
                             </div>
                           </td>
@@ -766,25 +820,24 @@ const FrontOfficePage: React.FC = () => {
                               variant="outline"
                               className="bg-blue-50 text-blue-700 border-blue-200 font-medium px-3 py-1 text-sm"
                             >
-                              {reservation.roomType}
+                              {reservation.assignedRooms[0]?.room.roomType.name}
                             </Badge>
                           </td>
                           <td className="py-4 px-6">
                             <div className="text-gray-700 font-medium">
-                              {new Date(reservation.checkIn).toLocaleDateString(
-                                "en-US",
-                                {
-                                  year: "numeric",
-                                  month: "short",
-                                  day: "numeric",
-                                }
-                              )}
+                              {new Date(
+                                reservation.checkInDate
+                              ).toLocaleDateString("en-US", {
+                                year: "numeric",
+                                month: "short",
+                                day: "numeric",
+                              })}
                             </div>
                           </td>
                           <td className="py-4 px-6">
                             <div className="text-gray-700 font-medium">
                               {new Date(
-                                reservation.checkOut
+                                reservation.checkOutDate
                               ).toLocaleDateString("en-US", {
                                 year: "numeric",
                                 month: "short",
@@ -794,7 +847,7 @@ const FrontOfficePage: React.FC = () => {
                           </td>
                           <td className="py-4 px-6">
                             <div className="text-gray-700 font-bold text-center">
-                              {reservation.guests}
+                              {reservation.adults + reservation.children}
                             </div>
                           </td>
                           <td className="py-4 px-6">
@@ -824,6 +877,7 @@ const FrontOfficePage: React.FC = () => {
                                 size="sm"
                                 className="hover:bg-amber-100 hover:text-amber-700 transition-all duration-200 rounded-lg p-2 group/btn"
                                 title="Edit Reservation"
+                                onClick={() => handleEditConfirmed(reservation)}
                               >
                                 <Edit className="h-4 w-4 group-hover/btn:scale-110 transition-transform" />
                               </Button>
@@ -832,15 +886,22 @@ const FrontOfficePage: React.FC = () => {
                                 size="sm"
                                 className="text-red-600 hover:text-red-900 hover:bg-red-100 transition-all duration-200 rounded-lg p-2 group/btn"
                                 title="Cancel Reservation"
+                                onClick={() =>
+                                  handleDeleteReservation(reservation.id)
+                                }
                               >
                                 <Trash2 className="h-4 w-4 group-hover/btn:scale-110 transition-transform" />
                               </Button>
-                              {reservation.status === "pending" && (
+                              {reservation.status.toLocaleLowerCase() ===
+                                "pending" && (
                                 <Button
                                   variant="ghost"
                                   size="sm"
                                   className="text-green-600 hover:text-green-900 hover:bg-green-100 transition-all duration-200 rounded-lg p-2 group/btn"
                                   title="Confirm Reservation"
+                                  onClick={() =>
+                                    handleConfirmedReservation(reservation.id)
+                                  }
                                 >
                                   <CheckCircle className="h-4 w-4 group-hover/btn:scale-110 transition-transform" />
                                 </Button>
@@ -862,24 +923,26 @@ const FrontOfficePage: React.FC = () => {
           <DialogContent className="bg-white border-0 shadow-2xl max-w-md">
             <DialogHeader>
               <DialogTitle className="text-xl font-semibold text-[#213555]">
-                Guest Details
+                Confirmed Reservation Details
               </DialogTitle>
             </DialogHeader>
-            {selectedGuest && (
+            {selectedConfirmed && (
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label className="text-sm font-medium text-gray-500">
                       Guest Name
                     </Label>
-                    <p className="font-medium">{selectedGuest.name}</p>
+                    <p className="font-medium">
+                      {`${selectedConfirmed.customer.firstName} ${selectedConfirmed.customer.lastName}`}
+                    </p>
                   </div>
                   <div>
                     <Label className="text-sm font-medium text-gray-500">
                       Room
                     </Label>
                     <p className="font-medium">
-                      {selectedGuest.roomNumber} ({selectedGuest.roomType})
+                      {`${selectedConfirmed.assignedRooms[0].room.roomNumber} (${selectedConfirmed.assignedRooms[0]?.room.roomType.name})`}
                     </p>
                   </div>
                 </div>
@@ -888,20 +951,14 @@ const FrontOfficePage: React.FC = () => {
                     <Label className="text-sm font-medium text-gray-500">
                       Email
                     </Label>
-                    <p>{selectedGuest.email}</p>
+                    <p>{selectedConfirmed.customer.email}</p>
                   </div>
                   <div>
                     <Label className="text-sm font-medium text-gray-500">
                       Phone
                     </Label>
-                    <p>{selectedGuest.phone}</p>
+                    <p>{selectedConfirmed.customer.phone}</p>
                   </div>
-                </div>
-                <div>
-                  <Label className="text-sm font-medium text-gray-500">
-                    Address
-                  </Label>
-                  <p>{selectedGuest.address}</p>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
@@ -909,7 +966,9 @@ const FrontOfficePage: React.FC = () => {
                       Check-in
                     </Label>
                     <p>
-                      {new Date(selectedGuest.checkIn).toLocaleDateString()}
+                      {new Date(
+                        selectedConfirmed.customer.email
+                      ).toLocaleDateString()}
                     </p>
                   </div>
                   <div>
@@ -917,7 +976,9 @@ const FrontOfficePage: React.FC = () => {
                       Check-out
                     </Label>
                     <p>
-                      {new Date(selectedGuest.checkOut).toLocaleDateString()}
+                      {new Date(
+                        selectedConfirmed.checkOutDate
+                      ).toLocaleDateString()}
                     </p>
                   </div>
                 </div>
@@ -926,8 +987,8 @@ const FrontOfficePage: React.FC = () => {
                     <Label className="text-sm font-medium text-gray-500">
                       Status
                     </Label>
-                    <Badge className={getStatusColor(selectedGuest.status)}>
-                      {selectedGuest.status}
+                    <Badge className={getStatusColor(selectedConfirmed.status)}>
+                      {selectedConfirmed.status}
                     </Badge>
                   </div>
                   <div>
@@ -935,19 +996,31 @@ const FrontOfficePage: React.FC = () => {
                       Payment Status
                     </Label>
                     <Badge
-                      className={getStatusColor(selectedGuest.paymentStatus)}
+                      className={getStatusColor(
+                        selectedConfirmed.paymentStatus
+                      )}
                     >
-                      {selectedGuest.paymentStatus}
+                      {selectedConfirmed.paymentStatus}
                     </Badge>
                   </div>
                 </div>
-                <div>
-                  <Label className="text-sm font-medium text-gray-500">
-                    Total Amount
-                  </Label>
-                  <p className="font-bold text-lg">
-                    ${selectedGuest.totalAmount}
-                  </p>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-sm font-medium text-gray-500">
+                      Total Amount
+                    </Label>
+                    <p className="font-bold text-lg">
+                      ${selectedConfirmed.totalAmount}
+                    </p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-gray-500">
+                      Total Guest
+                    </Label>
+                    <p>
+                      {selectedConfirmed.adults + selectedConfirmed.children}
+                    </p>
+                  </div>
                 </div>
                 <div className="flex justify-end gap-2 pt-4">
                   <Button
@@ -955,9 +1028,6 @@ const FrontOfficePage: React.FC = () => {
                     onClick={() => setIsViewGuestOpen(false)}
                   >
                     Close
-                  </Button>
-                  <Button className=" bg-[#213555] hover:bg-[#4F709C] text-white">
-                    Edit Guest
                   </Button>
                 </div>
               </div>
@@ -973,19 +1043,19 @@ const FrontOfficePage: React.FC = () => {
                 Edit Guest
               </DialogTitle>
             </DialogHeader>
-            {selectedGuest && (
+            {selectedConfirmed && (
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label
-                      htmlFor="editGuestName"
+                      htmlFor="editFullName"
                       className="text-[#213555] font-medium"
                     >
                       Guest Name
                     </Label>
                     <Input
-                      id="editGuestName"
-                      defaultValue={selectedGuest.name}
+                      id="editFullName"
+                      defaultValue={`${selectedConfirmed.customer.firstName} ${selectedConfirmed.customer.lastName}`}
                       className="border-gray-200 focus:border-[#4F709C]"
                     />
                   </div>
@@ -998,7 +1068,7 @@ const FrontOfficePage: React.FC = () => {
                     </Label>
                     <Input
                       id="editGuestEmail"
-                      defaultValue={selectedGuest.email}
+                      defaultValue={selectedConfirmed.customer.email}
                       className="border-gray-200 focus:border-[#4F709C]"
                     />
                   </div>
@@ -1013,7 +1083,7 @@ const FrontOfficePage: React.FC = () => {
                     </Label>
                     <Input
                       id="editGuestPhone"
-                      defaultValue={selectedGuest.phone}
+                      defaultValue={selectedConfirmed.customer.phone}
                       className="border-gray-200 focus:border-[#4F709C]"
                     />
                   </div>
@@ -1026,23 +1096,12 @@ const FrontOfficePage: React.FC = () => {
                     </Label>
                     <Input
                       id="editGuestRoom"
-                      defaultValue={selectedGuest.roomNumber}
+                      defaultValue={
+                        selectedConfirmed.assignedRooms[0].room.roomNumber
+                      }
                       className="border-gray-200 focus:border-[#4F709C]"
                     />
                   </div>
-                </div>
-                <div>
-                  <Label
-                    htmlFor="editGuestAddress"
-                    className="text-[#213555] font-medium"
-                  >
-                    Address
-                  </Label>
-                  <Textarea
-                    id="editGuestAddress"
-                    defaultValue={selectedGuest.address}
-                    className="border-gray-200 focus:border-[#4F709C]"
-                  />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
@@ -1052,17 +1111,17 @@ const FrontOfficePage: React.FC = () => {
                     >
                       Status
                     </Label>
-                    <Select defaultValue={selectedGuest.status}>
-                      <SelectTrigger className="border-gray-200 focus:border-[#4F709C]">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent className="bg-white">
-                        <SelectItem value="checked-in">Checked In</SelectItem>
-                        <SelectItem value="checked-out">Checked Out</SelectItem>
-                        <SelectItem value="reserved">Reserved</SelectItem>
-                        <SelectItem value="cancelled">Cancelled</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <select
+                      id="editGuestStatus"
+                      defaultValue={selectedConfirmed.status.toLowerCase()}
+                      className="border-gray-200 rounded px-3 py-2 w-full focus:border-[#4F709C]"
+                    >
+                      <option value="checked-in">Checked In</option>
+                      <option value="checked-out">Checked Out</option>
+                      <option value="reserved">Reserved</option>
+                      <option value="cancelled">Cancelled</option>
+                      <option value="pending">Pending</option>
+                    </select>
                   </div>
                   <div>
                     <Label
@@ -1071,16 +1130,15 @@ const FrontOfficePage: React.FC = () => {
                     >
                       Payment Status
                     </Label>
-                    <Select defaultValue={selectedGuest.paymentStatus}>
-                      <SelectTrigger className="border-gray-200 focus:border-[#4F709C]">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent className="bg-white">
-                        <SelectItem value="paid">Paid</SelectItem>
-                        <SelectItem value="pending">Pending</SelectItem>
-                        <SelectItem value="partial">Partial</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <select
+                      id="editPaymentStatus"
+                      defaultValue={selectedConfirmed.paymentStatus.toLocaleLowerCase()}
+                      className="border-gray-200 rounded px-3 py-2 w-full focus:border-[#4F709C]"
+                    >
+                      <option value="paid">Paid</option>
+                      <option value="pending">Pending</option>
+                      <option value="partial">Partial</option>
+                    </select>
                   </div>
                 </div>
                 <div className="flex justify-end gap-2">
@@ -1090,7 +1148,10 @@ const FrontOfficePage: React.FC = () => {
                   >
                     Cancel
                   </Button>
-                  <Button className=" bg-[#213555] hover:bg-[#4F709C] text-white">
+                  <Button
+                    className=" bg-[#213555] hover:bg-[#4F709C] text-white"
+                    onClick={handleUpdateReservation}
+                  >
                     Save Changes
                   </Button>
                 </div>
@@ -1118,7 +1179,8 @@ const FrontOfficePage: React.FC = () => {
                       Guest Name
                     </Label>
                     <p className="font-medium">
-                      {selectedReservation.guestName}
+                      {selectedReservation.customer.firstName}{" "}
+                      {selectedReservation.customer.lastName}
                     </p>
                   </div>
                   <div>
@@ -1126,7 +1188,7 @@ const FrontOfficePage: React.FC = () => {
                       Room Type
                     </Label>
                     <p className="font-medium">
-                      {selectedReservation.roomType}
+                      {selectedReservation.assignedRooms[0]?.room.roomType.name}
                     </p>
                   </div>
                 </div>
@@ -1135,13 +1197,13 @@ const FrontOfficePage: React.FC = () => {
                     <Label className="text-sm font-medium text-gray-500">
                       Email
                     </Label>
-                    <p>{selectedReservation.email}</p>
+                    <p>{selectedReservation.customer.email}</p>
                   </div>
                   <div>
                     <Label className="text-sm font-medium text-gray-500">
                       Phone
                     </Label>
-                    <p>{selectedReservation.phone}</p>
+                    <p>{selectedReservation.customer.phone}</p>
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
@@ -1151,7 +1213,7 @@ const FrontOfficePage: React.FC = () => {
                     </Label>
                     <p>
                       {new Date(
-                        selectedReservation.checkIn
+                        selectedReservation.checkInDate
                       ).toLocaleDateString()}
                     </p>
                   </div>
@@ -1161,7 +1223,7 @@ const FrontOfficePage: React.FC = () => {
                     </Label>
                     <p>
                       {new Date(
-                        selectedReservation.checkOut
+                        selectedReservation.checkOutDate
                       ).toLocaleDateString()}
                     </p>
                   </div>
@@ -1171,7 +1233,10 @@ const FrontOfficePage: React.FC = () => {
                     <Label className="text-sm font-medium text-gray-500">
                       Number of Guests
                     </Label>
-                    <p>{selectedReservation.guests}</p>
+                    <p>
+                      {selectedReservation.children +
+                        selectedReservation.adults}
+                    </p>
                   </div>
                   <div>
                     <Label className="text-sm font-medium text-gray-500">
@@ -1217,5 +1282,24 @@ const FrontOfficePage: React.FC = () => {
     </div>
   );
 };
+
+function getStatusColor(status: string) {
+  switch (status.toLocaleLowerCase()) {
+    case "checked-in":
+    case "confirmed":
+    case "paid":
+      return "bg-green-100 text-green-800 border-green-200";
+    case "reserved":
+    case "pending":
+    case "partial":
+      return "bg-yellow-100 text-yellow-800 border-yellow-200";
+    case "checked-out":
+      return "bg-blue-100 text-blue-800 border-blue-200";
+    case "cancelled":
+      return "bg-red-100 text-red-800 border-red-200";
+    default:
+      return "bg-gray-100 text-gray-800 border-gray-200";
+  }
+}
 
 export default FrontOfficePage;

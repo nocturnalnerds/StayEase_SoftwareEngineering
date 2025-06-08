@@ -3,10 +3,7 @@
 import type React from "react";
 import { useState, useEffect } from "react";
 import { Tabs } from "@/components/ui/tabs";
-import {
-  Card,
-  CardContent,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/label";
@@ -268,13 +265,13 @@ const RestaurantPage: React.FC = () => {
               <DialogTrigger asChild>
                 <Button className="bg-orange-500 hover:bg-orange-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 font-semibold">
                   <Plus className="mr-2 h-4 w-4" />
-                  Add Item
+                  Add Order
                 </Button>
               </DialogTrigger>
               <DialogContent className="bg-white border-0 shadow-2xl">
                 <DialogHeader>
                   <DialogTitle className="text-[#213555] text-xl font-bold">
-                    Add New Restaurant Item
+                    Add New Order
                   </DialogTitle>
                   <DialogDescription className="text-gray-600">
                     Create a new menu item for the restaurant

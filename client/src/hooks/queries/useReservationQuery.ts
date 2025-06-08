@@ -12,16 +12,12 @@ export default function useReservationQuery() {
 
   const dashboardQuery = useQuery({
     queryFn: () =>
-      API.get<APISuccessResponse<Reservation[]>>(
-        "/front-office/dashboard-stats"
-      ),
+      API.get<APISuccessResponse<any>>("/front-office/dashboard-stats"),
     queryKey: [QUERY_KEYS.RESERVATION_DASHBOARD],
   });
 
-  console.log("Reservation Query Data:", reservationQuery.data);
-
   const reservationData: Reservation[] =
-    reservationQuery.data?.reservations || [];
+    reservationQuery.data?.data.reservations || [];
   const dashboardData = dashboardQuery.data?.data || [];
 
   return {

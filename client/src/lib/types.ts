@@ -184,7 +184,8 @@ export type Reservation = {
   createdAt: string;
   updatedAt: string;
   assignedRooms: ReservationRoom[];
-  payments: Payment[];
+  payments?: Payment[];
+  paymentStatus: PaymentStatus;
 };
 
 export type ReservationRoom = {
@@ -220,6 +221,7 @@ export type Payment = {
   paymentDate: string;
   processedBy?: Staff;
   notes?: string;
+  reservation?: Reservation;
 };
 
 // Food & Beverage types

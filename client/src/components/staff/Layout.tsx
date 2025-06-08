@@ -279,10 +279,10 @@ export default function Layout({ loading = false }: LayoutProps) {
               <div className="w-full flex items-center justify-start p-2 rounded-md hover:bg-gray-100 cursor-pointer transition-colors">
                 <Avatar className="h-8 w-8 mr-3">
                   <AvatarImage src="/placeholder.svg" alt="User" />
-                  <AvatarFallback>JD</AvatarFallback>
+                  <AvatarFallback>A</AvatarFallback>
                 </Avatar>
                 <div className="flex-1 text-left">
-                  <p className="text-sm font-medium">John Doe</p>
+                  <p className="text-sm font-medium">Admin</p>
                   <p className="text-xs text-gray-500">Administrator</p>
                 </div>
               </div>

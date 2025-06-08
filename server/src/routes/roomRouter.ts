@@ -1,18 +1,18 @@
 import { Router } from "express";
 import {
-getAllRoomType,
-getRoomTypeById,
-addRoomTypes,
-deleteRoomType,
-getAllRooms,
-getRoomById,
-updateRoomAvailability,
-updateRoomCleaningDate,
-addNewRooms,
-deleteRoom,
-getRoomDashboardData,
-updateRoomType,
-updateRoom
+  getAllRoomType,
+  getRoomTypeById,
+  addRoomTypes,
+  deleteRoomType,
+  getAllRooms,
+  getRoomById,
+  updateRoomAvailability,
+  updateRoomCleaningDate,
+  addNewRooms,
+  deleteRoom,
+  getRoomDashboardData,
+  updateRoomType,
+  updateRoom,
 } from "../controllers/RoomController";
 
 const roomRouter = Router();
@@ -32,8 +32,9 @@ roomRouter.patch("/rooms/:id/availability", updateRoomAvailability);
 roomRouter.patch("/rooms/:id/cleaning", updateRoomCleaningDate);
 roomRouter.delete("/rooms/:id", deleteRoom);
 roomRouter.patch("/rooms/:id", updateRoom);
+roomRouter.get("/rooms/:id", getRoomById);
 
 //dashboard
 roomRouter.get("/roomDashboard", getRoomDashboardData);
 
-export {roomRouter};
+export { roomRouter };

@@ -11,4 +11,6 @@ export const QUERY_KEYS = {
   FOOD_ITEMS: "foodItems",
   FOOD_ORDERS: "foodOrders",
   DASHBOARD_STATS: "dashboardStats",
+  DISCOUNT_RATES: "discountRates",
+  PAYMENTS: "payments",
 };

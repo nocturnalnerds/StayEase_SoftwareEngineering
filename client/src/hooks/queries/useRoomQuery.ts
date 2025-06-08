@@ -14,14 +14,23 @@ export default function useRoomQuery() {
     queryKey: [QUERY_KEYS.ROOM_DASHBOARD],
   });
 
+  const roomIdQuery = useQuery({
+    queryFn: ({ roomNo }: { roomNo: string }) =>
+      API.get<APISuccessResponse<Room>>(`/rooms/rooms/${roomNo}`),
+    enabled: false,
+  });
+
   const roomData: Room[] = roomQuery.data?.data ?? [];
   const dashboardData = dashboardQuery.data?.data ?? [];
+  const roomIdData: int | undefined = roomIdQuery.data?.data ?? undefined;
 
   return {
     roomData,
     roomQuery,
     dashboardData,
     dashboardQuery,
+    roomIdData,
+    roomIdQuery,
     isLoading: roomQuery.isLoading,
     isError: roomQuery.isError,
   };

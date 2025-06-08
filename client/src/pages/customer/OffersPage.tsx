@@ -4,7 +4,7 @@ import type React from "react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import type { RoomType, RoomFilter } from "@/lib/types";
-import { roomTypes, getAvailableRoomTypes, discountRates } from "@/lib/data";
+import { discountRates } from "@/lib/data";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, Hotel, Filter } from "lucide-react";
 
@@ -13,15 +13,18 @@ import RoomFilterComponent from "@/components/customer/RoomFilter";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import useRoomTypeQuery from "@/hooks/queries/useRoomTypeQuery";
 
 const OffersPage: React.FC = () => {
   const navigate = useNavigate();
-  const [availableRoomTypes, setAvailableRoomTypes] =
-    useState<RoomType[]>(roomTypes);
+  const [availableRoomTypes, setAvailableRoomTypes] = useState<
+    RoomType[] | null
+  >(null);
   const [filters, setFilters] = useState<RoomFilter>({});
-  const [loading, setLoading] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [showFilters, setShowFilters] = useState(false);
+
+  const { roomTypeData: roomTypes, isLoading } = useRoomTypeQuery();
 
   // Get all unique amenities from room types
   const allAmenities = Array.from(
@@ -33,50 +36,41 @@ const OffersPage: React.FC = () => {
   const maxPrice = Math.max(...roomTypes.map((room) => room.basePrice));
 
   useEffect(() => {
-    setLoading(true);
+    if (!roomTypes) return;
 
-    // Simulate API call
-    setTimeout(() => {
-      let filteredRooms = getAvailableRoomTypes(
-        filters.checkInDate instanceof Date ? filters.checkInDate : undefined,
-        filters.checkOutDate instanceof Date ? filters.checkOutDate : undefined
-      );
+    let filteredRooms = roomTypes;
 
-      // Filter by search query
-      if (searchQuery.trim()) {
-        const query = searchQuery.toLowerCase();
-        filteredRooms = filteredRooms.filter(
-          (room) =>
-            room.name.toLowerCase().includes(query) ||
-            room.description.toLowerCase().includes(query) ||
-            room.amenities.some((amenity) =>
-              amenity.toLowerCase().includes(query)
-            )
-        );
-      }
-
-      // Filter by price range
-      if (filters.priceRange) {
-        filteredRooms = filteredRooms.filter(
-          (room) =>
-            room.basePrice >= filters.priceRange![0] &&
-            room.basePrice <= filters.priceRange![1]
-        );
-      }
-
-      // Filter by amenities
-      if (filters.amenities && filters.amenities.length > 0) {
-        filteredRooms = filteredRooms.filter((room) =>
-          filters.amenities!.every((amenity) =>
-            room.amenities.includes(amenity)
+    // Filter by search query
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      filteredRooms = filteredRooms.filter(
+        (room) =>
+          room.name.toLowerCase().includes(query) ||
+          room.description.toLowerCase().includes(query) ||
+          room.amenities.some((amenity) =>
+            amenity.toLowerCase().includes(query)
           )
-        );
-      }
+      );
+    }
 
-      setAvailableRoomTypes(filteredRooms);
-      setLoading(false);
-    }, 800);
-  }, [filters, searchQuery]);
+    // Filter by price range
+    if (filters.priceRange) {
+      filteredRooms = filteredRooms.filter(
+        (room) =>
+          room.basePrice >= filters.priceRange![0] &&
+          room.basePrice <= filters.priceRange![1]
+      );
+    }
+
+    // Filter by amenities
+    if (filters.amenities && filters.amenities.length > 0) {
+      filteredRooms = filteredRooms.filter((room) =>
+        filters.amenities!.every((amenity) => room.amenities.includes(amenity))
+      );
+    }
+
+    setAvailableRoomTypes(filteredRooms);
+  }, [roomTypes, filters, searchQuery]);
 
   const handleRoomSelect = (roomTypeId: number) => {
     // Navigate to booking page with selected room type and dates if available
@@ -163,7 +157,7 @@ const OffersPage: React.FC = () => {
 
           <div className="lg:col-span-3">
             <AnimatePresence mode="wait">
-              {loading ? (
+              {isLoading ? (
                 <motion.div
                   key="loading"
                   initial={{ opacity: 0 }}
@@ -183,7 +177,7 @@ const OffersPage: React.FC = () => {
                     </p>
                   </div>
                 </motion.div>
-              ) : availableRoomTypes.length > 0 ? (
+              ) : availableRoomTypes!.length > 0 ? (
                 <motion.div
                   key="results"
                   initial={{ opacity: 0 }}
@@ -192,7 +186,7 @@ const OffersPage: React.FC = () => {
                   transition={{ duration: 0.5 }}
                 >
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-                    {availableRoomTypes.map((roomType, index) => (
+                    {availableRoomTypes!.map((roomType, index) => (
                       <motion.div
                         key={roomType.id}
                         initial={{ opacity: 0, y: 20 }}
