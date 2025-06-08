@@ -50,6 +50,7 @@ import {
   UtensilsCrossed,
   ChefHat,
   DollarSign,
+  Eye,
 } from "lucide-react";
 
 interface Order {
@@ -92,6 +93,7 @@ const RestaurantPage: React.FC = () => {
   const [isOrderDialogOpen, setIsOrderDialogOpen] = useState(false);
   const [isMenuDialogOpen, setIsMenuDialogOpen] = useState(false);
   const [isAddMenuDialogOpen, setIsAddMenuDialogOpen] = useState(false);
+  const [isAddItemDialogOpen, setIsAddItemDialogOpen] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -229,20 +231,6 @@ const RestaurantPage: React.FC = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  const filteredMenuItems = menuItems.filter((item) => {
-    const matchesSearch =
-      item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory =
-      selectedCategory === "all" || item.category === selectedCategory;
-    return matchesSearch && matchesCategory;
-  });
-
-  const categories = [
-    "all",
-    ...Array.from(new Set(menuItems.map((item) => item.category))),
-  ];
-
   const updateOrderStatus = (orderId: string, newStatus: Order["status"]) => {
     setActiveOrders((orders) =>
       orders.map((order) =>
@@ -294,6 +282,129 @@ const RestaurantPage: React.FC = () => {
             <p className="text-gray-600 mt-2">
               Manage orders, menu items, and kitchen operations
             </p>
+          </div>
+          <div>
+            <Dialog
+              open={isAddItemDialogOpen}
+              onOpenChange={setIsAddItemDialogOpen}
+            >
+              <DialogTrigger asChild>
+                <Button className="bg-orange-500 hover:bg-orange-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 font-semibold">
+                  <Plus className="mr-2 h-4 w-4" />
+                  Add Item
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="bg-white border-0 shadow-2xl">
+                <DialogHeader>
+                  <DialogTitle className="text-[#213555] text-xl font-bold">
+                    Add New Restaurant Item
+                  </DialogTitle>
+                  <DialogDescription className="text-gray-600">
+                    Create a new menu item for the restaurant
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="grid gap-6 py-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label
+                        htmlFor="item-name"
+                        className="text-[#213555] font-medium"
+                      >
+                        Item Name
+                      </Label>
+                      <Input
+                        id="item-name"
+                        placeholder="e.g., Chicken Alfredo"
+                        className="border-gray-200 focus:border-[#4F709C]"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label
+                        htmlFor="item-category"
+                        className="text-[#213555] font-medium"
+                      >
+                        Category
+                      </Label>
+                      <Select>
+                        <SelectTrigger
+                          id="item-category"
+                          className="border-gray-200 focus:border-[#4F709C]"
+                        >
+                          <SelectValue placeholder="Select category" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-white">
+                          <SelectItem value="starter">Starter</SelectItem>
+                          <SelectItem value="main">Main Course</SelectItem>
+                          <SelectItem value="dessert">Dessert</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label
+                        htmlFor="price"
+                        className="text-[#213555] font-medium"
+                      >
+                        Price
+                      </Label>
+                      <Input
+                        id="price"
+                        placeholder="e.g., 15.99"
+                        type="number"
+                        className="border-gray-200 focus:border-[#4F709C]"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label
+                        htmlFor="available"
+                        className="text-[#213555] font-medium"
+                      >
+                        Availability
+                      </Label>
+                      <Select>
+                        <SelectTrigger
+                          id="available"
+                          className="border-gray-200 focus:border-[#4F709C]"
+                        >
+                          <SelectValue placeholder="Select availability" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-white">
+                          <SelectItem value="available">Available</SelectItem>
+                          <SelectItem value="out-of-stock">
+                            Out of Stock
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label
+                      htmlFor="description"
+                      className="text-[#213555] font-medium"
+                    >
+                      Description
+                    </Label>
+                    <Textarea
+                      id="description"
+                      placeholder="Add any special details about the item..."
+                      className="min-h-[100px] border-gray-200 focus:border-[#4F709C]"
+                    />
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button
+                    variant="outline"
+                    onClick={() => setIsAddItemDialogOpen(false)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button className="bg-orange-500 hover:bg-orange-600 text-white border-2">
+                    Add Item
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
 
@@ -386,381 +497,106 @@ const RestaurantPage: React.FC = () => {
         </div>
 
         {/* Tabs */}
-        <Tabs defaultValue="orders" className="w-full flex-1 flex flex-col">
-          <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden flex-1 flex flex-col">
-            <div className="p-6 border-b border-gray-100">
-              <TabsList className="bg-gray-100 p-1 rounded-lg">
-                <TabsTrigger
-                  value="orders"
-                  className="data-[state=active]:bg-[#213555] data-[state=active]:text-white"
-                >
-                  Active Orders
-                </TabsTrigger>
-                <TabsTrigger
-                  value="menu"
-                  className="data-[state=active]:bg-red-500 data-[state=active]:text-white"
-                >
-                  Menu Management
-                </TabsTrigger>
-              </TabsList>
-            </div>
-
-            <TabsContent
-              value="orders"
-              className="p-6 space-y-6 flex-1 flex flex-col"
-            >
-              <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm flex-1 flex flex-col">
-                <CardHeader className="bg-gradient-to-r from-orange-500 to-red-600 text-white rounded-t-lg">
-                  <CardTitle className="flex items-center gap-2">
-                    <UtensilsCrossed className="h-5 w-5" />
-                    Active Orders
-                  </CardTitle>
-                  <CardDescription className="text-orange-100">
+        <div>
+          <div className="bg-gradient-to-r from-orange-500 to-red-600 text-white p-6 w-full">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <UtensilsCrossed className="h-6 w-6" />
+                <div>
+                  <h2 className="text-xl font-bold">Active Orders</h2>
+                  <p className="text-orange-100">
                     Manage current restaurant orders
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="p-0 flex-1 flex flex-col">
-                  <div className="overflow-x-auto flex-1">
-                    <Table className="min-w-full table-fixed h-full">
-                      <TableHeader>
-                        <TableRow className="bg-gray-50">
-                          <TableHead className="font-semibold text-[#213555] w-[12%]">
-                            Order ID
-                          </TableHead>
-                          <TableHead className="font-semibold text-[#213555] w-[10%]">
-                            Table
-                          </TableHead>
-                          <TableHead className="font-semibold text-[#213555] w-[20%]">
-                            Customer
-                          </TableHead>
-                          <TableHead className="font-semibold text-[#213555] w-[15%]">
-                            Time
-                          </TableHead>
-                          <TableHead className="font-semibold text-[#213555] w-[15%]">
-                            Status
-                          </TableHead>
-                          <TableHead className="font-semibold text-[#213555] w-[12%]">
-                            Total
-                          </TableHead>
-                          <TableHead className="font-semibold text-[#213555] w-[16%]">
-                            Actions
-                          </TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {activeOrders.map((order) => (
-                          <TableRow
-                            key={order.id}
-                            className="hover:bg-orange-50 transition-colors duration-200"
-                          >
-                            <TableCell className="font-medium text-[#4F709C]">
-                              {order.id}
-                            </TableCell>
-                            <TableCell className="font-medium">
-                              Table {order.tableNumber}
-                            </TableCell>
-                            <TableCell>{order.customerName}</TableCell>
-                            <TableCell className="text-gray-600">
-                              {order.time}
-                            </TableCell>
-                            <TableCell>
-                              <Badge
-                                className={`${getStatusColor(
-                                  order.status
-                                )} transition-all duration-200 hover:scale-105`}
-                              >
-                                {order.status.charAt(0).toUpperCase() +
-                                  order.status.slice(1)}
-                              </Badge>
-                            </TableCell>
-                            <TableCell className="font-semibold text-green-600">
-                              ${order.total.toFixed(2)}
-                            </TableCell>
-                            <TableCell>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                className="hover:bg-orange-50 hover:border-orange-300 transition-all duration-200"
-                                onClick={() => {
-                                  setSelectedOrder(order);
-                                  setIsOrderDialogOpen(true);
-                                }}
-                              >
-                                View Details
-                              </Button>
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent
-              value="menu"
-              className="p-6 space-y-6 flex-1 flex flex-col"
-            >
-              <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm flex-1 flex flex-col">
-                <CardHeader className="bg-gradient-to-r from-red-500 to-red-600 text-white rounded-t-lg">
-                  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                    <div>
-                      <CardTitle className="flex items-center gap-2">
-                        <Coffee className="h-5 w-5" />
-                        Menu Management
-                      </CardTitle>
-                      <CardDescription className="text-red-100">
-                        Manage your restaurant menu items
-                      </CardDescription>
-                    </div>
-                    <div className="flex flex-col sm:flex-row gap-2">
-                      <div className="relative">
-                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-[#4F709C]" />
-                        <Input
-                          placeholder="Search menu items..."
-                          className="pl-8 w-full sm:w-[250px] bg-white border-gray-200 focus:border-[#4F709C] text-[#213555]"
-                          value={searchTerm}
-                          onChange={(e) => setSearchTerm(e.target.value)}
-                        />
-                      </div>
-                      <Select
-                        value={selectedCategory}
-                        onValueChange={setSelectedCategory}
-                      >
-                        <SelectTrigger className="w-full sm:w-[160px] bg-white  border-gray-200 focus:border-[#4F709C] text-[#213555]">
-                          <SelectValue placeholder="Category" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-white text-[#213555]">
-                          {categories.map((category) => (
-                            <SelectItem
-                              key={category}
-                              value={category}
-                              className="text-[#213555]"
-                            >
-                              {category === "all" ? "All Categories" : category}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <Dialog
-                        open={isAddMenuDialogOpen}
-                        onOpenChange={setIsAddMenuDialogOpen}
-                      >
-                        <DialogTrigger asChild>
-                          <Button className="bg-[#213555] hover:bg-[#4F709C] text-white shadow-lg hover:shadow-xl transition-all duration-300">
-                            <Plus className="mr-2 h-4 w-4" />
-                            Add Item
-                          </Button>
-                        </DialogTrigger>
-                        <DialogContent className="bg-white border-0 shadow-2xl sm:max-w-[500px]">
-                          <DialogHeader>
-                            <DialogTitle className="text-xl font-semibold text-[#213555]">
-                              Add Menu Item
-                            </DialogTitle>
-                            <DialogDescription>
-                              Add a new item to your restaurant menu
-                            </DialogDescription>
-                          </DialogHeader>
-                          <div className="space-y-4 py-4">
-                            <div className="space-y-2">
-                              <Label
-                                htmlFor="name"
-                                className="text-[#213555] font-medium"
-                              >
-                                Item Name
-                              </Label>
-                              <Input
-                                id="name"
-                                placeholder="Enter item name"
-                                className="border-gray-200 focus:border-[#4F709C]"
-                              />
-                            </div>
-                            <div className="space-y-2">
-                              <Label
-                                htmlFor="category"
-                                className="text-[#213555] font-medium"
-                              >
-                                Category
-                              </Label>
-                              <Select>
-                                <SelectTrigger
-                                  id="category"
-                                  className="border-gray-200 focus:border-[#4F709C]"
-                                >
-                                  <SelectValue placeholder="Select category" />
-                                </SelectTrigger>
-                                <SelectContent className="bg-white">
-                                  {categories
-                                    .filter((c) => c !== "all")
-                                    .map((category) => (
-                                      <SelectItem
-                                        key={category}
-                                        value={category}
-                                      >
-                                        {category}
-                                      </SelectItem>
-                                    ))}
-                                  <SelectItem value="new">
-                                    + Add New Category
-                                  </SelectItem>
-                                </SelectContent>
-                              </Select>
-                            </div>
-                            <div className="space-y-2">
-                              <Label
-                                htmlFor="price"
-                                className="text-[#213555] font-medium"
-                              >
-                                Price ($)
-                              </Label>
-                              <Input
-                                id="price"
-                                type="number"
-                                step="0.01"
-                                placeholder="0.00"
-                                className="border-gray-200 focus:border-[#4F709C]"
-                              />
-                            </div>
-                            <div className="space-y-2">
-                              <Label
-                                htmlFor="description"
-                                className="text-[#213555] font-medium"
-                              >
-                                Description
-                              </Label>
-                              <Textarea
-                                id="description"
-                                placeholder="Enter item description"
-                                className="min-h-[100px] border-gray-200 focus:border-[#4F709C]"
-                              />
-                            </div>
-                          </div>
-                          <DialogFooter>
-                            <Button
-                              variant="outline"
-                              onClick={() => setIsAddMenuDialogOpen(false)}
-                            >
-                              Cancel
-                            </Button>
-                            <Button className="bg-red-500 hover:bg-red-600 text-white transition-colors duration-200">
-                              Save Item
-                            </Button>
-                          </DialogFooter>
-                        </DialogContent>
-                      </Dialog>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent className="p-0 flex-1 flex flex-col">
-                  <div className="overflow-x-auto flex-1">
-                    <Table className="min-w-full table-fixed h-full">
-                      <TableHeader>
-                        <TableRow className="bg-gray-50">
-                          <TableHead className="font-semibold text-[#213555] w-[30%]">
-                            Name
-                          </TableHead>
-                          <TableHead className="font-semibold text-[#213555] w-[20%]">
-                            Category
-                          </TableHead>
-                          <TableHead className="font-semibold text-[#213555] w-[15%]">
-                            Price
-                          </TableHead>
-                          <TableHead className="font-semibold text-[#213555] w-[15%]">
-                            Status
-                          </TableHead>
-                          <TableHead className="font-semibold text-[#213555] w-[20%]">
-                            Actions
-                          </TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {filteredMenuItems.length === 0 ? (
-                          <TableRow>
-                            <TableCell
-                              colSpan={5}
-                              className="text-center py-12"
-                            >
-                              <UtensilsCrossed className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-                              <h3 className="text-lg font-medium text-gray-900">
-                                No menu items found
-                              </h3>
-                              <p className="text-gray-500">
-                                Try adjusting your search or filters
-                              </p>
-                            </TableCell>
-                          </TableRow>
-                        ) : (
-                          filteredMenuItems.map((item) => (
-                            <TableRow
-                              key={item.id}
-                              className="hover:bg-red-50 transition-colors duration-200"
-                            >
-                              <TableCell>
-                                <div>
-                                  <p className="font-medium text-[#4F709C]">
-                                    {item.name}
-                                  </p>
-                                  <p className="text-sm text-gray-500 line-clamp-1">
-                                    {item.description}
-                                  </p>
-                                </div>
-                              </TableCell>
-                              <TableCell>
-                                <Badge
-                                  variant="outline"
-                                  className="bg-red-50 text-red-700 border-red-200"
-                                >
-                                  {item.category}
-                                </Badge>
-                              </TableCell>
-                              <TableCell className="font-semibold text-green-600">
-                                ${item.price.toFixed(2)}
-                              </TableCell>
-                              <TableCell>
-                                <Badge
-                                  className={
-                                    item.available
-                                      ? "bg-green-100 text-green-800 border-green-200 hover:bg-green-200"
-                                      : "bg-red-100 text-red-800 border-red-200 hover:bg-red-200"
-                                  }
-                                >
-                                  {item.available ? "Available" : "Unavailable"}
-                                </Badge>
-                              </TableCell>
-                              <TableCell>
-                                <div className="flex space-x-2">
-                                  <Button
-                                    variant="outline"
-                                    size="sm"
-                                    className="hover:bg-blue-50 hover:border-blue-300 transition-all duration-200"
-                                    onClick={() => {
-                                      setSelectedMenuItem(item);
-                                      setIsMenuDialogOpen(true);
-                                    }}
-                                  >
-                                    <Edit2 className="h-4 w-4" />
-                                  </Button>
-                                  <Button
-                                    variant="outline"
-                                    size="sm"
-                                    className="hover:bg-red-50 hover:border-red-300 hover:text-red-600 transition-all duration-200"
-                                  >
-                                    <Trash2 className="h-4 w-4" />
-                                  </Button>
-                                </div>
-                              </TableCell>
-                            </TableRow>
-                          ))
-                        )}
-                      </TableBody>
-                    </Table>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
-        </Tabs>
+
+          <Tabs
+            defaultValue="orders"
+            className="w-full flex-1 flex flex-col min-w-0"
+          >
+            <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden flex-1 w-full min-w-0">
+              <div className="p-0 flex-1 w-full min-w-0">
+                <div className="w-full overflow-x-auto">
+                  <table className="w-full table-fixed min-w-full">
+                    <thead>
+                      <tr className="bg-gray-50">
+                        <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/7">
+                          Order ID
+                        </th>
+                        <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/7">
+                          Table
+                        </th>
+                        <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/7">
+                          Customer
+                        </th>
+                        <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/7">
+                          Time
+                        </th>
+                        <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/7">
+                          Status
+                        </th>
+                        <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/7">
+                          Total
+                        </th>
+                        <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/7">
+                          Actions
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {activeOrders.map((order) => (
+                        <tr
+                          key={order.id}
+                          className="hover:bg-orange-50 transition-colors duration-200"
+                        >
+                          <td className="px-3 py-4 whitespace-nowrap text-sm font-medium text-blue-600">
+                            {order.id}
+                          </td>
+                          <td className="px-3 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
+                            Table {order.tableNumber}
+                          </td>
+                          <td className="px-3 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {order.customerName}
+                          </td>
+                          <td className="px-3 py-4 whitespace-nowrap text-sm text-gray-600">
+                            {order.time}
+                          </td>
+                          <td className="px-3 py-4 whitespace-nowrap">
+                            <span
+                              className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(
+                                order.status
+                              )} transition-all duration-200 hover:scale-105`}
+                            >
+                              {order.status.charAt(0).toUpperCase() +
+                                order.status.slice(1)}
+                            </span>
+                          </td>
+                          <td className="px-3 py-4 whitespace-nowrap text-sm font-semibold text-green-600">
+                            ${order.total.toFixed(2)}
+                          </td>
+                          <td className="px-3 py-4 whitespace-nowrap">
+                            <button
+                              className="inline-flex items-center px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-orange-50 hover:border-orange-300 transition-all duration-200"
+                              onClick={() => {
+                                setSelectedOrder(order);
+                                setIsOrderDialogOpen(true);
+                              }}
+                            >
+                              <Eye className="h-4 w-4 mr-1" />
+                              View
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </Tabs>
+        </div>
 
         {/* Order Details Dialog */}
         <Dialog open={isOrderDialogOpen} onOpenChange={setIsOrderDialogOpen}>
@@ -852,111 +688,6 @@ const RestaurantPage: React.FC = () => {
         </Dialog>
 
         {/* Edit Menu Item Dialog */}
-        <Dialog open={isMenuDialogOpen} onOpenChange={setIsMenuDialogOpen}>
-          <DialogContent className="bg-white border-0 shadow-2xl sm:max-w-[500px]">
-            <DialogHeader>
-              <DialogTitle className="text-xl font-semibold text-[#213555]">
-                Edit Menu Item
-              </DialogTitle>
-              <DialogDescription>Update menu item details</DialogDescription>
-            </DialogHeader>
-            {selectedMenuItem && (
-              <div className="space-y-4 py-4">
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="edit-name"
-                    className="text-[#213555] font-medium"
-                  >
-                    Item Name
-                  </Label>
-                  <Input
-                    id="edit-name"
-                    defaultValue={selectedMenuItem.name}
-                    className="border-gray-200 focus:border-[#4F709C]"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="edit-category"
-                    className="text-[#213555] font-medium"
-                  >
-                    Category
-                  </Label>
-                  <Select defaultValue={selectedMenuItem.category}>
-                    <SelectTrigger
-                      id="edit-category"
-                      className="border-gray-200 focus:border-[#4F709C]"
-                    >
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent className="bg-white">
-                      {categories
-                        .filter((c) => c !== "all")
-                        .map((category) => (
-                          <SelectItem key={category} value={category}>
-                            {category}
-                          </SelectItem>
-                        ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="edit-price"
-                    className="text-[#213555] font-medium"
-                  >
-                    Price ($)
-                  </Label>
-                  <Input
-                    id="edit-price"
-                    type="number"
-                    step="0.01"
-                    defaultValue={selectedMenuItem.price}
-                    className="border-gray-200 focus:border-[#4F709C]"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="edit-description"
-                    className="text-[#213555] font-medium"
-                  >
-                    Description
-                  </Label>
-                  <Textarea
-                    id="edit-description"
-                    defaultValue={selectedMenuItem.description}
-                    className="min-h-[100px] border-gray-200 focus:border-[#4F709C]"
-                  />
-                </div>
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    id="edit-available"
-                    defaultChecked={selectedMenuItem.available}
-                    className="rounded border-gray-300"
-                  />
-                  <Label
-                    htmlFor="edit-available"
-                    className="text-[#213555] font-medium"
-                  >
-                    Available
-                  </Label>
-                </div>
-              </div>
-            )}
-            <DialogFooter>
-              <Button
-                variant="outline"
-                onClick={() => setIsMenuDialogOpen(false)}
-              >
-                Cancel
-              </Button>
-              <Button className="bg-red-500 hover:bg-red-600 text-white transition-colors duration-200">
-                Save Changes
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
       </div>
     </div>
   );
