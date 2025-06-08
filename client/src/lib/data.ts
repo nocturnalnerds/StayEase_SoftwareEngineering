@@ -1335,7 +1335,12 @@ export const houseKeeperRooms: HouseKeeperRoom[] = [
 ];
 
 // Helper functions
-export const getAvailableRoomTypes = (checkInDate: Date | undefined, checkOutDate: Date | undefined, adults?: number, children?: number) => {
+export const getAvailableRoomTypes = (
+  checkInDate: Date | undefined,
+  checkOutDate: Date | undefined,
+  adults?: number,
+  children?: number
+) => {
   // In a real app, this would filter based on availability
   // For now, return all room types
   return roomTypeData.filter((roomType) => {

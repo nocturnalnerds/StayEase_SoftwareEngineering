@@ -33,7 +33,11 @@ import {
   Users,
   ShieldCheck,
   User,
-} from "lucide-react"; // Added UserPlus import
+  Trash2,
+} from "lucide-react";
+import { Staff } from "@/lib/types";
+import useUserQuery from "@/hooks/queries/useUserQuery";
+import useUserMutation from "@/hooks/mutations/useUserMutation";
 
 export type Department =
   | "Management"
@@ -41,20 +45,8 @@ export type Department =
   | "Housekeeping"
   | "Food & Beverage"
   | "Maintenance"
-  | "Finance";
-
-interface Staff {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  position: string;
-  department: string;
-  salary: number;
-  hireDate: string;
-  status: "active" | "inactive" | "on-leave";
-  permissions: string[];
-}
+  | "Finance"
+  | "all";
 
 // Simple StatusBadge component
 const StatusBadge: React.FC<{ status: string }> = ({ status }) => {
@@ -108,6 +100,46 @@ const StatsCard: React.FC<{
   );
 };
 
+const stats = [
+  {
+    title: "Total Users",
+    value: "10",
+    icon: Users,
+    trend: "+12%",
+    color: "bg-blue-500",
+  },
+  {
+    title: "Active Staff",
+    value: "8",
+    icon: Shield,
+    trend: "+3%",
+    color: "bg-green-500",
+  },
+  {
+    title: "Administrators",
+    value: "1",
+    icon: ShieldCheck,
+    trend: "0%",
+    color: "bg-purple-500",
+  },
+  {
+    title: "New This Month",
+    value: "15",
+    icon: UserPlus,
+    trend: "+25%",
+    color: "bg-orange-500",
+  },
+];
+
+const splitName = (name: string) => {
+  if (!name) return { firstName: "", lastName: "" };
+  const parts = name.trim().split(" ");
+  if (parts.length === 1) {
+    return { firstName: parts[0], lastName: parts[0] };
+  }
+  return { firstName: parts[0], lastName: parts.slice(1).join(" ") };
+};
+
 const UserManagementPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -116,97 +148,111 @@ const UserManagementPage: React.FC = () => {
   const [viewStaffOpen, setViewStaffOpen] = useState(false);
   const [editStaffOpen, setEditStaffOpen] = useState(false);
   const [selectedStaff, setSelectedStaff] = useState<Staff | null>(null);
+  const [selectedDepartment, setSelectedDepartment] = useState("");
 
-  // Mock staff data
-  const staff: Staff[] = [
-    {
-      id: "1",
-      name: "Alice Johnson",
-      email: "alice.johnson@hotel.com",
-      phone: "+1234567893",
-      position: "Front Desk Manager",
-      department: "Front Office",
-      salary: 45000,
-      hireDate: "2023-03-15",
-      status: "active",
-      permissions: ["check-in", "check-out", "reservations"],
-    },
-    {
-      id: "2",
-      name: "Bryan Cornelius",
-      email: "bryancornelius@hotel.com",
-      phone: "+1234567895",
-      position: "Chief Finance Officer",
-      department: "Finance",
-      salary: 250000,
-      hireDate: "2023-03-10",
-      status: "active",
-      permissions: ["reports", "finance"],
-    },
-    {
-      id: "3",
-      name: "Charlie Brown",
-      email: "charlie.brown@hotel.com",
-      phone: "+1234567894",
-      position: "Housekeeping Supervisor",
-      department: "Housekeeping",
-      salary: 38000,
-      hireDate: "2023-05-20",
-      status: "active",
-      permissions: ["room-status", "maintenance"],
-    },
-    {
-      id: "4",
-      name: "Diana Prince",
-      email: "diana.prince@hotel.com",
-      phone: "+1234569995",
-      position: "Restaurant Manager",
-      department: "Food & Beverage",
-      salary: 50000,
-      hireDate: "2023-01-10",
-      status: "on-leave",
-      permissions: ["restaurant", "inventory", "orders"],
-    },
-  ];
-
-  const stats = [
-    {
-      title: "Total Users",
-      value: "156",
-      icon: Users,
-      trend: "+12%",
-      color: "bg-blue-500",
-    },
-    {
-      title: "Active Staff",
-      value: "42",
-      icon: Shield,
-      trend: "+3%",
-      color: "bg-green-500",
-    },
-    {
-      title: "Administrators",
-      value: "8",
-      icon: ShieldCheck,
-      trend: "0%",
-      color: "bg-purple-500",
-    },
-    {
-      title: "New This Month",
-      value: "15",
-      icon: UserPlus,
-      trend: "+25%",
-      color: "bg-orange-500",
-    },
-  ];
+  const { staffsData, isLoading: isStaffLoading } = useUserQuery();
+  const { addStaffMutation, updateStaffMutation, deleteStaffMutation } =
+    useUserMutation();
 
   useEffect(() => {
-    const timer = setTimeout(() => {
+    if (!isStaffLoading) {
       setLoading(false);
-    }, 1500);
+    }
+  }, [isStaffLoading]);
 
-    return () => clearTimeout(timer);
-  }, []);
+  const handleAddStaff = () => {
+    const nameValue =
+      (document.getElementById("staffName") as HTMLInputElement | null)
+        ?.value || "";
+    const { firstName, lastName } = splitName(nameValue);
+
+    const staffField = {
+      name: nameValue,
+      firstName,
+      lastName,
+      phone: (document.getElementById("staffPhone") as HTMLInputElement | null)
+        ?.value,
+      department: selectedDepartment,
+      salary: Number(
+        (document.getElementById("staffSalary") as HTMLInputElement | null)
+          ?.value
+      ),
+    };
+    // Ensure all required fields are filled
+    if (
+      !staffField.name ||
+      !staffField.phone ||
+      !staffField.department ||
+      !staffField.salary
+    ) {
+      alert("Please fill in all required fields.");
+      return;
+    }
+
+    // Call the mutation for adding staff
+    addStaffMutation.mutate(staffField, {
+      onSuccess: () => {
+        setIsAddStaffOpen(false); // Close the dialog
+        document.getElementById("staffName")?.setAttribute("value", "");
+        document.getElementById("staffPhone")?.setAttribute("value", "");
+        document.getElementById("staffDepartment")?.setAttribute("value", "");
+        document.getElementById("staffSalary")?.setAttribute("value", "");
+      },
+    });
+  };
+
+  const handleUpdateStaff = () => {
+    if (!selectedStaff) return;
+
+    const nameValue =
+      (document.getElementById("editStaffName") as HTMLInputElement | null)
+        ?.value || "";
+    const { firstName, lastName } = splitName(nameValue);
+
+    const staffField = {
+      id: selectedStaff.id,
+      name: nameValue,
+      firstName,
+      lastName,
+      phone: (
+        document.getElementById("editStaffPhone") as HTMLInputElement | null
+      )?.value,
+      department: selectedDepartment || selectedStaff.department,
+      salary: Number(
+        (document.getElementById("editStaffSalary") as HTMLInputElement | null)
+          ?.value
+      ),
+      status: (
+        document.getElementById("editStaffStatus") as HTMLSelectElement | null
+      )?.value,
+    };
+
+    // Ensure all required fields are filled
+    if (
+      !staffField.name ||
+      !staffField.phone ||
+      !staffField.department ||
+      !staffField.salary
+    ) {
+      alert("Please fill in all required fields.");
+      return;
+    }
+
+    // Call the mutation for updating staff
+    updateStaffMutation.mutate(staffField, {
+      onSuccess: () => {
+        setEditStaffOpen(false); // Close the dialog
+        setSelectedStaff(null);
+      },
+    });
+  };
+
+  const handleDeleteStaff = (staffId: number) => {
+    if (!window.confirm("Are you sure you want to delete this staff member?"))
+      return;
+
+    deleteStaffMutation.mutate(staffId);
+  };
 
   const handleViewStaff = (staffMember: Staff) => {
     setSelectedStaff(staffMember);
@@ -216,13 +262,16 @@ const UserManagementPage: React.FC = () => {
   const handleEditStaff = (staffMember: Staff) => {
     setSelectedStaff(staffMember);
     setEditStaffOpen(true);
+    console.log("Editing staff member:", staffMember);
   };
 
-  const filteredStaff = staff.filter(
+  const filteredStaff = staffsData.filter(
     (staffMember) =>
       (filterDepartment === "all" ||
         staffMember.department === filterDepartment) &&
-      staffMember.name.toLowerCase().includes(searchTerm.toLowerCase())
+      `${staffMember.firstName} ${staffMember.lastName}`
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase())
   );
 
   if (loading) {
@@ -295,20 +344,6 @@ const UserManagementPage: React.FC = () => {
                   </div>
                   <div>
                     <Label
-                      htmlFor="staffEmail"
-                      className="text-[#213555] font-medium"
-                    >
-                      Email
-                    </Label>
-                    <Input
-                      id="staffEmail"
-                      type="email"
-                      placeholder="Enter email"
-                      className="border-gray-200 focus:border-[#4F709C]"
-                    />
-                  </div>
-                  <div>
-                    <Label
                       htmlFor="staffPhone"
                       className="text-[#213555] font-medium"
                     >
@@ -322,25 +357,15 @@ const UserManagementPage: React.FC = () => {
                   </div>
                   <div>
                     <Label
-                      htmlFor="staffPosition"
-                      className="text-[#213555] font-medium"
-                    >
-                      Position
-                    </Label>
-                    <Input
-                      id="staffPosition"
-                      placeholder="Enter position"
-                      className="border-gray-200 focus:border-[#4F709C]"
-                    />
-                  </div>
-                  <div>
-                    <Label
                       htmlFor="staffDepartment"
                       className="text-[#213555] font-medium"
                     >
                       Department
                     </Label>
-                    <Select>
+                    <Select
+                      value={selectedDepartment}
+                      onValueChange={setSelectedDepartment}
+                    >
                       <SelectTrigger className="border-gray-200 focus:border-[#4F709C]">
                         <SelectValue placeholder="Select department" />
                       </SelectTrigger>
@@ -381,7 +406,7 @@ const UserManagementPage: React.FC = () => {
                       Cancel
                     </Button>
                     <Button
-                      onClick={() => setIsAddStaffOpen(false)}
+                      onClick={handleAddStaff}
                       className="flex-1 bg-[#213555] hover:bg-[#4F709C] text-white transition-colors duration-200"
                     >
                       Add Staff
@@ -443,7 +468,7 @@ const UserManagementPage: React.FC = () => {
                       Name
                     </th>
                     <th className="font-bold text-[#213555] py-4 px-6 text-sm uppercase tracking-wide text-left">
-                      Position
+                      Phone
                     </th>
                     <th className="font-bold text-[#213555] py-4 px-6 text-sm uppercase tracking-wide text-left">
                       Department
@@ -472,12 +497,12 @@ const UserManagementPage: React.FC = () => {
                     >
                       <td className="py-4 px-6">
                         <div className="font-semibold text-gray-900 group-hover:text-[#213555] transition-colors">
-                          {staffMember.name}
+                          {staffMember.firstName} {staffMember.lastName}
                         </div>
                       </td>
                       <td className="py-4 px-6">
                         <div className="text-gray-700 font-medium">
-                          {staffMember.position}
+                          {staffMember.phone}
                         </div>
                       </td>
                       <td className="py-4 px-6">
@@ -528,10 +553,11 @@ const UserManagementPage: React.FC = () => {
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="hover:bg-purple-100 hover:text-purple-700 transition-all duration-200 rounded-lg p-2 group/btn"
-                            title="Settings"
+                            className="hover:bg-red-100 hover:text-red-700 transition-all duration-200 rounded-lg p-2 group/btn"
+                            title="Trash"
+                            onClick={() => handleDeleteStaff(staffMember.id)}
                           >
-                            <Settings className="h-4 w-4 group-hover/btn:scale-110 transition-transform" />
+                            <Trash2 className="h-4 w-4 group-hover/btn:scale-110 transition-transform" />
                           </Button>
                         </div>
                       </td>
@@ -572,21 +598,17 @@ const UserManagementPage: React.FC = () => {
                     <Label className="text-sm font-medium text-gray-500">
                       Name
                     </Label>
-                    <p className="text-sm">{selectedStaff.name}</p>
-                  </div>
-                  <div>
-                    <Label className="text-sm font-medium text-gray-500">
-                      Email
-                    </Label>
-                    <p className="text-sm">{selectedStaff.email}</p>
+                    <p className="text-sm">
+                      {selectedStaff.firstName} {selectedStaff.lastName}
+                    </p>
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label className="text-sm font-medium text-gray-500">
-                      Position
+                      Phone
                     </Label>
-                    <p className="text-sm">{selectedStaff.position}</p>
+                    <p className="text-sm">{selectedStaff.phone}</p>
                   </div>
                   <div>
                     <Label className="text-sm font-medium text-gray-500">
@@ -619,18 +641,7 @@ const UserManagementPage: React.FC = () => {
                   </Label>
                   <StatusBadge status={selectedStaff.status} />
                 </div>
-                <div>
-                  <Label className="text-sm font-medium text-gray-500">
-                    Permissions
-                  </Label>
-                  <div className="flex flex-wrap gap-1 mt-1">
-                    {selectedStaff.permissions.map((permission, index) => (
-                      <Badge key={index} variant="outline" className="text-xs">
-                        {permission}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
+
                 <div className="flex justify-end gap-2 pt-4">
                   <Button
                     variant="outline"
@@ -666,21 +677,7 @@ const UserManagementPage: React.FC = () => {
                   </Label>
                   <Input
                     id="editStaffName"
-                    defaultValue={selectedStaff.name}
-                    className="border-gray-200 focus:border-[#4F709C]"
-                  />
-                </div>
-                <div>
-                  <Label
-                    htmlFor="editStaffEmail"
-                    className="text-[#213555] font-medium"
-                  >
-                    Email
-                  </Label>
-                  <Input
-                    id="editStaffEmail"
-                    type="email"
-                    defaultValue={selectedStaff.email}
+                    defaultValue={`${selectedStaff.firstName} ${selectedStaff.lastName}`}
                     className="border-gray-200 focus:border-[#4F709C]"
                   />
                 </div>
@@ -694,19 +691,6 @@ const UserManagementPage: React.FC = () => {
                   <Input
                     id="editStaffPhone"
                     defaultValue={selectedStaff.phone}
-                    className="border-gray-200 focus:border-[#4F709C]"
-                  />
-                </div>
-                <div>
-                  <Label
-                    htmlFor="editStaffPosition"
-                    className="text-[#213555] font-medium"
-                  >
-                    Position
-                  </Label>
-                  <Input
-                    id="editStaffPosition"
-                    defaultValue={selectedStaff.position}
                     className="border-gray-200 focus:border-[#4F709C]"
                   />
                 </div>

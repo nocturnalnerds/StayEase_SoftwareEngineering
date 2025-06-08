@@ -47,7 +47,7 @@ interface NavigationItem {
 const navigation: NavigationItem[] = [
   { name: "Dashboard", href: "/staff", icon: Home },
   { name: "Front Office", href: "/staff/front-office", icon: Building2 },
-  { name: "User Management", href: "/staff/user-management", icon: Users },
+  { name: "Staff Management", href: "/staff/user-management", icon: Users },
   { name: "Housekeeping", href: "/staff/house-keeping", icon: Calendar },
   { name: "Restaurant", href: "/staff/restaurant", icon: UtensilsCrossed },
   { name: "Inventory", href: "/staff/inventory", icon: Package },

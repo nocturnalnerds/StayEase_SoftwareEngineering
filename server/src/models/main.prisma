@@ -9,19 +9,18 @@ datasource db {
 }
 
 model User {
-  id          String   @id @default(uuid())
-  email       String   @unique
+  id          String    @id @default(uuid())
+  email       String    @unique
   username    String
   password    String
   phone       String
-  role        String 
+  role        String
   dateOfBirth DateTime?
-  created_at  DateTime @default(now())
+  created_at  DateTime  @default(now())
 }
 
-
 model ContactUsInfo {
-  id      String   @id @default(uuid())
+  id      String  @id @default(uuid())
   name    String
   email   String
   phone   String
@@ -30,71 +29,71 @@ model ContactUsInfo {
 }
 
 model Staff {
-  id                   String                 @id @default(uuid())
-  username             String
-  email                String                 @unique
-  firstName            String
-  lastName             String
-  phone                String
-  role                 String
-  salary               Int                    @default(5000)
-  department           String
-  division             String
-  hireDate             DateTime
-  status               String
-  lastLogin            DateTime?
-  profileImage         String?
-  processedPayments    Payment[]              @relation("StaffToPayment")
+  id                    String                 @id @default(uuid())
+  username              String?
+  email                 String?
+  firstName             String
+  lastName              String
+  phone                 String
+  role                  String?
+  salary                Int                    @default(5000)
+  department            String
+  division              String?
+  hireDate              DateTime
+  status                String                 @default("Active")
+  lastLogin             DateTime?
+  profileImage          String?
+  processedPayments     Payment[]              @relation("StaffToPayment")
   inventoryTransactions InventoryTransaction[]
-  generatedReports     Report[]
+  generatedReports      Report[]
 }
 
 model Customer {
-  id              Int            @id @default(autoincrement())
-  username        String
-  email           String            @unique
-  firstName       String
-  lastName        String
-  phone           String
-  registrationDate DateTime @default(now())
-  status          String @default("Active")
-  lastVisit       DateTime?
-  profileImage    String?
-  reservations    Reservation[]
-  banquetBookings BanquetBooking[]
+  id               Int              @id @default(autoincrement())
+  username         String
+  email            String           @unique
+  firstName        String
+  lastName         String
+  phone            String
+  registrationDate DateTime         @default(now())
+  status           String           @default("Active")
+  lastVisit        DateTime?
+  profileImage     String?
+  reservations     Reservation[]
+  banquetBookings  BanquetBooking[]
 }
 
 model RoomType {
-  id           Int         @id @default(autoincrement())
-  name         String
-  description  String
-  basePrice    Float
-  capacity     Int
-  maxOccupancy Int
-  amenities    String[]
-  images       String[]
-  rooms        Room[]
+  id            Int            @id @default(autoincrement())
+  name          String
+  description   String
+  basePrice     Float
+  capacity      Int
+  maxOccupancy  Int
+  amenities     String[]
+  images        String[]
+  rooms         Room[]
   discountRates DiscountRate[]
 }
 
 model Room {
-  id               Int             @id @default(autoincrement())
-  roomNumber       String          @unique
+  id               Int               @id @default(autoincrement())
+  roomNumber       String            @unique
   roomTypeId       Int
   floor            Int
-  status           String @default("Available")
-  smoking          Boolean @default(false)
+  status           String            @default("Available")
+  smoking          Boolean           @default(false)
   notes            String?
   lastCleaned      DateTime?
   currentOccupant  String?
   reservationRooms ReservationRoom[]
-  roomType         RoomType           @relation(fields: [roomTypeId], references: [id])
+  roomType         RoomType          @relation(fields: [roomTypeId], references: [id])
   houseKeeperRooms HouseKeeperRoom[]
 }
 
 model HouseKeeperRoom {
   id          String   @id @default(uuid())
-  roomId      Int?     // Make it optional first
+  roomId      Int? // Make it optional first
   room        Room?    @relation(fields: [roomId], references: [id])
   taskType    String   @default("Cleaning")
   status      String   @default("pending")
@@ -104,30 +103,27 @@ model HouseKeeperRoom {
   notes       String?
 }
 
-
-
-
 model DiscountRate {
-  id             String            @id @default(uuid())
-  roomTypeId     Int
-  name           String
-  ratePercentage Float
-  startDate      DateTime
-  endDate        DateTime
-  minNights      Int
-  description    String?
-  isActive       Boolean
+  id               String            @id @default(uuid())
+  roomTypeId       Int
+  name             String
+  ratePercentage   Float
+  startDate        DateTime
+  endDate          DateTime
+  minNights        Int
+  description      String?
+  isActive         Boolean
   reservationRooms ReservationRoom[]
-  roomType       RoomType          @relation(fields: [roomTypeId], references: [id])
+  roomType         RoomType          @relation(fields: [roomTypeId], references: [id])
 }
 
 model Reservation {
-  id                Int             @id @default(autoincrement())
-  reservationNumber String          @unique
+  id                Int               @id @default(autoincrement())
+  reservationNumber String            @unique
   customerId        Int
-  status            String          @default("pending")
-  paymentStatus     String          @default("pending")
-  checkInStatus     String          @default("pending")
+  status            String            @default("pending")
+  paymentStatus     String            @default("pending")
+  checkInStatus     String            @default("pending")
   checkInDate       DateTime
   checkOutDate      DateTime
   adults            Int
@@ -142,40 +138,40 @@ model Reservation {
 }
 
 model ReservationRoom {
-  id            String         @id @default(uuid())
+  id            String  @id @default(uuid())
   reservationId Int
   roomId        Int
   discountId    String?
 
-  reservation   Reservation    @relation(fields: [reservationId], references: [id])
-  room          Room           @relation(fields: [roomId], references: [id])
-  discount      DiscountRate?  @relation(fields: [discountId], references: [id])
+  reservation Reservation   @relation(fields: [reservationId], references: [id])
+  room        Room          @relation(fields: [roomId], references: [id])
+  discount    DiscountRate? @relation(fields: [discountId], references: [id])
 }
 
 model Payment {
-  id             Int      @id @default(autoincrement())
-  reservationId  Int
-  paymentNumber  String      @unique
-  amount         Float
-  paymentMethod  String
-  paymentStatus  String
-  paymentType    String      @default("Room Charge")
-  transactionId  String?
-  paymentDate    DateTime
-  processedById  String?
-  notes          String?
+  id            Int      @id @default(autoincrement())
+  reservationId Int
+  paymentNumber String   @unique
+  amount        Float
+  paymentMethod String
+  paymentStatus String
+  paymentType   String   @default("Room Charge")
+  transactionId String?
+  paymentDate   DateTime
+  processedById String?
+  notes         String?
 
-  reservation    Reservation @relation(fields: [reservationId], references: [id])
-  processedBy    Staff?      @relation("StaffToPayment", fields: [processedById], references: [id])
+  reservation Reservation @relation(fields: [reservationId], references: [id])
+  processedBy Staff?      @relation("StaffToPayment", fields: [processedById], references: [id])
 }
 
 model FoodItem {
-  id              Int           @id @default(autoincrement())
+  id              Int             @id @default(autoincrement())
   name            String
   description     String
   price           Float
-  category        String @default("")
-  isAvailable     Boolean @default(true)
+  category        String          @default("")
+  isAvailable     Boolean         @default(true)
   image           String?
   ingredients     String[]
   allergens       String[]
@@ -183,15 +179,15 @@ model FoodItem {
   orderItems      FoodOrderItem[]
 }
 
-model FoodCategory{
-  id Int @id @default(autoincrement())
+model FoodCategory {
+  id   Int    @id @default(autoincrement())
   name String @unique
 }
 
 model FoodOrder {
-  id           String     @id @default(uuid())
-  orderNumber  String     @unique
-  customerName String     @default("John Doe")
+  id           String          @id @default(uuid())
+  orderNumber  String          @unique
+  customerName String          @default("John Doe")
   Table        Int?
   items        FoodOrderItem[]
   totalAmount  Float
@@ -200,47 +196,47 @@ model FoodOrder {
 }
 
 model FoodOrderItem {
-  id                  String     @id @default(uuid())
+  id                  String  @id @default(uuid())
   orderId             String
   foodItemId          Int
   quantity            Int
   specialInstructions String?
 
-  order               FoodOrder  @relation(fields: [orderId], references: [id])
-  foodItem            FoodItem   @relation(fields: [foodItemId], references: [id])
+  order    FoodOrder @relation(fields: [orderId], references: [id])
+  foodItem FoodItem  @relation(fields: [foodItemId], references: [id])
 }
 
 model BanquetHall {
-  id          String           @id @default(uuid())
-  name        String
-  capacity    Int
+  id           String           @id @default(uuid())
+  name         String
+  capacity     Int
   pricePerHour Float
-  description String
-  images      String[]
-  amenities   String[]
-  isAvailable Boolean
-  bookings    BanquetBooking[]
+  description  String
+  images       String[]
+  amenities    String[]
+  isAvailable  Boolean
+  bookings     BanquetBooking[]
 }
 
 model BanquetBooking {
-  id             String         @id @default(uuid())
-  bookingNumber  String         @unique
-  hallId         String
-  customerId     Int
-  eventType      String
-  startDateTime  DateTime
-  endDateTime    DateTime
-  attendees      Int
-  totalAmount    Float
-  status         String
-  notes          String?
+  id            String   @id @default(uuid())
+  bookingNumber String   @unique
+  hallId        String
+  customerId    Int
+  eventType     String
+  startDateTime DateTime
+  endDateTime   DateTime
+  attendees     Int
+  totalAmount   Float
+  status        String
+  notes         String?
 
-  hall           BanquetHall    @relation(fields: [hallId], references: [id])
-  customer       Customer       @relation(fields: [customerId], references: [id])
+  hall     BanquetHall @relation(fields: [hallId], references: [id])
+  customer Customer    @relation(fields: [customerId], references: [id])
 }
 
 model InventoryItem {
-  id            Int                 @id @default(autoincrement())
+  id            Int                    @id @default(autoincrement())
   name          String
   SKU           String              
   category      String
@@ -253,13 +249,11 @@ model InventoryItem {
   lastRestocked DateTime
   location      String
   transactions  InventoryTransaction[]
-
 }
 
-
 model InventoryTransaction {
-  id               String   @id @default(uuid())
-  orderNumber      String   @unique
+  id               String        @id @default(uuid())
+  orderNumber      String        @unique
   supplier         String
   items            Int
   totalAmount      Float
@@ -272,7 +266,7 @@ model InventoryTransaction {
 }
 
 model SystemSettings {
-  id           String   @id @default(uuid())
+  id           String  @id @default(uuid())
   hotelName    String
   address      String
   phone        String
@@ -286,7 +280,7 @@ model SystemSettings {
 }
 
 model Report {
-  id            String  @id @default(uuid())
+  id            String   @id @default(uuid())
   name          String
   type          String
   timeframe     String
@@ -297,5 +291,5 @@ model Report {
   data          Json
   format        String
 
-  generatedBy   Staff   @relation(fields: [generatedById], references: [id])
+  generatedBy Staff @relation(fields: [generatedById], references: [id])
 }
