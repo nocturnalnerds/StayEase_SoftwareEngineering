@@ -183,6 +183,8 @@ export const getReservationsData: RequestHandler = async (req, res, next) => {
                 customerId: true,
                 checkInDate: true,
                 checkOutDate: true,
+                paymentStatus: true,
+                checkInStatus: true,
                 adults: true,
                 children: true,
                 status: true,

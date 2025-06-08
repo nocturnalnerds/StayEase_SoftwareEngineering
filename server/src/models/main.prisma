@@ -240,6 +240,7 @@ model InventoryItem {
   name          String
   category      String
   quantity      Int
+  maxStock      Int?
   unit          String
   reorderLevel  Int
   cost          Float
