@@ -8,7 +8,8 @@ getMenusByCategory,
 addFoodCategory,
 getAllCategories,
 getMenuByName,
-getRestaurantDashboard
+getRestaurantDashboard,
+searchMenuByName
 } from "../controllers/FnBController";
 
 const fnbRouter = Router();
@@ -23,5 +24,6 @@ fnbRouter.get("/categories", getAllCategories);
 fnbRouter.get("/menus/name/:name", getMenuByName);
 
 fnbRouter.get("/fnbDashboard", getRestaurantDashboard);
+fnbRouter.get("/menus/search", searchMenuByName);
 
 export {fnbRouter};

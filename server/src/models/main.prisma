@@ -37,6 +37,7 @@ model Staff {
   lastName             String
   phone                String
   role                 String
+  salary               Int                    @default(5000)
   department           String
   division             String
   hireDate             DateTime
@@ -44,7 +45,6 @@ model Staff {
   lastLogin            DateTime?
   profileImage         String?
   processedPayments    Payment[]              @relation("StaffToPayment")
-  preparedFoodOrders   FoodOrder[]            @relation("StaffToFoodOrder")
   inventoryTransactions InventoryTransaction[]
   generatedReports     Report[]
 }
@@ -56,15 +56,11 @@ model Customer {
   firstName       String
   lastName        String
   phone           String
-  address         String
-  country         String
-  loyaltyPoints   Int               @default(0)
-  registrationDate DateTime
-  status          String
+  registrationDate DateTime @default(now())
+  status          String @default("Active")
   lastVisit       DateTime?
   profileImage    String?
   reservations    Reservation[]
-  foodOrders      FoodOrder[]
   banquetBookings BanquetBooking[]
 }
 
@@ -83,7 +79,7 @@ model RoomType {
 
 model Room {
   id               Int             @id @default(autoincrement())
-  roomNumber       String             @unique
+  roomNumber       String          @unique
   roomTypeId       Int
   floor            Int
   status           String @default("Available")
@@ -92,20 +88,24 @@ model Room {
   lastCleaned      DateTime?
   currentOccupant  String?
   reservationRooms ReservationRoom[]
-  foodOrders       FoodOrder[]
   roomType         RoomType           @relation(fields: [roomTypeId], references: [id])
+  houseKeeperRooms HouseKeeperRoom[]
 }
 
 model HouseKeeperRoom {
   id          String   @id @default(uuid())
-  roomNumber  String
-  type        String
-  status      String
+  roomId      Int?     // Make it optional first
+  room        Room?    @relation(fields: [roomId], references: [id])
+  taskType    String   @default("Cleaning")
+  status      String   @default("pending")
   lastCleaned DateTime
   assignedTo  String
   priority    String
   notes       String?
 }
+
+
+
 
 model DiscountRate {
   id             String            @id @default(uuid())
@@ -115,28 +115,30 @@ model DiscountRate {
   startDate      DateTime
   endDate        DateTime
   minNights      Int
-  description    String
+  description    String?
   isActive       Boolean
   reservationRooms ReservationRoom[]
   roomType       RoomType          @relation(fields: [roomTypeId], references: [id])
 }
 
 model Reservation {
-  id              Int            @id @default(autoincrement())
-  reservationNumber String   @unique
-  customerId      Int
-  customer        Customer          @relation(fields: [customerId], references: [id])
-  status          String
-  checkInDate     DateTime
-  checkOutDate    DateTime
-  adults          Int
-  children        Int
-  specialRequests String?
-  totalAmount     Float
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @updatedAt
-  assignedRooms   ReservationRoom[]
-  payments        Payment[]
+  id                Int             @id @default(autoincrement())
+  reservationNumber String          @unique
+  customerId        Int
+  status            String          @default("pending")
+  paymentStatus     String          @default("pending")
+  checkInStatus     String          @default("pending")
+  checkInDate       DateTime
+  checkOutDate      DateTime
+  adults            Int
+  children          Int
+  specialRequests   String?
+  totalAmount       Float
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  customer          Customer          @relation(fields: [customerId], references: [id])
+  assignedRooms     ReservationRoom[]
+  payments          Payment[]
 }
 
 model ReservationRoom {
@@ -148,9 +150,6 @@ model ReservationRoom {
   reservation   Reservation    @relation(fields: [reservationId], references: [id])
   room          Room           @relation(fields: [roomId], references: [id])
   discount      DiscountRate?  @relation(fields: [discountId], references: [id])
-  ratePerNight  Float
-  checkInDate   DateTime
-  checkOutDate  DateTime
 }
 
 model Payment {
@@ -191,13 +190,8 @@ model FoodCategory{
 model FoodOrder {
   id           String     @id @default(uuid())
   orderNumber  String     @unique
-  roomId       Int?
-  customerId   Int?
-  preparedById String?
-
-  room         Room?      @relation(fields: [roomId], references: [id])
-  customer     Customer?  @relation(fields: [customerId], references: [id])
-  preparedBy   Staff?     @relation("StaffToFoodOrder", fields: [preparedById], references: [id])
+  customerName String     @default("John Doe")
+  Table        Int?
   items        FoodOrderItem[]
   totalAmount  Float
   orderDate    DateTime
@@ -210,7 +204,6 @@ model FoodOrderItem {
   foodItemId          Int
   quantity            Int
   specialInstructions String?
-  price               Float
 
   order               FoodOrder  @relation(fields: [orderId], references: [id])
   foodItem            FoodItem   @relation(fields: [foodItemId], references: [id])
