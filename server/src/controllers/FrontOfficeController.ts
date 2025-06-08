@@ -196,6 +196,21 @@ export const getReservationsData: RequestHandler = async (req, res, next) => {
                         phone: true,
                     }
                 }
+                ,
+                assignedRooms: {
+                    select: {
+                        room: {
+                            select: {
+                                roomNumber: true,
+                                roomType: {
+                                    select: {
+                                        name: true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         });
 
