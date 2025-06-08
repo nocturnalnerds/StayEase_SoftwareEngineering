@@ -107,16 +107,22 @@ export const newReservation: RequestHandler = async (req, res, next) => {
 
         const roomType = room.roomType;
 
-        const customer = await prisma.customer.create({
-            data: {
-                id: (await prisma.customer.count()) + 1,
-                username: firstName + lastName,
-                firstName,
-                lastName,
-                email,
-                phone,
-            }
+        // Check if customer already exists by email
+        let customer = await prisma.customer.findUnique({
+            where: { email }
         });
+        if (!customer) {
+            customer = await prisma.customer.create({
+                data: {
+                    id: (await prisma.customer.count()) + 1,
+                    username: firstName + lastName,
+                    firstName,
+                    lastName,
+                    email,
+                    phone,
+                }
+            });
+        }
         
         const checkIn = new Date(checkInDate);
         const checkOut = new Date(checkOutDate);
@@ -125,7 +131,7 @@ export const newReservation: RequestHandler = async (req, res, next) => {
         const roomTypePrice = roomType.basePrice;
         
         let discountPercentage = 0;
-
+        
         if (discountRateId) {
             const discount = await prisma.discountRate.findUnique({
                 where: { id: String(discountRateId), isActive: true }
@@ -134,13 +140,13 @@ export const newReservation: RequestHandler = async (req, res, next) => {
                 discountPercentage = discount.ratePercentage;
             }
         }
-
+        
         if (!room || !room.roomType) {
             res.status(STATUS.BAD_REQUEST).json({ error: "Invalid roomId" });
             return;
         }
-
-
+        
+        
         if (durationDays <= 0) {
             res.status(STATUS.BAD_REQUEST).json({ error: "checkOutDate must be after checkInDate" });
             return;
@@ -150,32 +156,34 @@ export const newReservation: RequestHandler = async (req, res, next) => {
         if (discountPercentage > 0) {
             totalAmount = totalAmount * (1 - discountPercentage / 100);
         }
-
+        
         const reservation = await prisma.reservation.create({
             data: {
-                customerId: customer.id,
-                reservationNumber: `RES-${Date.now()}-${Math.floor(Math.random() * 10000)}`,
-                checkInDate,
-                checkOutDate,
-                adults,
-                children,
-                specialRequests: specialRequest,
-                totalAmount,
+            customerId: customer.id,
+            reservationNumber: `RES-${Date.now()}-${Math.floor(Math.random() * 10000)}`,
+            checkInDate: new Date(checkInDate),
+            checkOutDate: new Date(checkOutDate),
+            adults,
+            children,
+            specialRequests: specialRequest,
+            totalAmount: totalAmount,
             }
         });
-
-        if(roomId){
+        
+        console.log("KONTOL");
+        if (roomNumber && roomId) {
             await prisma.reservationRoom.create({
-            data: {
-                reservationId: reservation.id,
-                roomId: roomId,
-                discountId: String(discountRateId)
-            }
-        });
+                data: {
+                    reservationId: reservation.id,
+                    roomId: roomId,
+                    ...(discountRateId ? { discountId: String(discountRateId) } : {})
+                }
+            });
         }
         
         res.status(STATUS.CREATED).json({ message: "Reservation created successfully", reservation });
     } catch (error) {
+        console.log(error);
         next(error);
     }
 };
