@@ -41,26 +41,12 @@ import {
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/TextArea";
 import { Badge } from "@/components/ui/badge";
-import { roomTypeData, roomData } from "@/lib/data";
 import { formatCurrency } from "@/lib/utils";
-import { RoomType } from "@/lib/types";
-
-interface Room {
-  id: number;
-  roomNumber: string;
-  roomType: RoomType;
-  floor: number;
-  status:
-    | "Available"
-    | "Occupied"
-    | "Cleaning"
-    | "Maintenance"
-    | "Out of Order"
-    | "Reserved";
-  isSmoking: boolean;
-  lastCleaned?: string;
-  notes?: string;
-}
+import { Room, RoomType } from "@/lib/types";
+import useRoomQuery from "@/hooks/queries/useRoomQuery";
+import useRoomTypeQuery from "@/hooks/queries/useRoomTypeQuery";
+import useRoomMutation from "@/hooks/mutations/useRoomMutation";
+import useRoomTypeMutation from "@/hooks/mutations/useRoomTypeMutation";
 
 const RoomSettingsPage: React.FC = () => {
   const navigate = useNavigate();
@@ -74,12 +60,21 @@ const RoomSettingsPage: React.FC = () => {
   const [editingRoomType, setEditingRoomType] = useState<RoomType | null>(null);
   const [editingRoom, setEditingRoom] = useState<Room | null>(null);
 
+  const { roomData, isLoading: isRoomsLoading } = useRoomQuery();
+  const { roomTypeData, isLoading: isRoomTypesLoading } = useRoomTypeQuery();
+  const { addRoomMutation, updateRoomMutation, deleteRoomMutation } =
+    useRoomMutation();
+  const {
+    addRoomTypeMutation,
+    updateRoomTypeMutation,
+    deleteRoomTypeMutation,
+  } = useRoomTypeMutation();
+
   useEffect(() => {
-    const timer = setTimeout(() => {
+    if (!isRoomsLoading && !isRoomTypesLoading) {
       setIsLoading(false);
-    }, 1500);
-    return () => clearTimeout(timer);
-  }, []);
+    }
+  }, [isRoomsLoading, isRoomTypesLoading]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -91,16 +86,144 @@ const RoomSettingsPage: React.FC = () => {
     visible: { y: 0, opacity: 1, transition: { duration: 0.5 } },
   };
 
-  const handleEditRoomType = (roomType: RoomType) => {
-    setEditingRoomType(roomType);
-    setIsEditRoomTypeOpen(true);
-    setIsAddRoomTypeOpen(false);
-  };
-
-  const handleEditRoom = (room: Room, e?: React.MouseEvent) => {
-    e?.stopPropagation();
+  const handleEditRoom = (room: Room) => {
     setEditingRoom(room);
     setIsEditRoomOpen(true);
+  };
+
+  const handleAddUpdateRoom = () => {
+    const roomField = {
+      roomNumber: (
+        document.getElementById("roomNumber") as HTMLInputElement | null
+      )?.value,
+      floor: (document.getElementById("floor") as HTMLInputElement | null)
+        ?.value,
+      roomTypeId: (
+        document.getElementById("roomTypeSelect") as HTMLSelectElement | null
+      )?.value,
+      status: (document.getElementById("status") as HTMLSelectElement | null)
+        ?.value,
+      smoking:
+        (document.getElementById("smoking") as HTMLSelectElement | null)
+          ?.value === "true",
+      notes: (document.getElementById("notes") as HTMLTextAreaElement | null)
+        ?.value,
+    };
+
+    // Ensure required fields are filled
+    if (
+      !roomField.roomNumber ||
+      !roomField.floor ||
+      !roomField.roomTypeId ||
+      !roomField.status
+    ) {
+      alert("Please fill in all required fields.");
+      return;
+    }
+
+    // If editing an existing room, update it; otherwise, add a new room
+    if (editingRoom) {
+      // Update room
+      updateRoomMutation.mutate(
+        { ...editingRoom, ...roomField },
+        {
+          onSuccess: () => {
+            setIsEditRoomOpen(false);
+            setEditingRoom(null);
+          },
+        }
+      );
+    } else {
+      // Add new room
+      addRoomMutation.mutate(roomField, {
+        onSuccess: () => {
+          setIsAddRoomOpen(false);
+          setEditingRoom(null);
+        },
+      });
+    }
+  };
+
+  const handleDeleteRoom = (roomId: number) => {
+    deleteRoomMutation.mutate(roomId, {
+      onSuccess: () => {
+        setEditingRoom(null);
+      },
+    });
+  };
+
+  const handleAddUpdateRoomType = () => {
+    const roomTypeField = {
+      name: (document.getElementById("roomTypeName") as HTMLInputElement | null)
+        ?.value,
+      description: (
+        document.getElementById(
+          "roomTypeDescription"
+        ) as HTMLTextAreaElement | null
+      )?.value,
+      basePrice: parseFloat(
+        (
+          document.getElementById(
+            "roomTypeBasePrice"
+          ) as HTMLInputElement | null
+        )?.value || "0"
+      ),
+      capacity: parseInt(
+        (document.getElementById("roomTypeCapacity") as HTMLInputElement | null)
+          ?.value || "0"
+      ),
+      maxOccupancy: parseInt(
+        (
+          document.getElementById(
+            "roomTypeMaxOccupancy"
+          ) as HTMLInputElement | null
+        )?.value || "0"
+      ),
+      amenities: (
+        document.getElementById("roomTypeAmenities") as HTMLInputElement | null
+      )?.value.split(","),
+    };
+
+    // Ensure required fields are filled
+    if (
+      !roomTypeField.name ||
+      !roomTypeField.basePrice ||
+      !roomTypeField.capacity ||
+      !roomTypeField.maxOccupancy
+    ) {
+      alert("Please fill in all required fields.");
+      return;
+    }
+
+    // If editing an existing room type, update it; otherwise, add a new room type
+    if (editingRoomType) {
+      // Update room type
+      updateRoomTypeMutation.mutate(
+        { ...editingRoomType, ...roomTypeField },
+        {
+          onSuccess: () => {
+            setIsEditRoomTypeOpen(false);
+            setEditingRoomType(null);
+          },
+        }
+      );
+    } else {
+      // Add new room type
+      addRoomTypeMutation.mutate(roomTypeField, {
+        onSuccess: () => {
+          setIsAddRoomTypeOpen(false);
+          setEditingRoomType(null);
+        },
+      });
+    }
+  };
+
+  const handleDeleteRoomType = (roomTypeId: number) => {
+    deleteRoomTypeMutation.mutate(roomTypeId, {
+      onSuccess: () => {
+        setEditingRoomType(null);
+      },
+    });
   };
 
   const handleCloseRoomTypeModal = () => {
@@ -335,7 +458,7 @@ const RoomSettingsPage: React.FC = () => {
                                 <DropdownMenuItem
                                   onClick={(e) => {
                                     e.stopPropagation();
-                                    handleEditRoomType(roomType);
+                                    handleAddUpdateRoomType();
                                   }}
                                 >
                                   <Pencil className="h-4 w-4 mr-2" />
@@ -344,6 +467,13 @@ const RoomSettingsPage: React.FC = () => {
                                 <DropdownMenuItem
                                   onClick={(e) => {
                                     e.stopPropagation();
+                                    if (
+                                      window.confirm(
+                                        "Are you sure you want to delete this room type?"
+                                      )
+                                    ) {
+                                      handleDeleteRoomType(roomType.id);
+                                    }
                                   }}
                                   className="text-red-600 cursor-pointer hover:bg-red-50"
                                 >
@@ -354,6 +484,7 @@ const RoomSettingsPage: React.FC = () => {
                             </DropdownMenu>
                           </div>
                         </CardHeader>
+
                         <CardContent>
                           <div className="space-y-5">
                             <p className="text-sm text-gray-500 line-clamp-2">
@@ -496,9 +627,7 @@ const RoomSettingsPage: React.FC = () => {
                               {room.status}
                             </Badge>
                           </td>
-                          <td className="p-4">
-                            {room.isSmoking ? "Yes" : "No"}
-                          </td>
+                          <td className="p-4">No</td>
                           <td className="p-4">
                             {room.lastCleaned
                               ? new Date(room.lastCleaned).toLocaleDateString()
@@ -530,7 +659,19 @@ const RoomSettingsPage: React.FC = () => {
                                   <Pencil className="h-4 w-4 mr-2" />
                                   Edit Room
                                 </DropdownMenuItem>
-                                <DropdownMenuItem className="text-red-600">
+                                <DropdownMenuItem
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    if (
+                                      window.confirm(
+                                        "Are you sure you want to delete this room?"
+                                      )
+                                    ) {
+                                      handleDeleteRoom(room.id);
+                                    }
+                                  }}
+                                  className="text-red-600 cursor-pointer hover:bg-red-50"
+                                >
                                   <Trash2 className="h-4 w-4 mr-2" />
                                   Delete
                                 </DropdownMenuItem>
@@ -790,7 +931,7 @@ const RoomSettingsPage: React.FC = () => {
                   <select
                     id="smoking"
                     className="flex h-10 w-full rounded-md border border-gray-200 bg-background px-3 py-2 text-sm focus:border-[#4F709C] focus:outline-none"
-                    defaultValue={editingRoom?.isSmoking ? "true" : "false"}
+                    defaultValue={editingRoom ? "false" : "true"}
                   >
                     <option value="false">Non-Smoking</option>
                     <option value="true">Smoking</option>
@@ -813,8 +954,11 @@ const RoomSettingsPage: React.FC = () => {
               <DialogClose asChild>
                 <Button variant="outline">Cancel</Button>
               </DialogClose>
-              <Button className="bg-[#213555] hover:bg-[#4F709C] text-white shadow-lg hover:shadow-xl transition-all duration-300">
-                {editingRoom ? "Update" : "Save"} Room
+              <Button
+                className="bg-[#213555] hover:bg-[#4F709C] text-white shadow-lg hover:shadow-xl transition-all duration-300"
+                onClick={handleAddUpdateRoom}
+              >
+                {editingRoom ? "Update" : "Add"} Room
               </Button>
             </DialogFooter>
           </DialogContent>

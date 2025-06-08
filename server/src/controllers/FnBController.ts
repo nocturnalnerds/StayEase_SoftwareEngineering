@@ -122,6 +122,7 @@ export const addMenu: RequestHandler[] = [
 
         const newMenu = await prisma.foodItem.create({
             data: {
+                id: (await prisma.foodItem.count()) + 1,
                 name,
                 category,
                 description: description ?? "",
@@ -203,6 +204,7 @@ export const addFoodCategory: RequestHandler = async (req, res, next) => {
 
         const newCategory = await prisma.foodCategory.create({
             data: {
+                id: (await prisma.foodCategory.count()) + 1,
                 name
             }
         });
@@ -284,6 +286,48 @@ export const getRestaurantDashboard: RequestHandler = async (req, res, next) => 
             availableMenus,
             averagePrice
         });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const searchMenuByName: RequestHandler = async (req, res, next) => {
+    try {
+        const { query } = req.query;
+        if (!query || typeof query !== "string") {
+            res.status(STATUS.BAD_REQUEST).json({ error: "Query parameter is required" });
+            return;
+        }
+
+        const foodItems = await prisma.foodItem.findMany({
+            where: {
+                name: {
+                    contains: query,
+                    mode: "insensitive"
+                }
+            }
+        });
+
+        const foodItemsWithUrls = await Promise.all(
+            foodItems.map(async (item) => {
+                let imageUrl = null;
+                if (item.image && (item.image.startsWith("http://") || item.image.startsWith("https://"))) {
+                    imageUrl = item.image;
+                } else if (item.image) {
+                    const command = new GetObjectCommand({
+                        Bucket: process.env.WASABI_BUCKET!,
+                        Key: item.image
+                    });
+                    imageUrl = await getSignedUrl(s3Client, command, { expiresIn: 3600 });
+                }
+                return {
+                    ...item,
+                    imageUrl
+                };
+            })
+        );
+
+        res.status(STATUS.OK).json({ foodItems: foodItemsWithUrls });
     } catch (error) {
         next(error);
     }

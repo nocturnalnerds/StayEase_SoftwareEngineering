@@ -108,7 +108,7 @@ export const register:RequestHandler = async(req,res,next) => {
     res.status(STATUS.OK).json({
       status: STATUS.OK,
       token: jwtToken,
-      newUser,
+      data: newUser,
     });
   }catch(e){
     next(e);
