@@ -1,0 +1,17 @@
+export { default as Home } from "./customer/Homepage";
+export { default as Login } from "./customer/Login";
+export { default as Signup } from "./customer/Signup";
+export { default as BookingPage } from "./customer/BookingPage";
+export { default as OffersPage } from "./customer/OffersPage";
+export { default as DashboardPage } from "./staff/DashboardPage";
+export { default as SettingsPage } from "./staff/SettingsPage";
+export { default as RoomSettingsPage } from "./staff/settings/RoomSettingsPage";
+export { default as FoodBeverageSettingsPage } from "./staff/settings/FoodBeverageSettingsPage";
+export { default as DiscountRatesPage } from "./staff/settings/DiscountRatesPage";
+export { default as UserManagementPage } from "./staff/UserManagementPage";
+export { default as FrontOfficePage } from "./staff/FrontOfficePage";
+export { default as HouseKeepingPage } from "./staff/HouseKeepingPage";
+export { default as RestaurantPage } from "./staff/RestaurantPage";
+export { default as InventoryPage } from "./staff/InventoryPage";
+export { default as ReportsPage } from "./staff/ReportsPage";
+export { default as PaymentPage } from "./staff/PaymentPage";

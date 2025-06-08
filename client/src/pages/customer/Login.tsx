@@ -1,12 +1,10 @@
 import { SubmitHandler, useForm } from "react-hook-form";
-import Input from "../components/ui/Input";
-import { API } from "../lib/API";
-import { toast } from "react-toastify";
-import { useEffect, useState } from "react";
+import Input from "@/components/ui/InputOld";
+import { useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { Link } from "react-router-dom";
-import googleIcon from "/icons/google.svg";
-import "../styles/loginSignup.css";
+import useAuthMutation from "@/hooks/mutations/useAuthMutation";
+import "@/styles/loginSignup.css";
 
 type LoginFields = {
   email: string;
@@ -22,28 +20,12 @@ export default function Login() {
     handleSubmit,
     formState: { errors },
     setError,
-    reset,
   } = useForm<LoginFields>();
   const [showPassword, setShowPassword] = useState(false);
+  const { loginMutation } = useAuthMutation(setError);
 
-  useEffect(() => {
-    window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
-  }, []);
-
-  const onSubmit: SubmitHandler<LoginFields> = async (data) => {
-    try {
-      const loginData: LoginFields = {
-        email: data.email,
-        password: data.password,
-      };
-      await API.post("/login", loginData);
-      toast.success("Login successful!");
-      reset();
-    } catch (err) {
-      console.error("Form submission error", err);
-      toast.error("Login failed!");
-      setError("email", { message: "An error occurred" });
-    }
+  const onSubmit: SubmitHandler<LoginFields> = (data) => {
+    loginMutation.mutate(data);
   };
 
   return (
@@ -98,14 +80,14 @@ export default function Login() {
           </form>
 
           <div className="flex items-center my-2">
-            <hr className="w-full border-border border-[#CFDFE2]" />
+            <hr className="w-full border-[#CFDFE2]" />
             <p className="text-light p-[1rem] text-[#294957]">or</p>
-            <hr className="w-full border-border border-[#CFDFE2]" />
+            <hr className="w-full border-[#CFDFE2]" />
           </div>
 
           <button className="flex items-center w-full justify-center gap-2 rounded-lg bg-slate-100 hover:bg-slate-200 py-3 duration-300 cursor-pointer">
             <img
-              src={googleIcon}
+              src="/icons/google.svg"
               alt="google icon"
               className="w-[28px]! h-[28px]!"
             />

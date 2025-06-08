@@ -3,15 +3,12 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { AiFillCloseCircle } from "react-icons/ai";
 import { TbGridDots } from "react-icons/tb";
 import "../../styles/navbar.css";
+import toast from "react-hot-toast";
 
 const navItems = [
   {
     route: "",
     name: "Home",
-  },
-  {
-    route: "offers",
-    name: "Offers",
   },
   {
     route: "booking",
@@ -65,14 +62,27 @@ export default function Navbar() {
                 <NavItem key={index} route={item.route} name={item.name} />
               );
             })}
-            <button
-              className="btn book-now transition-colors duration-300"
-              onClick={() => {
-                navigate("/login");
-              }}
-            >
-              Log In
-            </button>
+            {localStorage.getItem("token") ? (
+              <button
+                className="btn book-now transition-colors duration-300"
+                onClick={() => {
+                  localStorage.removeItem("token");
+                  toast.success("Logged out successfully!");
+                  navigate("/login");
+                }}
+              >
+                Logout
+              </button>
+            ) : (
+              <button
+                className="btn book-now transition-colors duration-300"
+                onClick={() => {
+                  navigate("/login");
+                }}
+              >
+                Log In
+              </button>
+            )}
           </ul>
           <div onClick={removeNav} className="close-navbar">
             <AiFillCloseCircle className="icon" />

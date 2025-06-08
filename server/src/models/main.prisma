@@ -1,34 +1,298 @@
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["prismaSchemaFolder"]
+  provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "mongodb"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model User {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  id          String   @id @default(uuid())
   email       String   @unique
   username    String
   password    String
   phone       String
+  role        String 
   dateOfBirth DateTime?
   created_at  DateTime @default(now())
 }
 
-model Admin {
-  id         String   @id @default(auto()) @map("_id") @db.ObjectId
-  email      String   @unique
-  password   String
-  created_at DateTime @default(now())
-}
-model ContactUsInfo{
-  id String @id @default(auto()) @map("_id") @db.ObjectId
-  name String
-  email String
-  phone String
+
+model ContactUsInfo {
+  id      String   @id @default(uuid())
+  name    String
+  email   String
+  phone   String
   subject String
   message String?
+}
+
+model Staff {
+  id                   String                 @id @default(uuid())
+  username             String
+  email                String                 @unique
+  firstName            String
+  lastName             String
+  phone                String
+  role                 String
+  salary               Int                    @default(5000)
+  department           String
+  division             String
+  hireDate             DateTime
+  status               String
+  lastLogin            DateTime?
+  profileImage         String?
+  processedPayments    Payment[]              @relation("StaffToPayment")
+  inventoryTransactions InventoryTransaction[]
+  generatedReports     Report[]
+}
+
+model Customer {
+  id              Int            @id @default(autoincrement())
+  username        String
+  email           String            @unique
+  firstName       String
+  lastName        String
+  phone           String
+  registrationDate DateTime @default(now())
+  status          String @default("Active")
+  lastVisit       DateTime?
+  profileImage    String?
+  reservations    Reservation[]
+  banquetBookings BanquetBooking[]
+}
+
+model RoomType {
+  id           Int         @id @default(autoincrement())
+  name         String
+  description  String
+  basePrice    Float
+  capacity     Int
+  maxOccupancy Int
+  amenities    String[]
+  images       String[]
+  rooms        Room[]
+  discountRates DiscountRate[]
+}
+
+model Room {
+  id               Int             @id @default(autoincrement())
+  roomNumber       String          @unique
+  roomTypeId       Int
+  floor            Int
+  status           String @default("Available")
+  smoking          Boolean @default(false)
+  notes            String?
+  lastCleaned      DateTime?
+  currentOccupant  String?
+  reservationRooms ReservationRoom[]
+  roomType         RoomType           @relation(fields: [roomTypeId], references: [id])
+  houseKeeperRooms HouseKeeperRoom[]
+}
+
+model HouseKeeperRoom {
+  id          String   @id @default(uuid())
+  roomId      Int?     // Make it optional first
+  room        Room?    @relation(fields: [roomId], references: [id])
+  taskType    String   @default("Cleaning")
+  status      String   @default("pending")
+  lastCleaned DateTime
+  assignedTo  String
+  priority    String
+  notes       String?
+}
+
+
+
+
+model DiscountRate {
+  id             String            @id @default(uuid())
+  roomTypeId     Int
+  name           String
+  ratePercentage Float
+  startDate      DateTime
+  endDate        DateTime
+  minNights      Int
+  description    String?
+  isActive       Boolean
+  reservationRooms ReservationRoom[]
+  roomType       RoomType          @relation(fields: [roomTypeId], references: [id])
+}
+
+model Reservation {
+  id                Int             @id @default(autoincrement())
+  reservationNumber String          @unique
+  customerId        Int
+  status            String          @default("pending")
+  paymentStatus     String          @default("pending")
+  checkInStatus     String          @default("pending")
+  checkInDate       DateTime
+  checkOutDate      DateTime
+  adults            Int
+  children          Int
+  specialRequests   String?
+  totalAmount       Float
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  customer          Customer          @relation(fields: [customerId], references: [id])
+  assignedRooms     ReservationRoom[]
+  payments          Payment[]
+}
+
+model ReservationRoom {
+  id            String         @id @default(uuid())
+  reservationId Int
+  roomId        Int
+  discountId    String?
+
+  reservation   Reservation    @relation(fields: [reservationId], references: [id])
+  room          Room           @relation(fields: [roomId], references: [id])
+  discount      DiscountRate?  @relation(fields: [discountId], references: [id])
+}
+
+model Payment {
+  id             Int      @id @default(autoincrement())
+  reservationId  Int
+  paymentNumber  String      @unique
+  amount         Float
+  paymentMethod  String
+  paymentStatus  String
+  transactionId  String?
+  paymentDate    DateTime
+  processedById  String?
+
+  reservation    Reservation @relation(fields: [reservationId], references: [id])
+  processedBy    Staff?      @relation("StaffToPayment", fields: [processedById], references: [id])
+  notes          String?
+}
+
+model FoodItem {
+  id              Int           @id @default(autoincrement())
+  name            String
+  description     String
+  price           Float
+  category        String @default("")
+  isAvailable     Boolean @default(true)
+  image           String?
+  ingredients     String[]
+  allergens       String[]
+  preparationTime Int
+  orderItems      FoodOrderItem[]
+}
+
+model FoodCategory{
+  id Int @id @default(autoincrement())
+  name String @unique
+}
+
+model FoodOrder {
+  id           String     @id @default(uuid())
+  orderNumber  String     @unique
+  customerName String     @default("John Doe")
+  Table        Int?
+  items        FoodOrderItem[]
+  totalAmount  Float
+  orderDate    DateTime
+  status       String
+}
+
+model FoodOrderItem {
+  id                  String     @id @default(uuid())
+  orderId             String
+  foodItemId          Int
+  quantity            Int
+  specialInstructions String?
+
+  order               FoodOrder  @relation(fields: [orderId], references: [id])
+  foodItem            FoodItem   @relation(fields: [foodItemId], references: [id])
+}
+
+model BanquetHall {
+  id          String           @id @default(uuid())
+  name        String
+  capacity    Int
+  pricePerHour Float
+  description String
+  images      String[]
+  amenities   String[]
+  isAvailable Boolean
+  bookings    BanquetBooking[]
+}
+
+model BanquetBooking {
+  id             String         @id @default(uuid())
+  bookingNumber  String         @unique
+  hallId         String
+  customerId     Int
+  eventType      String
+  startDateTime  DateTime
+  endDateTime    DateTime
+  attendees      Int
+  totalAmount    Float
+  status         String
+  notes          String?
+
+  hall           BanquetHall    @relation(fields: [hallId], references: [id])
+  customer       Customer       @relation(fields: [customerId], references: [id])
+}
+
+model InventoryItem {
+  id            Int                 @id @default(autoincrement())
+  name          String
+  category      String
+  quantity      Int
+  unit          String
+  reorderLevel  Int
+  cost          Float
+  supplier      String
+  lastRestocked DateTime
+  location      String
+  transactions  InventoryTransaction[]
+
+}
+
+
+model InventoryTransaction {
+  id               String   @id @default(uuid())
+  orderNumber      String   @unique
+  supplier         String
+  items            Int
+  totalAmount      Float
+  orderDate        DateTime
+  expectedDelivery DateTime
+  status           String
+  item             InventoryItem @relation(fields: [items], references: [id])
+
+  Staff Staff[]
+}
+
+model SystemSettings {
+  id           String   @id @default(uuid())
+  hotelName    String
+  address      String
+  phone        String
+  email        String
+  website      String
+  checkInTime  String
+  checkOutTime String
+  currency     String
+  taxRate      Float
+  logo         String?
+}
+
+model Report {
+  id            String  @id @default(uuid())
+  name          String
+  type          String
+  timeframe     String
+  startDate     DateTime
+  endDate       DateTime
+  generatedById String
+  generatedAt   DateTime
+  data          Json
+  format        String
+
+  generatedBy   Staff   @relation(fields: [generatedById], references: [id])
 }

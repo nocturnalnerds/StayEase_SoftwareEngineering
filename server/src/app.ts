@@ -1,10 +1,21 @@
 import express from "express";
 import cors from "cors";
 
-import {authRouter, contactRouter} from "./routes";
+import {
+  authRouter,
+  contactRouter,
+  roomRouter,
+  fnbRouter,
+  userRouter,
+  discountRouter,
+} from "./routes";
 import { AppError } from "./utils/http/AppError";
 import { STATUS } from "./utils/http/statusCodes";
 import { ErrorController } from "./controllers";
+import { frontOfficeRouter } from "./routes/frontOfficeRouter";
+import { paymentReport } from "./routes/paymentReportRouter";
+import { restaurantRouter } from "./routes/restaurantRouter";
+import { houseKeepingRouter } from "./routes/houseKeepingRouter";
 
 const app = express();
 
@@ -24,7 +35,15 @@ app.use(express.json());
  * Register all application routes
  * This includes all the endpoints defined in the router
  */
-app.use(authRouter);
+app.use("/auth", authRouter);
+app.use("/rooms", roomRouter);
+app.use("/fnb", fnbRouter);
+app.use("/users", userRouter);
+app.use("/discount", discountRouter);
+app.use("/front-office", frontOfficeRouter);
+app.use("/payment", paymentReport);
+app.use("/housekeeping", houseKeepingRouter);
+app.use("/restaurant", restaurantRouter);
 app.use(contactRouter);
 
 /**

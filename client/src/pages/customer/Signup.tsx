@@ -1,20 +1,13 @@
 import { SubmitHandler, useForm } from "react-hook-form";
-import Input from "../components/ui/Input";
-import { API } from "../lib/API";
-import { toast } from "react-toastify";
-import { useEffect, useState } from "react";
+import Input from "@/components/ui/InputOld";
+import { useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import googleIcon from "/icons/google.svg";
-import "../styles/loginSignup.css";
-
-type SignupFields = {
-  username: string;
-  email: string;
-  phone: string;
-  password: string;
-  confirmPassword?: string;
-};
+import useAuthMutation, {
+  RegisterPayload,
+} from "@/hooks/mutations/useAuthMutation";
+import "@/styles/loginSignup.css";
 
 const inputStyle =
   "border-[#dbdee3] px-3.5 py-3 text-blacky bg-[#f7fbff] placeholder-[#8897ad] focus:border-primary rounded-xs";
@@ -25,36 +18,18 @@ export default function Signup() {
     handleSubmit,
     formState: { errors },
     setError,
-    reset,
-  } = useForm<SignupFields>();
+  } = useForm<RegisterPayload>();
   const [showPassword, setShowPassword] = useState(false);
+  const { registerMutation } = useAuthMutation(setError);
 
-  useEffect(() => {
-    window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
-  }, []);
-
-  const onSubmit: SubmitHandler<SignupFields> = async (data) => {
-    try {
-      if (data.password !== data.confirmPassword) {
-        setError("confirmPassword", { message: "Password did not match" });
-        setError("password", { message: "Password did not match" });
-        return;
-      }
-
-      const signupData: SignupFields = {
-        username: data.username,
-        email: data.email,
-        phone: data.phone,
-        password: data.password,
-      };
-      await API.post("/register", signupData);
-      toast.success("Signup successful!");
-      reset();
-    } catch (err) {
-      console.error("Form submission error", err);
-      toast.error("Signup failed!");
-      setError("username", { message: "An error occurred" });
+  const onSubmit: SubmitHandler<RegisterPayload> = (data) => {
+    if (data.password !== data.confirmPassword) {
+      setError("confirmPassword", { message: "Password did not match" });
+      setError("password", { message: "Password did not match" });
+      return;
     }
+    
+    registerMutation.mutate(data);
   };
 
   return (
