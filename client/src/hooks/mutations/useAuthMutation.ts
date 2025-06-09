@@ -27,17 +27,15 @@ export default function useAuthMutation(
   const queryClient = useQueryClient();
 
   const handleLoginSuccess = (
-    response: AxiosResponse<
-      APISuccessResponse<{ token: string; userData: User }>
-    >
+    response: AxiosResponse<APISuccessResponse<{ token: string; user: User }>>
   ) => {
-    const { token, userData } = response.data.user || response.data.newUser;
+    const { token, user } = response.data;
     localStorage.setItem("token", token);
 
     toast.success("Login successful!");
 
     queryClient.setQueryData([QUERY_KEYS.USER], {
-      data: { data: userData },
+      data: { data: user },
     });
 
     navigate("/booking");
