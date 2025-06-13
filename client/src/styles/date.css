@@ -1,0 +1,19 @@
+.rdp {
+  --rdp-accent-color: #0369a1;
+  --rdp-background-color: #bae6fd;
+  margin: 0;
+}
+
+.rdp-day {
+  border-radius: 8px !important;
+}
+
+.rdp-day_selected:not([aria-selected="false"]) {
+  background-color: var(--rdp-background-color) !important;
+}
+
+.rdp-day_range_start,
+.rdp-day_range_end {
+  background-color: var(--rdp-accent-color) !important;
+  color: white !important;
+}

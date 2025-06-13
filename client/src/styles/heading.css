@@ -1,0 +1,46 @@
+.heading {
+  height: 20rem;
+  z-index: -1;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+
+  .sec-title {
+    text-align: center;
+    z-index: 1;
+    color: white;
+    display: flex;
+    max-width: 90%;
+    justify-content: center;
+    align-items: center;
+
+    h1 {
+      text-transform: uppercase;
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: 0.1rem;
+      padding-bottom: 0.3rem;
+    }
+
+    p {
+      font-weight: 500;
+      line-height: 30px;
+      font-size: 16px;
+    }
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .heading {
+    .sec-title {
+      max-width: 70%;
+      h1 {
+        font-size: 3.8rem !important;
+      }
+
+      p {
+        font-size: 20px !important;
+      }
+    }
+  }
+}
