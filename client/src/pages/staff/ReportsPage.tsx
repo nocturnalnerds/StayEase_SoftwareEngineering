@@ -14,7 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/components/ui/Input";
 import {
   Table,
   TableBody,
@@ -413,7 +413,7 @@ const ReportsPage: React.FC = () => {
                   <div className="overflow-hidden">
                     <Table>
                       <TableHeader>
-                        <TableRow className="bg-gray-50">
+                        <TableRow className="bg-gradient-to-r from-gray-100 to-gray-50 border-b-2 border-gray-200">
                           <TableHead className="font-semibold text-[#213555]">
                             Month
                           </TableHead>
@@ -499,7 +499,7 @@ const ReportsPage: React.FC = () => {
                 <div className="overflow-hidden">
                   <Table>
                     <TableHeader>
-                      <TableRow className="bg-gray-50">
+                      <TableRow className="bg-gradient-to-r from-gray-100 to-gray-50 border-b-2 border-gray-200">
                         <TableHead className="font-semibold text-[#213555]">
                           Month
                         </TableHead>

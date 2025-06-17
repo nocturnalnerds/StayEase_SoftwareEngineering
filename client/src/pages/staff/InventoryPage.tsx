@@ -659,9 +659,8 @@ const InventoryPage: React.FC = () => {
                 <div className="overflow-x-auto w-full">
                   <Table className="min-w-full w-full">
                     {" "}
-                    {/* Make the table stretch to full width */}
                     <TableHeader>
-                      <TableRow className="bg-gray-50">
+                      <TableRow className="bg-gradient-to-r from-gray-100 to-gray-50 border-b-2 border-gray-200">
                         <TableHead className="font-semibold text-[#213555]">
                           Item Name
                         </TableHead>
@@ -771,7 +770,7 @@ const InventoryPage: React.FC = () => {
                 <div className="overflow-x-auto w-full">
                   <Table className="min-w-full w-full">
                     <TableHeader>
-                      <TableRow className="bg-gray-50">
+                      <TableRow className="bg-gradient-to-r from-gray-100 to-gray-50 border-b-2 border-gray-200">
                         <TableHead className="font-semibold text-[#213555]">
                           Order #
                         </TableHead>
